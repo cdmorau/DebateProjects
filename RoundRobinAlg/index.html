@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Emparejamientos Dinámicos</title>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/modern-css-reset/dist/reset.min.css" />
+  <style>
+    body { font-family: sans-serif; margin: 2rem; background: #f8f8f8; }
+    h1 { margin-bottom: 1rem; }
+    .boton { padding: 0.8em 1.2em; margin: 1em 0; background: #3066be; color: white; border: none; border-radius: 5px; cursor: pointer; }
+    .boton:active { background: #15418b; }
+    table { background: white; border-collapse: collapse; margin-top: 1rem; width: 50vw;}
+    th, td { padding: 0.5em 1em; border: 1px solid #c3c3c3;}
+    .flex { display: flex; align-items: flex-start; gap: 2rem; }
+    .card { background: #fff; border-radius: 8px; box-shadow: 0 2px 8px #0001; padding: 1.5rem; min-width: 280px; }
+    #lista-participantes { height: 40vh; overflow-y: auto; }
+    .part-item { display: flex; align-items: center; gap: 1em; margin-bottom: .5em; padding-bottom: 0.3em; border-bottom: 1px solid #f0f0f0;}
+  </style>
+</head>
+<body>
+  <h1>Emparejamientos Dinámicos</h1>
+
+  <div class="flex">
+    <div class="card" style="width:350px;">
+      <h2>Participantes</h2>
+      <form id="form-participante">
+        <label>Agregar nuevo:<br>
+        <input type="text" id="nuevo-nombre" placeholder="Nombre" required style="padding:0.3em;">
+        <button class="boton" type="submit">Agregar</button>
+        </label>
+      </form>
+      <div id="lista-participantes">
+        <!-- Aquí se listarán los participantes -->
+      </div>
+    </div>
+
+    <div style="flex: 1;">
+      <button class="boton" id="generar">Generar emparejamientos</button>
+      <div id="output"></div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
