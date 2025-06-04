@@ -8,14 +8,80 @@
   <style>
     body { font-family: sans-serif; margin: 2rem; background: #f8f8f8; }
     h1 { margin-bottom: 1rem; }
+    h2 { margin: 1.5rem 0 0.5rem; color: #3066be; }
     .boton { padding: 0.8em 1.2em; margin: 1em 0; background: #3066be; color: white; border: none; border-radius: 5px; cursor: pointer; }
     .boton:active { background: #15418b; }
-    table { background: white; border-collapse: collapse; margin-top: 1rem; width: 50vw;}
-    th, td { padding: 0.5em 1em; border: 1px solid #c3c3c3;}
+    table { background: white; border-collapse: collapse; margin-top: 1rem; width: 100%;}
+    th, td { padding: 0.5em 1em; border: 1px solid #c3c3c3; text-align: left;}
+    th { background: #f0f0f0; }
     .flex { display: flex; align-items: flex-start; gap: 2rem; }
     .card { background: #fff; border-radius: 8px; box-shadow: 0 2px 8px #0001; padding: 1.5rem; min-width: 280px; }
     #lista-participantes { height: 40vh; overflow-y: auto; }
     .part-item { display: flex; align-items: center; gap: 1em; margin-bottom: .5em; padding-bottom: 0.3em; border-bottom: 1px solid #f0f0f0;}
+    .tables-container { margin-top: 2rem; }
+    .table-section { margin-bottom: 2rem; }
+    .table-section h3 { color: #3066be; margin-bottom: 0.5rem; }
+    .grupo-edicion {
+        margin-bottom: 1rem;
+        padding: 1rem;
+        background: #f8f9fa;
+        border-radius: 5px;
+    }
+    .grupo-edicion h4 {
+        margin: 0 0 0.5rem 0;
+        color: #3066be;
+    }
+    .grupo-edicion select {
+        padding: 0.3em;
+        margin: 0.2rem;
+        min-width: 120px;
+    }
+    .grupo-edicion .participantes {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.5rem;
+    }
+    .grupo-edicion .participante {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0.5rem;
+    }
+    .grupo-edicion .participante label {
+        min-width: 80px;
+    }
+    .selector-container {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
+    .selector-container select {
+        min-width: 120px;
+        padding: 4px;
+    }
+    .contador-roles {
+        font-size: 0.8em;
+        color: #666;
+        margin-top: 2px;
+    }
+    .boton-eliminar {
+        background: #ff4444;
+        color: white;
+        border: none;
+        border-radius: 3px;
+        padding: 2px 8px;
+        cursor: pointer;
+        font-size: 16px;
+        line-height: 1;
+    }
+    .boton-eliminar:hover {
+        background: #cc0000;
+    }
+    table th:last-child,
+    table td:last-child {
+        width: 50px;
+        text-align: center;
+    }
   </style>
 </head>
 <body>
@@ -37,7 +103,79 @@
 
     <div style="flex: 1;">
       <button class="boton" id="generar">Generar emparejamientos</button>
-      <div id="output"></div>
+      <div id="output">
+        <div id="emparejamientos-edicion" style="display: none;">
+          <h3>Editar Emparejamientos</h3>
+          <div id="grupos-container"></div>
+          <div style="margin-top: 1rem;">
+            <button class="boton" id="confirmar-emparejamientos" style="background: #28a745;">Confirmar Emparejamientos</button>
+            <button class="boton" id="cancelar-emparejamientos" style="background: #dc3545;">Cancelar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tables-container">
+    <div class="table-section">
+      <h3>Tabla de Participantes</h3>
+      <table id="tabla-participantes">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Disponible</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <div class="table-section">
+      <h3>Tabla de Emparejamientos</h3>
+      <table id="tabla-emparejamientos">
+        <thead>
+          <tr>
+            <th>AG</th>
+            <th>AO</th>
+            <th>BG</th>
+            <th>BO</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <div class="table-section">
+      <h3>Conteo de Enfrentamientos</h3>
+      <table id="tabla-enfrentamientos">
+        <thead>
+          <tr>
+            <th>Participante 1</th>
+            <th>Participante 2</th>
+            <th>Veces enfrentados</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <div class="table-section">
+      <h3>Conteo de Roles por Participante</h3>
+      <table id="tabla-conteo-roles">
+        <thead>
+          <tr>
+            <th>Participante</th>
+            <th>AG</th>
+            <th>AO</th>
+            <th>BG</th>
+            <th>BO</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
     </div>
   </div>
 
