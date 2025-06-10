@@ -1,0 +1,137 @@
+{
+  "mainMenu": {
+    "title": "Welcome",
+    "callManagerButton": "Call Manager",
+    "speaksAndFeedsButton": "Speaks & Feeds",
+    "timerButton": "Timer"
+  },
+  "common": {
+    "back": "Back",
+    "backToMenu": "Back to Menu",
+    "score_50_100": "Score (50-100):",
+    "score_1_10": "Score (1-10):",
+    "on": "ON",
+    "off": "OFF",
+    "info": "Inf"
+  },
+  "roles": {
+    "principal": "Chair",
+    "principal_short": "(C)",
+    "panelist": "Panelist",
+    "panelista_short": "(P)",
+    "trainee": "Trainee",
+    "trainee_short": "(T)",
+    "principal_selector": "Chair (C)",
+    "trainee_selector": "Trainee (T)"
+  },
+  "teams": {
+    "ag": "OG",
+    "ao": "OO",
+    "bg": "CG",
+    "bo": "CO"
+  },
+  "speaksAndFeeds": {
+    "tabTitle": "Speaks & Feeds",
+    "athenasTitle": "Speaker Points",
+    "chairFeedbackTitle": "Chair Judge Feedback",
+    "panelFeedbackTitle": "Panelist/Trainee Feedback",
+    "wsdcTitle": "Speaker Points (WSDC)",
+    "wsdcReplyTitle": "Reply Speeches (WSDC)",
+    "athenasTab": "Speaker Points",
+    "chairFeedbackTab": "Feedback for Chair Judge",
+    "panelFeedbackTab": "Feedback for Panelist/Trainee",
+    "wsdcTab": "Speaker Points (WSDC)",
+    "wsdcReplyTab": "Reply Speeches (WSDC)"
+  },
+  "callManager": {
+    "discussionOrder": "Discussion Order",
+    "addJudge": "Add Judge",
+    "principalInMinority": "(C) in minority",
+    "newJudgeName": "New Judge",
+    "judges": "Judges",
+    "discussion": "Discussion",
+    "defaultPrincipalName": "Chair Judge",
+    "defaultPanelistName": "Panelist"
+  },
+  "alerts": {
+    "cannotDeletePrincipal": "The chair judge cannot be deleted.",
+    "principalExists": "A chair judge already exists. Please change the current chair's role before assigning a new one."
+  },
+  "tooltips": {
+      "cannotDeletePrincipal": "Cannot delete the chair"
+  },
+  "timer": {
+    "title": "Timers",
+    "addTimer": "Add Timer",
+    "start": "Start",
+    "pause": "Pause",
+    "reset": "Reset",
+    "defaultName": "Timer 1"
+  },
+  "speaks": {
+    "athenas": {
+      "prompt": "Please enter a valid score between 50 and 100.",
+      "95-100": "<strong>Range: 95-100 points</strong><br><br><strong>Excellence:</strong> Probably one of the best debate speeches ever presented.<br><br><strong>Rebuttal:</strong> It is incredibly difficult to think of satisfactory answers to any of the arguments presented.<br><br><strong>Conviction:</strong> Perfect and totally convincing arguments.",
+      "92-94": "<strong>Range: 92-94 points</strong><br><br><strong>Quality:</strong> An incredible speech, undoubtedly one of the best the panel has ever seen.<br><br><strong>Effectiveness:</strong> Engages <b>incredibly</b> effectively with the main issues of the debate, and presents exceptional arguments that require brilliant responses to be overcome.<br><br><strong>Flaws:</strong> No significant errors or flaws in the speech.",
+      "89-91": "<strong>Range: 89-91 points</strong><br><br><strong>Brilliance:</strong> Brilliant arguments that engage very effectively with the main issues of the debate.<br><br><strong>Explanation:</strong> The arguments are significantly well-explained and exemplified, and require extremely sophisticated responses to be defeated.<br><br><strong>Issues:</strong> There are only minor issues, but they do not affect the strength of the arguments presented.",
+      "86-88": "<strong>Range: 86-88 points</strong><br><br><strong>Engagement:</strong> The arguments engage with the main issues of the debate and are highly convincing.<br><br><strong>Logic:</strong> They have no logical flaws, and sophisticated responses are required to overcome the arguments.<br><br><strong>Flaws:</strong> There are only small flaws or minimal errors, but they are almost insignificant in the arguments.",
+      "83-85": "<strong>Range: 83-85 points</strong><br><br><strong>Relevance:</strong> The arguments engage with the main issues of the debate and are very convincing.<br><br><strong>Solidity:</strong> The arguments have very solid explanations that require strong responses to be overcome.<br><br><strong>Response:</strong> They occasionally fail to respond sufficiently to well-constructed arguments, but the flaws in the speech are very limited.",
+      "79-82": "<strong>Range: 79-82 points</strong><br><br><strong>Pertinence:</strong> The arguments are relevant and engage with the main issues of the debate.<br><br><strong>Construction:</strong> The arguments are well-constructed, lack obvious logical flaws, and are well-explained.<br><br><strong>Vulnerability:</strong> The arguments could be vulnerable to good responses.",
+      "76-78": "<strong>Range: 76-78 points</strong><br><br><strong>Relevance:</strong> The arguments are mostly relevant and engage with most of the main issues of the debate.<br><br><strong>Occasionality:</strong> Occasionally, but not frequently, the arguments may have flaws in some explanations; simplistic analysis that is vulnerable to competent responses.<br><br><strong>Clarity:</strong> It is clear, so it can be followed and therefore credited.",
+      "73-75": "<strong>Range: 73-75 points</strong><br><br><strong>Pertinence:</strong> The arguments are mostly relevant, although they may fail to engage sufficiently with one or more relevant issues for the debate.<br><br><strong>Simplicity:</strong> The arguments are logical, but tend to be simplistic, with some logical flaws and are vulnerable to competent responses.<br><br><strong>Comprehension:</strong> It is clear enough to be followed and credited.",
+      "70-72": "<strong>Range: 70-72 points</strong><br><br><strong>Frequency:</strong> The arguments are frequently relevant.<br><br><strong>Explanations:</strong> The arguments have some explanations, but there are regularly obvious and/or significant logical flaws.<br><br><strong>Follow-through:</strong> It is sometimes difficult to follow and, therefore, to give credit to the entire speech.",
+      "67-69": "<strong>Range: 67-69 points</strong><br><br><strong>Relevance:</strong> Usually, the arguments are relevant.<br><br><strong>Explanations:</strong> Almost all arguments have some explanations, but they have obvious and significant logical flaws.<br><br><strong>Clarity:</strong> It is sometimes clear, but generally difficult to follow, and therefore, it is difficult to give much credit to the material presented.",
+      "64-66": "<strong>Range: 64-66 points</strong><br><br><strong>Presence:</strong> Some of the presented arguments are relevant.<br><br><strong>Explanations:</strong> The arguments generally have few explanations, but they have significant logical flaws.<br><br><strong>Comprehension:</strong> It is frequently unclear, which makes it difficult to give much credit to the speech.",
+      "61-63": "<strong>Range: 61-63 points</strong><br><br><strong>Occasionality:</strong> Occasionally some relevant claims are presented, and most are constructed and presented as arguments.<br><br><strong>Presentation:</strong> Occasionally, the claims are presented as explanations, but they have very significant logical flaws.<br><br><strong>Confusion:</strong> It is frequently unclear and confusing, which makes it difficult to give much credit to the speech.",
+      "58-60": "<strong>Range: 58-60 points</strong><br><br><strong>Relevance:</strong> Rarely are the claims relevant.<br><br><strong>Construction:</strong> The claims are not constructed and presented as arguments; there may be some efforts to present explanations, but they are very vague.<br><br><strong>Follow-through:</strong> It is very difficult to follow, which makes it difficult to give much credit to the speech.",
+      "55-57": "<strong>Range: 55-57 points</strong><br><br><strong>Presentation:</strong> A couple of almost never relevant claims are presented.<br><br><strong>Reasoning:</strong> The claims are not constructed and presented as reasoning, they are more like observations.<br><br><strong>Comprehension:</strong> The speech is difficult to follow almost in its entirety, which makes it difficult to give much credit.",
+      "50-54": "<strong>Range: 50-54 points</strong><br><br><strong>Content:</strong> The content is irrelevant.<br><br><strong>Analysis:</strong> The content does not present anything that suggests analysis.<br><br><strong>Follow-through:</strong> It is impossible to follow the speech in its majority, which makes it difficult to give any credit."
+    },
+    "feedback": {
+      "prompt": "Please enter a valid score between 1 and 10.",
+      "10": "<b>Exceptional</b><br><br><strong>Accuracy:</strong> Extremely accurate results, reflected in a precise appreciation and meticulous evaluation of 'close' comparisons between teams; exhaustive recognition of all necessary team comparisons.<br><br><strong>Reasoning:</strong> Extremely well-supported justification, evidenced through explanations presented with few to no flaws, which are deep, insightful, and nuanced; explicit identification and deep justification of metrics used in weightings, or criteria used for judging.<br><br><strong>Discussion:</strong> Presents extremely astute and insightful comments on the debate; highly efficient, demonstrates an excellent ability to manage deliberation and (when appropriate), provides constructive feedback to the teams.",
+      "9": "<b>Excellent</b><br><br><strong>Accuracy:</strong> Very accurate results, reflected in a correct appreciation of 'close' comparisons between teams; exhaustive recognition of most necessary team comparisons.<br><br><strong>Reasoning:</strong> Very well-supported justification, evidenced through clearly defined explanations that are deep, insightful, and nuanced; very good efforts to justify metrics used in weightings, or criteria used for judging.<br><br><strong>Discussion:</strong> Presents very insightful comments on the debate; consistently efficient and demonstrates good judgment and effectiveness in managing deliberation.",
+      "8": "<b>Very Good</b><br><br><strong>Accuracy:</strong> Accurate results, reflected through a largely correct judgment on 'close' comparisons between teams; detailed recognition of most necessary team comparisons.<br><br><strong>Reasoning:</strong> Justification presented in a comprehensible manner, evidenced through well-defined explanations that are deep and nuanced; very occasionally minor assumptions or personal biases in judging, or a minor lack of clarity in one or more team comparisons; the metrics used for judging are presented, but not explicitly justified.<br><br><strong>Discussion:</strong> Mostly offers insightful comments on the debate, largely efficient, effective in managing deliberation.",
+      "7": "<b>Good</b><br><br><strong>Accuracy:</strong> Accurate results, reflected through generally correct positions, but potentially erroneous in relation to 'close' comparisons between teams; careful recognition of most necessary team comparisons.<br><br><strong>Reasoning:</strong> Generally well-supported justification, evidenced through well-defined explanations; occasionally minor assumptions, personal biases in judging, or a minor lack of clarity in some team comparisons; the metrics used for judging are presented, but not justified.<br><br><strong>Discussion:</strong> Generally presents relevant comments on the debate; efficient but with occasional errors and flaws, or prioritization issues in managing deliberation; demonstrates an appropriate level of judgment (sometimes limited) in providing feedback.",
+      "6": "<b>Above Average</b><br><br><strong>Accuracy:</strong> Mostly correct results, although there may be errors in relation to 'close' comparisons between teams.<br><br><strong>Reasoning:</strong> Good attempt to justify the decision; explanations that demonstrate some degree of appreciation for the main clashes and how they are resolved; occasional assumptions or personal biases in judging that lead to minor flaws; lack of clarity in some team comparisons; not so clear on the metrics used.<br><br><strong>Discussion:</strong> Presents some useful comments on the debate; to some extent inefficient and barely satisfactory management of deliberation; shows a lack of understanding of the main issues of the debate during feedback.",
+      "5": "<b>Average</b><br><br><strong>Accuracy:</strong> Generally accurate results, correct in most 'obvious' clashes; may fail in judging 'close' comparisons between teams, or may neglect a significant, but not fundamental, part of the debate.<br><br><strong>Reasoning:</strong> Some effort to justify the decision; the explanations demonstrate some degree of appreciation for the fundamental clashes and issues; regularly with assumptions or personal biases in judging, some of which may affect the quality of the justification; lack of clarity regarding specific team comparisons.<br><br><strong>Discussion:</strong> Sometimes inefficient in managing deliberation; occasionally has problems understanding one or more panel members without a clear reason for the difficulty; shows a significant lack of understanding of adjudication criteria and difficulty in providing feedback.",
+      "4": "<b>Below Average</b><br><br><strong>Accuracy:</strong> Inaccurate results, which, however, reflect an adequate identification of 'obvious' positions; the results reflect one or more incorrect interpretations or flawed responses; some lack of ability to identify important arguments or responses.<br><br><strong>Reasoning:</strong> Unsatisfactory efforts to justify the decision; the explanations demonstrate some appreciation of the main clashes and issues of the debate, but do not justify the results presented, frequent assumptions or personal biases in judging, some of which affect the quality of the justification; lack of clarity regarding most team comparisons.<br><br><strong>Discussion:</strong> Incompetence in managing deliberation; has problems considering or including all judges on the panel in the discussion; to some extent untimely in providing feedback.",
+      "3": "<b>Poor</b><br><br><strong>Accuracy:</strong> Inaccurate results that fail to correctly identify one or more 'obvious' positions; the results reflect multiple erroneous interpretations of the debate, some of which may be fundamental; some inability to follow important arguments or responses.<br><br><strong>Reasoning:</strong> Poor efforts to justify the decision; the explanations demonstrate a lack of appreciation for the most important clashes and issues; frequent assumptions or personal biases in judging that can severely affect the results; lack of clarity regarding most team comparisons; the explanations are irrelevant to understanding the results.<br><br><strong>Discussion:</strong> Great incompetence in managing deliberation; has problems considering or including all judges on the panel in the discussion; untimely and to some extent counterproductive in providing feedback.",
+      "2": "<b>Very Poor</b><br><br><strong>Accuracy:</strong> Significantly inaccurate results that completely fail to identify more than one of the 'obvious' positions; the results reflect several erroneous interpretations that are central to the debate; evident inability to follow important arguments and responses.<br><br><strong>Reasoning:</strong> Little or no effort to justify the decision; the explanations demonstrate a lack of appreciation for the most important clashes and issues; frequent assumptions or personal biases or irrelevant perceptions that severely damage the quality of the justification and the results; lack of clarity regarding most team comparisons; the explanations are irrelevant to understanding the results.<br><br><strong>Discussion:</strong> Great incompetence in managing deliberation; has problems considering or including the judges on the panel; untimely and to some extent counterproductive in providing feedback.",
+      "1": "<b>Deplorable</b><br><br><strong>Accuracy:</strong> Completely inaccurate result that totally fails to correctly identify at least one of the 'obvious' positions; the results reflect fundamental understanding problems in relation to the debate and the British parliamentary format; evident inability to follow important arguments and responses.<br><br><strong>Reasoning:</strong> There is no reasonable attempt to justify the decision; the explanations demonstrate a lack of appreciation or a mistaken appreciation of the main clashes and issues of the debate; there are constantly assumptions or personal biases that significantly damage the quality of the justification and seriously affect the results; the explanations are irrelevant to understanding the results.<br><br><strong>Discussion:</strong> Extreme incompetence in managing deliberation; has problems considering or including the judges on the panel; untimely and very counterproductive in providing feedback."
+    },
+    "wsdc": {
+      "prompt": "Please enter a valid score between 60 and 80.",
+      "80": "<strong>Exceptional (80 points)</strong><br><br>Content: 32/40, Style: 32/40, Strategy: 16/20<br><br>An outstanding speech that sets the highest standard for the debate.",
+      "76-79": "<strong>Excellent (76-79 points)</strong><br><br>Content: 31/40, Style: 31/40, Strategy: 15-16/20<br><br>A very high quality speech with solid arguments and exemplary presentation.",
+      "74-75": "<strong>Extremely Good (74-75 points)</strong><br><br>Content: 30/40, Style: 30/40, Strategy: 15/20<br><br>A very strong speech with excellent content and delivery.",
+      "71-73": "<strong>Very Good (71-73 points)</strong><br><br>Content: 29/40, Style: 29/40, Strategy: 14-15/20<br><br>A solid speech with good arguments and effective presentation.",
+      "70": "<strong>Good (70 points)</strong><br><br>Content: 28/40, Style: 28/40, Strategy: 14/20<br><br>A competent speech that meets basic standards.",
+      "67-69": "<strong>Satisfactory (67-69 points)</strong><br><br>Content: 27/40, Style: 27/40, Strategy: 13-14/20<br><br>An adequate speech but with room for improvement.",
+      "65-66": "<strong>Competent (65-66 points)</strong><br><br>Content: 26/40, Style: 26/40, Strategy: 13/20<br><br>A basic speech that shows understanding of the format.",
+      "61-64": "<strong>Pass (61-64 points)</strong><br><br>Content: 25/40, Style: 25/40, Strategy: 12-13/20<br><br>A speech that needs development in several areas.",
+      "60": "<strong>Improvement Needed (60 points)</strong><br><br>Content: 24/40, Style: 24/40, Strategy: 12/20<br><br>A speech that requires significant work in all areas."
+    },
+    "wsdcReply": {
+      "prompt": "Please enter a valid score between 30 and 40.",
+      "40": "<strong>Exceptional (40 points)</strong><br><br>Content: 16/20, Style: 16/20, Strategy: 8/10<br><br>An outstanding reply speech that brilliantly synthesizes the debate.",
+      "37-39": "<strong>Very Good to Excellent (37-39 points)</strong><br><br>Content: 15/20, Style: 15/20, Strategy: 7.5/10<br><br>A high-quality reply speech with effective synthesis.",
+      "35-36": "<strong>Good (35-36 points)</strong><br><br>Content: 14/20, Style: 14/20, Strategy: 7/10<br><br>A competent reply speech that meets basic standards.",
+      "32-34": "<strong>Pass to Satisfactory (32-34 points)</strong><br><br>Content: 13/20, Style: 13/20, Strategy: 6.5/10<br><br>An adequate reply speech but with room for improvement.",
+      "30-31": "<strong>Improvement Needed (30-31 points)</strong><br><br>Content: 12/20, Style: 12/20, Strategy: 6/10<br><br>A reply speech that requires significant work."
+    },
+    "panel": {
+      "prompt": "Please enter a valid score between 1 and 10.",
+      "10": "<b>Exceptional</b><br><br><strong>Role:</strong> Extraordinarily well-adapted to the expected role; evident awareness and response to the needs of the head judge and the room.<br><br><strong>Contribution:</strong> Extremely useful and insightful contributions in the deliberation; offers perspectives and arguments that significantly enrich and improve the quality of the debate and the final decision.<br><br><strong>Communication:</strong> Exceptionally clear, concise, and respectful communication; demonstrates active listening and an outstanding ability to build on the ideas of others, fostering an environment of collaboration and intellectual rigor.",
+      "9": "<b>Excellent</b><br><br><strong>Role:</strong> Very well-adapted to the expected role; demonstrates a strong awareness of the needs of the head judge and the room.<br><br><strong>Contribution:</strong> Very useful and insightful contributions; consistently offers perspectives that improve the quality of the deliberation.<br><br><strong>Communication:</strong> Very clear and effective communication; actively participates and contributes to a constructive dialogue.",
+      "8": "<b>Very Good</b><br><br><strong>Role:</strong> Well-adapted to the expected role; generally aware of the needs of the head judge and the room.<br><br><strong>Contribution:</strong> Useful contributions that frequently aid the deliberation; occasionally presents arguments that refine the understanding of the debate.<br><br><strong>Communication:</strong> Clear and mostly effective communication; good level of participation and collaboration.",
+      "7": "<b>Good</b><br><br><strong>Role:</strong> Adequately adapted to the role, with some minor inconsistencies; demonstrates a basic awareness of the head judge's needs.<br><br><strong>Contribution:</strong> Generally relevant contributions, although they do not always significantly impact the deliberation; may offer good ideas, but they need further development.<br><br><strong>Communication:</strong> Generally clear communication, but there may be moments of ambiguity; participates appropriately, but could be more proactive.",
+      "6": "<b>Above Average</b><br><br><strong>Role:</strong> Partial adaptation to the role; sometimes does not respond to the needs of the head judge or the deliberation.<br><br><strong>Contribution:</strong> Some contributions are useful, but others may be irrelevant or repetitive; has the potential to contribute more effectively.<br><br><strong>Communication:</strong> Communication is functional, but sometimes lacks clarity or conciseness; participation is inconsistent.",
+      "5": "<b>Average</b><br><br><strong>Role:</strong> Minimal adaptation to the expected role; often out of sync with the head judge's needs.<br><br><strong>Contribution:</strong> Contributions are sporadic and rarely constructively influence the deliberation; the ideas presented are often superficial.<br><br><strong>Communication:</strong> Communication is often unclear or difficult to follow; participation is passive or disruptive.",
+      "4": "<b>Below Average</b><br><br><strong>Role:</strong> Poor adaptation to the role; demonstrates little or no understanding of what is required in the deliberation.<br><br><strong>Contribution:</strong> Contributions are mostly irrelevant or counterproductive; does not help to advance the deliberation.<br><br><strong>Communication:</strong> Communication is consistently unclear; participation is minimal or non-existent.",
+      "3": "<b>Poor</b><br><br><strong>Role:</strong> Very poor adaptation to the role; actions go against the needs of a productive deliberation.<br><br><strong>Contribution:</strong> Contributions, if any, are detrimental to the deliberation; introduces confusion or incorrect information.<br><br><strong>Communication:</strong> Communication is confusing and obstructs dialogue; participation is negative.",
+      "2": "<b>Very Poor</b><br><br><strong>Role:</strong> No adaptation to the role; actively undermines the deliberation process.<br><br><strong>Contribution:</strong> No constructive contributions; their presence is an obstacle to reaching a decision.<br><br><strong>Communication:</strong> Communication is non-existent or totally ineffective; does not participate or participation is destructive.",
+      "1": "<b>Deplorable</b><br><br><strong>Role:</strong> Shows contempt for the role and responsibilities of a panelist; their behavior is completely inappropriate.<br><br><strong>Contribution:</strong> Any intervention is actively harmful, showing a total disinterest in the adjudication process.<br><br><strong>Communication:</strong> Refuses to communicate or does so in a way that prevents any form of deliberation."
+    }
+  }
+} 

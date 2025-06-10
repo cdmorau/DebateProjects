@@ -1,473 +1,514 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="utf-8">
-  <title>Emparejamientos Dinámicos</title>
-  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-  <link rel="stylesheet" href="https://unpkg.com/modern-css-reset/dist/reset.min.css" />
-  <style>
-    :root {
-      --primary-color: #2563eb;
-      --primary-hover: #1d4ed8;
-      --danger-color: #dc2626;
-      --danger-hover: #b91c1c;
-      --success-color: #16a34a;
-      --success-hover: #15803d;
-      --background-color: #f1f5f9;
-      --card-background: #ffffff;
-      --border-color: #e2e8f0;
-      --text-color: #1e293b;
-      --text-muted: #64748b;
-    }
-
-    body { 
-      font-family: 'Inter', system-ui, -apple-system, sans-serif;
-      margin: 0;
-      padding: 2rem;
-      background: var(--background-color);
-      color: var(--text-color);
-      line-height: 1.5;
-    }
-
-    h1 { 
-      margin-bottom: 1.5rem;
-      color: var(--text-color);
-      font-size: 2rem;
-      font-weight: 700;
-    }
-
-    h2 { 
-      margin: 1.5rem 0 1rem;
-      color: var(--primary-color);
-      font-size: 1.5rem;
-      font-weight: 600;
-    }
-
-    .boton {
-      padding: 0.75em 1.5em;
-      margin: 0.5em 0;
-      background: var(--primary-color);
-      color: white;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 500;
-      transition: all 0.2s ease;
-      font-size: 0.95rem;
-    }
-
-    .boton:hover {
-      background: var(--primary-hover);
-      transform: translateY(-1px);
-    }
-
-    .boton:active {
-      transform: translateY(0);
-    }
-
-    table {
-      background: var(--card-background);
-      border-collapse: separate;
-      border-spacing: 0;
-      margin-top: 1rem;
-      width: 100%;
-      border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    }
-
-    th, td {
-      padding: 0.75em 1em;
-      border: 1px solid var(--border-color);
-      text-align: left;
-    }
-
-    th {
-      background: #f8fafc;
-      font-weight: 600;
-      color: var(--text-color);
-    }
-
-    .flex {
-      display: flex;
-      align-items: flex-start;
-      gap: 2rem;
-      margin-bottom: 2rem;
-    }
-
-    .card {
-      background: var(--card-background);
-      border-radius: 12px;
-      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
-      padding: 1.5rem;
-      min-width: 280px;
-    }
-
-    #lista-participantes {
-      height: 40vh;
-      overflow-y: auto;
-      padding-right: 0.5rem;
-    }
-
-    .part-item {
-      display: flex;
-      align-items: center;
-      gap: 1em;
-      margin-bottom: 0.75em;
-      padding: 0.5em;
-      border-radius: 6px;
-      transition: background-color 0.2s ease;
-    }
-
-    .part-item:hover {
-      background-color: #f8fafc;
-    }
-
-    .tables-container {
-      margin-top: 2rem;
-    }
-
-    .table-section {
-      margin-bottom: 2rem;
-      background: var(--card-background);
-      padding: 1.5rem;
-      border-radius: 12px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    }
-
-    .table-section h3 {
-      color: var(--primary-color);
-      margin-bottom: 1rem;
-      font-size: 1.25rem;
-    }
-
-    .grupo-edicion {
-      margin-bottom: 1rem;
-      padding: 1.25rem;
-      background: #f8fafc;
-      border-radius: 8px;
-    }
-
-    .grupo-edicion h4 {
-      margin: 0 0 0.75rem 0;
-      color: var(--primary-color);
-    }
-
-    .grupo-edicion select {
-      padding: 0.5em;
-      margin: 0.2rem;
-      min-width: 120px;
-      border: 1px solid var(--border-color);
-      border-radius: 6px;
-      background-color: white;
-    }
-
-    .grupo-edicion .participantes {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 1.2rem 2rem;
-      margin-bottom: 1rem;
-    }
-
-    .participante {
-      background: #f1f5fa;
-      border: 1.5px solid #e2e8f0;
-      border-radius: 10px;
-      padding: 0.7em 1em 1em 1em;
-      display: flex;
-      flex-direction: column;
-      align-items: stretch;
-      min-width: 120px;
-      transition: box-shadow 0.2s;
-      box-shadow: 0 1px 2px rgba(30,41,59,0.04);
-    }
-
-    .participante:hover {
-      box-shadow: 0 4px 12px rgba(37,99,235,0.10);
-      border-color: #2563eb;
-    }
-
-    .participante label {
-      font-weight: 600;
-      color: #2563eb;
-      margin-bottom: 0.4em;
-      letter-spacing: 0.5px;
-    }
-
-    .selector-container select {
-      min-width: 100px;
-      padding: 0.5em;
-      border: 1px solid var(--border-color);
-      border-radius: 6px;
-      background-color: white;
-      font-size: 1em;
-    }
-
-    .contador-roles {
-      margin-top: 2px;
-      font-size: 0.8em;
-      color: #666;
-      min-height: 1.2em;
-      display: block;
-    }
-
-    .boton-eliminar {
-        background: var(--danger-color);
-        color: white;
-        border: none;
-        border-radius: 6px;
-        padding: 4px 12px;
-        cursor: pointer;
-        font-size: 14px;
-        line-height: 1;
-        transition: all 0.2s ease;
-    }
-
-    .boton-eliminar:hover {
-        background: var(--danger-hover);
-    }
-
-    input[type="text"] {
-      padding: 0.75em;
-      border: 1px solid var(--border-color);
-      border-radius: 6px;
-      width: 100%;
-      margin-bottom: 0.5rem;
-      font-size: 0.95rem;
-    }
-
-    input[type="text"]:focus {
-      outline: none;
-      border-color: var(--primary-color);
-      box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
-    }
-
-    #confirmar-emparejamientos {
-      background: var(--success-color);
-    }
-
-    #confirmar-emparejamientos:hover {
-      background: var(--success-hover);
-    }
-
-    #cancelar-emparejamientos {
-      background: var(--danger-color);
-    }
-
-    #cancelar-emparejamientos:hover {
-      background: var(--danger-hover);
-    }
-
-    /* Toggle Switch Styles */
-    .toggle-switch {
-      position: relative;
-      display: inline-block;
-      width: 50px;
-      height: 24px;
-    }
-
-    .toggle-switch input {
-      opacity: 0;
-      width: 0;
-      height: 0;
-    }
-
-    .toggle-slider {
-      position: absolute;
-      cursor: pointer;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-color: #ccc;
-      transition: .4s;
-      border-radius: 24px;
-    }
-
-    .toggle-slider:before {
-      position: absolute;
-      content: "";
-      height: 16px;
-      width: 16px;
-      left: 4px;
-      bottom: 4px;
-      background-color: white;
-      transition: .4s;
-      border-radius: 50%;
-    }
-
-    input:checked + .toggle-slider {
-      background-color: var(--success-color);
-    }
-
-    input:checked + .toggle-slider:before {
-      transform: translateX(26px);
-    }
-
-    .toggle-container {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    #procesar {
-      margin-left: 1rem;
-    }
-
-    .add-participant-form {
-      display: flex;
-      gap: 1rem;
-      align-items: center;
-      margin-top: 1rem;
-      padding: 1rem;
-      background: #f8fafc;
-      border-radius: 8px;
-    }
-
-    .add-participant-form input {
-      flex: 1;
-    }
-
-    .add-participant-form button {
-      white-space: nowrap;
-    }
-
-    .button-group {
-      display: flex;
-      gap: 1rem;
-      margin-bottom: 1.5rem;
-    }
-
-    /* Swap buttons para edición de grupos */
-    .swap-btn {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      border: none;
-      background: #e6f9ed;
-      color: #16a34a;
-      font-size: 1.5rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 2px 8px rgba(22,163,74,0.08);
-      cursor: pointer;
-      transition: background 0.2s, color 0.2s, box-shadow 0.2s;
-      margin: 0.2rem;
-    }
-    .swap-btn:hover {
-      background: #bbf7d0;
-      color: #15803d;
-      box-shadow: 0 4px 16px rgba(22,163,74,0.18);
-      transform: scale(1.08);
-    }
-    .grupo-grid {
-      margin: 1.5rem auto 1rem auto;
-      max-width: 700px;
-    }
-
-    .swap-btn-h {
-      width: 28px;
-      height: 28px;
-      min-width: 28px;
-      min-height: 28px;
-      font-size: 1.1rem;
-      padding: 0;
-      margin: 0.1rem;
-      box-shadow: 0 1px 4px rgba(22,163,74,0.08);
-    }
-
-    #grupos-container {
-      display: flex;
-      flex-direction: row;
-      gap: 1.2rem;
-      overflow-x: auto;
-      padding-bottom: 1rem;
-      scroll-snap-type: x mandatory;
-      max-width: 100vw;
-    }
-    .grupo-edicion {
-      min-width: 340px;
-      max-width: 420px;
-      flex: 0 0 auto;
-      margin-bottom: 0.5rem;
-      margin-right: 0.5rem;
-      scroll-snap-align: start;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualizador de Posiciones - Debate BP</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Emparejamientos Dinámicos</h1>
-
-  <div class="button-group">
-    <button class="boton" id="generar">Generar emparejamientos</button>
-  </div>
-
-  <div id="output">
-    <div id="emparejamientos-edicion" style="display: none;">
-      <h3>Editar Emparejamientos</h3>
-      <div id="grupos-container"></div>
-      <div style="margin-top: 1rem;">
-        <button class="boton" id="confirmar-emparejamientos" style="background: #28a745;">Confirmar Emparejamientos</button>
-        <button class="boton" id="cancelar-emparejamientos" style="background: #dc3545;">Cancelar</button>
-      </div>
+    <nav class="nav-bar">
+        <div class="nav-bar-left">
+            <div class="nav-menu">
+                <button class="nav-menu-button" aria-label="Menu">
+                    <div class="menu-icon-container">
+                        <svg width="18" height="12" viewBox="0 0 18 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M1 1h16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                            <path d="M1 6h16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                            <path d="M1 11h16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                </button>
+                <div class="nav-dropdown">
+                    <div class="nav-dropdown-item" id="nav-call-manager" data-i18n-key="mainMenu.callManagerButton">
+                        Gestor de Call
+                    </div>
+                    <div class="nav-dropdown-item" id="nav-speaks-feeds" data-i18n-key="mainMenu.speaksAndFeedsButton">
+                        Speaks & Feeds
+                    </div>
+                </div>
+            </div>
+            <div class="nav-bar-title" data-i18n-key="mainMenu.welcome">Debtools</div>
+        </div>
+        <div class="language-selector">
+            <button id="lang-es" class="lang-button active" data-lang="es">ES</button>
+            <button id="lang-en" class="lang-button" data-lang="en">EN</button>
+        </div>
+    </nav>
+    <div id="main-menu" class="flex-center-container">
+        <div class="content-wrapper max-width-600">
+            <h1 class="main-title" data-i18n-key="mainMenu.title">Bienvenido</h1>
+            <button id="go-call-manager" class="menu-button menu-button-primary max-width-400" data-i18n-key="mainMenu.callManagerButton">Gestor de Call</button>
+            <button id="go-calificaciones" class="menu-button menu-button-secondary max-width-400" data-i18n-key="mainMenu.speaksAndFeedsButton">Speaks & Feeds</button>
+            <button id="go-timer" class="menu-button menu-button-tertiary max-width-400" data-i18n-key="mainMenu.timerButton">Timer</button>
+        </div>
     </div>
-  </div>
+    <div id="calificaciones-tab" class="flex-center-container hidden">
+        <div class="content-wrapper max-width-900">
+            <h2 class="section-title" data-i18n-key="speaksAndFeeds.tabTitle">Speaks & Feeds</h2>
+            
+            <div class="form-section">
+                            <select id="table-selector" class="styled-select">
+                <option value="athenas" data-i18n-key="speaksAndFeeds.athenasTitle">Puntos de Orador</option>
+                <option value="wsdc" data-i18n-key="speaksAndFeeds.wsdcTitle">Puntos de Orador (WSDC)</option>
+                <option value="wsdcReply" data-i18n-key="speaksAndFeeds.wsdcReplyTitle">Discursos de Réplica (WSDC)</option>
+                <option value="feedback" data-i18n-key="speaksAndFeeds.chairFeedbackTitle">Feedback jueza principal</option>
+                <option value="panel" data-i18n-key="speaksAndFeeds.panelFeedbackTitle">Feedback panelista/trainee</option>
+            </select>
+            </div>
 
-  <div class="tables-container">
-    <div class="table-section">
-      <h3>Tabla de Participantes</h3>
-      <table id="tabla-participantes">
-        <thead>
-          <tr>
-            <th>Nombre</th>
-            <th>Disponible</th>
-            <th>AG</th>
-            <th>AO</th>
-            <th>BG</th>
-            <th>BO</th>
-            <th>Total</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-      <form id="form-participante" class="add-participant-form">
-        <input type="text" id="nuevo-nombre" placeholder="Nombre del nuevo participante" required>
-        <button class="boton" type="submit">Agregar Participante</button>
-      </form>
+                        <div id="athenas-section" class="table-section">
+                <div class="score-slider-container">
+                    <input type="range" id="athenas-score-calif" min="50" max="100" step="1" value="75" class="score-slider athenas-slider">
+                    <div class="slider-labels">
+                        <span class="slider-label-start">50</span>
+                        <span class="slider-label-mid">75</span>
+                        <span class="slider-label-end">100</span>
+                    </div>
+                    <div class="score-display">
+                        <span id="athenas-display-calif" class="score-number">75</span>
+                    </div>
+                </div>
+                <div id="athenas-description-calif" class="description-box min-height-120"></div>
+            </div>
+
+            <div id="wsdc-section" class="table-section hidden">
+                <div class="score-slider-container">
+                    <input type="range" id="wsdc-score-calif" min="60" max="80" step="1" value="70" class="score-slider wsdc-slider">
+                    <div class="slider-labels">
+                        <span class="slider-label-start">60</span>
+                        <span class="slider-label-mid">70</span>
+                        <span class="slider-label-end">80</span>
+                    </div>
+                    <div class="score-display">
+                        <span id="wsdc-display-calif" class="score-number">70</span>
+                    </div>
+                </div>
+                <div id="wsdc-description-calif" class="description-box min-height-120"></div>
+            </div>
+
+            <div id="wsdcReply-section" class="table-section hidden">
+                <div class="score-slider-container">
+                    <input type="range" id="wsdc-reply-score-calif" min="30" max="40" step="1" value="35" class="score-slider wsdc-reply-slider">
+                    <div class="slider-labels">
+                        <span class="slider-label-start">30</span>
+                        <span class="slider-label-mid">35</span>
+                        <span class="slider-label-end">40</span>
+                    </div>
+                    <div class="score-display">
+                        <span id="wsdc-reply-display-calif" class="score-number">35</span>
+                    </div>
+                </div>
+                <div id="wsdc-reply-description-calif" class="description-box min-height-120"></div>
+            </div>
+
+            <div id="feedback-section" class="table-section hidden">
+                            <div class="score-slider-container">
+                <input type="range" id="feedback-score-calif" min="1" max="10" step="1" value="5" class="score-slider feedback-slider">
+                <div class="slider-labels">
+                    <span class="slider-label-start">1</span>
+                    <span class="slider-label-mid">5</span>
+                    <span class="slider-label-end">10</span>
+                </div>
+                <div class="score-display">
+                    <span id="feedback-display-calif" class="score-number">5</span>
+                </div>
+            </div>
+                <div id="feedback-description-calif" class="description-box min-height-150"></div>
+            </div>
+
+            <div id="panel-section" class="table-section hidden">
+                            <div class="score-slider-container">
+                <input type="range" id="panel-score-calif" min="1" max="10" step="1" value="5" class="score-slider panel-slider">
+                <div class="slider-labels">
+                    <span class="slider-label-start">1</span>
+                    <span class="slider-label-mid">5</span>
+                    <span class="slider-label-end">10</span>
+                </div>
+                <div class="score-display">
+                    <span id="panel-display-calif" class="score-number">5</span>
+                </div>
+            </div>
+                <div id="panel-description-calif" class="description-box min-height-150"></div>
+            </div>
+
+            <button id="back-main-menu-calif" class="button-back" data-i18n-key="common.backToMenu">Volver al menú</button>
+        </div>
+    </div>
+    <div id="timer-tab" class="hidden">
+        <div class="container">
+            <div class="main-content">
+                <div class="visualization">
+                    <!-- Timer Section Redesigned -->
+                    <div class="timer-section-new">
+                        <div class="timer-container-compact">
+                            <div class="timer-header-compact">
+                                <h3 class="timer-title-compact">Timer para Debate</h3>
+                                <div class="timer-global-controls">
+                                    <button class="control-btn test-btn" title="Probar campanada">Test</button>
+                                    <button class="control-btn mute-btn" title="Silenciar">Audio</button>
+                                </div>
+                            </div>
+                            
+                            <div class="time-buttons-bar">
+                                <button class="time-btn" data-minutes="4" data-seconds="15">4</button>
+                                <button class="time-btn" data-minutes="7" data-seconds="15">7</button>
+                                <button class="time-btn" data-minutes="8" data-seconds="15">8</button>
+                                <button class="time-btn" data-minutes="15" data-seconds="15">15</button>
+                                <button class="time-btn" data-minutes="20" data-seconds="15">20</button>
+                            </div>
+                            
+                            <div class="timers-container">
+                                <div class="timers-grid" id="timers-grid">
+                                    <!-- Aquí se agregarán los timers -->
+                                </div>
+                                <button class="add-timer-compact" title="Agregar Timer">+ Timer</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button id="back-main-menu-timer" class="button-back" data-i18n-key="common.backToMenu">Volver al menú</button>
+        </div>
+    </div>
+    <div id="main-tab" class="hidden">
+        <div class="container">
+            <div class="main-content">
+                <div class="visualization">
+                    <!-- Mobile Judges Section -->
+                    <div class="mobile-judges-section">
+                        <div class="white-box judges-box">
+                            <h3 class="box-title" data-i18n-key="callManager.judges">Jueces</h3>
+                            <div class="judges-carousel-container">
+                                <div class="carousel-arrow prev">‹</div>
+                            <div class="judges-grid" id="judges-grid">
+                            </div>
+                                <div class="carousel-arrow next">›</div>
+                            </div>
+                            <div class="judges-grid judges-grid-center">
+                                <div class="add-judge-button"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Mobile Comparison Section -->
+                    <div class="mobile-comparison-section">
+                        <div class="white-box discussion-box">
+                            <h3 class="box-title" data-i18n-key="callManager.discussionOrder">Orden De Discusión</h3>
+                            <div class="comparison-section">
+                                <div class="comparison-grid" id="comparison-grid">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+        <div id="athenas-tab" class="hidden">
+        <div class="athenas-tab-section max-width-600">
+            <h2 style="margin-top:0;" data-i18n-key="speaksAndFeeds.athenasTab">Puntos de Orador</h2>
+            <div class="score-slider-container">
+                <input type="range" id="athenas-score" min="50" max="100" step="1" value="75" class="score-slider athenas-slider">
+                <div class="slider-labels">
+                    <span class="slider-label-start">50</span>
+                    <span class="slider-label-mid">75</span>
+                    <span class="slider-label-end">100</span>
+                </div>
+                <div class="score-display">
+                    <span id="athenas-display" class="score-number">75</span>
+                </div>
+            </div>
+            <div id="athenas-description" class="description-box min-height-80"></div>
+            <button id="back-main-tab" class="button-back-alt button-back-blue" data-i18n-key="common.back">Volver</button>
+        </div>
     </div>
 
-    <div class="table-section">
-      <h3>Enfrentamientos Pasados</h3>
-      <table id="tabla-emparejamientos">
-        <thead>
-          <tr>
-            <th>AG</th>
-            <th>AO</th>
-            <th>BG</th>
-            <th>BO</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
+    <div id="wsdc-tab" class="hidden">
+        <div class="athenas-tab-section max-width-600">
+            <h2 style="margin-top:0;" data-i18n-key="speaksAndFeeds.wsdcTab">Puntos de Orador (WSDC)</h2>
+            <div class="score-slider-container">
+                <input type="range" id="wsdc-score" min="60" max="80" step="1" value="70" class="score-slider wsdc-slider">
+                <div class="slider-labels">
+                    <span class="slider-label-start">60</span>
+                    <span class="slider-label-mid">70</span>
+                    <span class="slider-label-end">80</span>
+                </div>
+                <div class="score-display">
+                    <span id="wsdc-display" class="score-number">70</span>
+                </div>
+            </div>
+            <div id="wsdc-description" class="description-box min-height-80"></div>
+            <button id="back-main-tab-wsdc" class="button-back-alt button-back-blue" data-i18n-key="common.back">Volver</button>
+        </div>
     </div>
 
-    <div class="table-section">
-      <h3>Conteo de Enfrentamientos</h3>
-      <table id="tabla-enfrentamientos">
-        <thead>
-          <tr>
-            <th>Participante 1</th>
-            <th>Participante 2</th>
-            <th>Veces enfrentados</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
+    <div id="wsdc-reply-tab" class="hidden">
+        <div class="athenas-tab-section max-width-600">
+            <h2 style="margin-top:0;" data-i18n-key="speaksAndFeeds.wsdcReplyTab">Discursos de Réplica (WSDC)</h2>
+            <div class="score-slider-container">
+                <input type="range" id="wsdc-reply-score" min="30" max="40" step="1" value="35" class="score-slider wsdc-reply-slider">
+                <div class="slider-labels">
+                    <span class="slider-label-start">30</span>
+                    <span class="slider-label-mid">35</span>
+                    <span class="slider-label-end">40</span>
+                </div>
+                <div class="score-display">
+                    <span id="wsdc-reply-display" class="score-number">35</span>
+                </div>
+            </div>
+            <div id="wsdc-reply-description" class="description-box min-height-80"></div>
+            <button id="back-main-tab-wsdc-reply" class="button-back-alt button-back-blue" data-i18n-key="common.back">Volver</button>
+        </div>
     </div>
-  </div>
 
-  <script src="app.js"></script>
+    <div id="feedback-tab" class="hidden">
+        <div class="athenas-tab-section" style="max-width: 700px;">
+            <h2 style="margin-top:0;" data-i18n-key="speaksAndFeeds.chairFeedbackTab">Feedback a jueza principal</h2>
+                    <div class="score-slider-container">
+            <input type="range" id="feedback-score" min="1" max="10" step="1" value="5" class="score-slider feedback-slider">
+            <div class="slider-labels">
+                <span class="slider-label-start">1</span>
+                <span class="slider-label-mid">5</span>
+                <span class="slider-label-end">10</span>
+            </div>
+            <div class="score-display">
+                <span id="feedback-display" class="score-number">5</span>
+            </div>
+        </div>
+            <div id="feedback-description" class="description-box min-height-120"></div>
+            <button id="back-main-tab-feedback" class="button-back-alt button-back-green" data-i18n-key="common.back">Volver</button>
+        </div>
+    </div>
+
+    <div id="panel-tab" class="hidden">
+        <div class="athenas-tab-section" style="max-width: 700px;">
+            <h2 style="margin-top:0;" data-i18n-key="speaksAndFeeds.panelFeedbackTab">Feedback a panelista/trainee</h2>
+                    <div class="score-slider-container">
+            <input type="range" id="panel-score" min="1" max="10" step="1" value="5" class="score-slider panel-slider">
+            <div class="slider-labels">
+                <span class="slider-label-start">1</span>
+                <span class="slider-label-mid">5</span>
+                <span class="slider-label-end">10</span>
+            </div>
+            <div class="score-display">
+                <span id="panel-display" class="score-number">5</span>
+            </div>
+        </div>
+            <div id="panel-description" class="description-box min-height-120"></div>
+            <button id="back-main-tab-panel" class="button-back-alt button-back-purple" data-i18n-key="common.back">Volver</button>
+        </div>
+    </div>
+
+    <template id="judge-card-template">
+        <div class="judge-card">
+            <div class="judge-header">
+                <div class="judge-info">
+                    <div class="judge-name">
+                        <span class="judge-role"></span>
+                        <span class="name-text"></span>
+                    </div>
+                </div>
+                <button class="remove-judge">×</button>
+            </div>
+            <div class="position-grid">
+            </div>
+            <div class="judge-switch">
+                <span class="switch-label-on" data-i18n-key="common.on">ON</span>
+                <label class="switch">
+                    <input type="checkbox">
+                    <span class="slider"></span>
+                </label>
+                <span class="switch-label-off" data-i18n-key="common.off">OFF</span>
+            </div>
+        </div>
+    </template>
+
+    <template id="comparison-item-template">
+        <div class="comparison-item collapsed">
+            <div class="comparison-header">
+                <div class="comparison-teams">
+                    <span class="team-1-name"></span>
+                    <span class="votes"></span>
+                    <span class="team-2-name"></span>
+                    <span class="minority-indicator"></span>
+                </div>
+                <button class="toggle-details collapsed" data-i18n-key="common.info">Inf</button>
+            </div>
+            <div class="all-votes">
+                <div class="votes-by-team-columns">
+                    <div class="votes-column team-1">
+                        <div class="team-name"></div>
+                        <div class="judges-votes"></div>
+                    </div>
+                    <div class="votes-column team-2">
+                        <div class="team-name"></div>
+                        <div class="judges-votes"></div>
+                    </div>
+            </div>
+        </div>
+    </div>
+    </template>
+
+    <template id="timer-card-template">
+        <div class="timer-card-compact">
+            <div class="timer-card-header">
+                <span class="timer-name-compact" contenteditable="true">Timer 1</span>
+                <div class="timer-status-indicator"></div>
+                <button class="remove-timer-compact">×</button>
+            </div>
+            
+            <div class="timer-display-compact">
+                <div class="time-display-large">
+                    <div class="time-group">
+                        <button class="time-arrow-compact up" data-field="minutes" data-action="increment">▲</button>
+                        <span class="time-number minutes">07</span>
+                        <button class="time-arrow-compact down" data-field="minutes" data-action="decrement">▼</button>
+                    </div>
+                    <span class="time-separator">:</span>
+                    <div class="time-group">
+                        <button class="time-arrow-compact up" data-field="seconds" data-action="increment">▲</button>
+                        <span class="time-number seconds">15</span>
+                        <button class="time-arrow-compact down" data-field="seconds" data-action="decrement">▼</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="timer-controls-compact">
+                <button class="timer-btn-compact mode-toggle" title="Alternar Timer/Cronómetro" data-mode="timer">DESC</button>
+                <button class="timer-btn-compact play-pause" title="Play/Pause">▶</button>
+                <button class="timer-btn-compact reset" title="Reset"></button>
+                <button class="timer-btn-compact bell-toggle active" title="Activar/Desactivar campanadas">🔔</button>
+            </div>
+            
+
+            
+            <!-- Hidden inputs for compatibility -->
+            <div class="timer-settings" style="display: none;">
+                <input type="number" class="time-input minutes-input" min="0" max="59" value="7">
+                <input type="number" class="time-input seconds-input" min="0" max="59" value="15">
+            </div>
+        </div>
+    </template>
+
+    <!-- Mobile Tab Navigation -->
+    <div class="mobile-tabs">
+        <div class="mobile-tabs-container">
+            <button class="mobile-tab-button active" data-tab="judges">
+                <div class="mobile-tab-icon">👥</div>
+                <span data-i18n-key="callManager.judges">Jueces</span>
+            </button>
+            <button class="mobile-tab-button" data-tab="discussion">
+                <div class="mobile-tab-icon">📋</div>
+                <span data-i18n-key="callManager.discussion">Discusión</span>
+            </button>
+        </div>
+    </div>
+
+    <script type="module" src="js/main.js"></script>
+    <script>
+        // Add menu toggle functionality
+        document.querySelector('.nav-menu-button').addEventListener('click', function(event) {
+            event.stopPropagation();
+            document.querySelector('.nav-menu').classList.toggle('active');
+        });
+
+        // Close menu when clicking outside
+        document.addEventListener('click', function(event) {
+            const menu = document.querySelector('.nav-menu');
+            if (!menu.contains(event.target)) {
+                menu.classList.remove('active');
+            }
+        });
+
+        // Add navigation functionality for Debtools title
+        document.querySelector('.nav-bar-title').addEventListener('click', function() {
+            // Hide all tabs and show main menu
+            document.getElementById('main-tab').classList.add('hidden');
+            document.getElementById('calificaciones-tab').classList.add('hidden');
+            document.getElementById('athenas-tab').classList.add('hidden');
+            document.getElementById('wsdc-tab').classList.add('hidden');
+            document.getElementById('wsdc-reply-tab').classList.add('hidden');
+            document.getElementById('feedback-tab').classList.add('hidden');
+            document.getElementById('panel-tab').classList.add('hidden');
+            document.getElementById('main-menu').classList.remove('hidden');
+            
+            // Hide mobile tabs
+            const mobileTabs = document.querySelector('.mobile-tabs');
+            const body = document.body;
+            mobileTabs?.classList.remove('show');
+            body.classList.remove('show-mobile-tabs');
+            
+            // Remove active state from nav items
+            document.querySelectorAll('.nav-dropdown-item').forEach(item => item.classList.remove('active'));
+            
+            // Close nav menu if open
+            document.querySelector('.nav-menu').classList.remove('active');
+        });
+
+        // Add navigation functionality for nav menu
+        document.getElementById('nav-call-manager').addEventListener('click', function() {
+            document.getElementById('main-menu').classList.add('hidden');
+            document.getElementById('calificaciones-tab').classList.add('hidden');
+            document.getElementById('main-tab').classList.remove('hidden');
+            document.querySelector('.nav-menu').classList.remove('active');
+            
+            // Update mobile tabs visibility
+            const mobileTabs = document.querySelector('.mobile-tabs');
+            const body = document.body;
+            mobileTabs?.classList.add('show');
+            body.classList.add('show-mobile-tabs');
+            
+            // Update active state
+            document.querySelectorAll('.nav-dropdown-item').forEach(item => item.classList.remove('active'));
+            this.classList.add('active');
+        });
+
+        document.getElementById('nav-speaks-feeds').addEventListener('click', function() {
+            document.getElementById('main-menu').classList.add('hidden');
+            document.getElementById('main-tab').classList.add('hidden');
+            document.getElementById('calificaciones-tab').classList.remove('hidden');
+            document.querySelector('.nav-menu').classList.remove('active');
+            
+            // Update mobile tabs visibility
+            const mobileTabs = document.querySelector('.mobile-tabs');
+            const body = document.body;
+            mobileTabs?.classList.remove('show');
+            body.classList.remove('show-mobile-tabs');
+            
+            // Update active state
+            document.querySelectorAll('.nav-dropdown-item').forEach(item => item.classList.remove('active'));
+            this.classList.add('active');
+        });
+
+        // Mobile Tab Navigation
+        function switchMobileTab(tabName) {
+            const judgesSection = document.querySelector('.mobile-judges-section');
+            const comparisonSection = document.querySelector('.mobile-comparison-section');
+            const tabButtons = document.querySelectorAll('.mobile-tab-button');
+            
+            // Remove active class from all buttons
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            
+            if (tabName === 'judges') {
+                judgesSection.classList.remove('hidden');
+                comparisonSection.classList.remove('active');
+                document.querySelector('[data-tab="judges"]').classList.add('active');
+            } else if (tabName === 'discussion') {
+                judgesSection.classList.add('hidden');
+                comparisonSection.classList.add('active');
+                document.querySelector('[data-tab="discussion"]').classList.add('active');
+            }
+        }
+
+        // Add event listeners for mobile tabs
+        document.querySelectorAll('.mobile-tab-button').forEach(button => {
+            button.addEventListener('click', function() {
+                const tabName = this.getAttribute('data-tab');
+                switchMobileTab(tabName);
+            });
+        });
+    </script>
 </body>
 </html>

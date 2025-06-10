@@ -1,0 +1,138 @@
+{
+  "mainMenu": {
+    "title": "Bienvenido",
+    "callManagerButton": "Gestor de Call",
+    "speaksAndFeedsButton": "Speaks & Feeds",
+    "timerButton": "Timer"
+  },
+  "common": {
+    "back": "Hide",
+    "backToMenu": "Volver al menú",
+    "score_50_100": "Puntaje (50-100):",
+    "score_1_10": "Puntaje (1-10):",
+    "on": "ON",
+    "off": "OFF",
+    "info": "Inf"
+  },
+  "roles": {
+    "principal": "Juez Principal",
+    "principal_short": "(C)",
+    "panelista": "Panelista",
+    "panelista_short": "(P)",
+    "trainee": "Trainee",
+    "trainee_short": "(T)",
+    "principal_selector": "Principal (C)",
+    "panelista_selector": "Panelista (P)",
+    "trainee_selector": "Trainee (T)"
+  },
+  "teams": {
+    "ag": "AG",
+    "ao": "AO",
+    "bg": "BG",
+    "bo": "BO"
+  },
+  "speaksAndFeeds": {
+    "tabTitle": "Speaks & Feeds",
+    "athenasTitle": "Puntos de Orador",
+    "chairFeedbackTitle": "Feedback jueza principal",
+    "panelFeedbackTitle": "Feedback panelista/trainee",
+    "wsdcTitle": "Puntos de Orador (WSDC)",
+    "wsdcReplyTitle": "Discursos de Réplica (WSDC)",
+    "athenasTab": "Puntos de Orador",
+    "chairFeedbackTab": "Feedback a jueza principal",
+    "panelFeedbackTab": "Feedback a panelista/trainee",
+    "wsdcTab": "Puntos de Orador (WSDC)",
+    "wsdcReplyTab": "Discursos de Réplica (WSDC)"
+  },
+  "callManager": {
+    "discussionOrder": "Orden De Discusión",
+    "addJudge": "Añadir Juez",
+    "principalInMinority": "(C) en minoría",
+    "newJudgeName": "Nuevo Juez",
+    "judges": "Jueces",
+    "discussion": "Discusión",
+    "defaultPrincipalName": "Juez Principal",
+    "defaultPanelistName": "Panelista"
+  },
+  "alerts": {
+    "cannotDeletePrincipal": "No se puede borrar al juez principal.",
+    "principalExists": "Ya existe un juez principal. Por favor, cambie el rol del juez principal actual antes de asignar uno nuevo."
+  },
+  "tooltips": {
+    "cannotDeletePrincipal": "No se puede borrar al principal"
+  },
+  "timer": {
+    "title": "Timers",
+    "addTimer": "Agregar Timer",
+    "start": "Iniciar",
+    "pause": "Pausar",
+    "reset": "Reiniciar",
+    "defaultName": "Timer 1"
+  },
+  "speaks": {
+    "athenas": {
+      "prompt": "Ingrese un puntaje válido entre 50 y 100.",
+      "95-100": "<strong>Rango: 95-100 puntos</strong><br><br><strong>Excelencia:</strong> Probablemente uno de los mejores discursos de debate presentado en la historia.<br><br><strong>Refutación:</strong> Es increíblemente difícil pensar en respuestas satisfactorias para cualquiera de los argumentos presentados.<br><br><strong>Convincencia:</strong> Argumentos perfectos y totalmente convincentes.",
+      "92-94": "<strong>Rango: 92-94 puntos</strong><br><br><strong>Calidad:</strong> Un discurso increíble, indudablemente uno de los mejores que el panel ha visto jamás.<br><br><strong>Efectividad:</strong> Se involucra de forma <b>increíblemente</b> efectiva con los principales temas del debate, y presenta argumentos excepcionales que necesitan respuestas brillantes para ser vencidos.<br><br><strong>Defectos:</strong> No hay errores o defectos significativos en el discurso.",
+      "89-91": "<strong>Rango: 89-91 puntos</strong><br><br><strong>Brillantez:</strong> Argumentos brillantes que se involucran de forma muy efectiva con los principales temas del debate.<br><br><strong>Explicación:</strong> Los argumentos son significativamente bien explicados y ejemplificados, y requieren respuestas extremadamente sofisticadas para ser derrotados.<br><br><strong>Problemas:</strong> Únicamente hay problemas menores, pero no afectan la fortaleza de los argumentos presentados.",
+      "86-88": "<strong>Rango: 86-88 puntos</strong><br><br><strong>Involucramiento:</strong> Los argumentos se involucran con los temas principales del debate y son sumamente convincentes.<br><br><strong>Lógica:</strong> No presentan fallas lógicas, y se requieren respuestas sofisticadas vencer los argumentos presentados.<br><br><strong>Fallas:</strong> Únicamente hay pequeñas fallas o errores mínimos, pero casi insignificantes en los argumentos.",
+      "83-85": "<strong>Rango: 83-85 puntos</strong><br><br><strong>Relevancia:</strong> Los argumentos se involucran con los principales temas del debate y son muy convincentes.<br><br><strong>Solidez:</strong> Los argumentos tienen explicaciones muy sólidas que requieren respuestas fuertes para ser vencidos.<br><br><strong>Respuesta:</strong> En pocas ocasiones fallan en responder de forma suficiente a argumentos bien construidos, pero las fallas en el discurso son muy limitadas.",
+      "79-82": "<strong>Rango: 79-82 puntos</strong><br><br><strong>Pertinencia:</strong> Los argumentos son relevantes, y se involucran con los principales temas del debate.<br><br><strong>Construcción:</strong> Los argumentos están bien construidos, carecen de fallas lógicas evidentes y están bien explicados.<br><br><strong>Vulnerabilidad:</strong> Los argumentos podrían llegar a ser vulnerables a buenas respuestas.",
+      "76-78": "<strong>Rango: 76-78 puntos</strong><br><br><strong>Relevancia:</strong> Los argumentos son mayoritariamente relevantes y se involucran con la mayoría de los temas principales del debate.<br><br><strong>Ocasionalidad:</strong> En ocasiones, pero no con frecuencia, los argumentos pueden tener fallas en algunas explicaciones; análisis simplista que es vulnerable a respuestas competentes.<br><br><strong>Claridad:</strong> Es claro, por lo que se puede seguir y por tanto darle crédito.",
+      "73-75": "<strong>Rango: 73-75 puntos</strong><br><br><strong>Pertinencia:</strong> Los argumentos son mayoritariamente relevantes, aunque pueden fallar en involucrarse de manera suficiente con uno o varios temas relevantes para el debate.<br><br><strong>Simplicidad:</strong> Los argumentos son lógicos, pero tienden a ser simplistas, con algunas fallas lógicas y son vulnerables a respuestas competentes.<br><br><strong>Comprensión:</strong> Es suficientemente claro como para poder seguirlo y darle crédito.",
+      "70-72": "<strong>Rango: 70-72 puntos</strong><br><br><strong>Frecuencia:</strong> Los argumentos son frecuentemente relevantes.<br><br><strong>Explicaciones:</strong> Los argumentos tienen algunas explicaciones, pero con regularidad hay fallas lógicas evidentes y/o significativas.<br><br><strong>Seguimiento:</strong> A veces es difícil de seguir y, por tanto, dar crédito a la totalidad del discurso.",
+      "67-69": "<strong>Rango: 67-69 puntos</strong><br><br><strong>Relevancia:</strong> Usualmente, los argumentos son relevantes.<br><br><strong>Explicaciones:</strong> Casi todos los argumentos tienen algunas explicaciones, pero estas tienen fallas lógicas evidentes y significativas.<br><br><strong>Claridad:</strong> A veces es claro, pero generalmente es difícil de seguir, y por tanto, es difícil dar crédito al material presentado.",
+      "64-66": "<strong>Rango: 64-66 puntos</strong><br><br><strong>Presencia:</strong> Algunos de los argumentos presentados son relevantes.<br><br><strong>Explicaciones:</strong> Los argumentos generalmente tienen pocas explicaciones, pero estas presentan fallas lógicas significativas.<br><br><strong>Comprensión:</strong> Frecuentemente es poco claro, lo que dificulta darle mucho crédito al discurso.",
+      "61-63": "<strong>Rango: 61-63 puntos</strong><br><br><strong>Ocasionalidad:</strong> Ocasionalmente se presentan algunas afirmaciones relevantes, y la mayoría son construidas y presentadas como argumentos.<br><br><strong>Presentación:</strong> Ocasionalmente, las afirmaciones se presentan como explicaciones, pero estas tienen fallas lógicas muy significativas.<br><br><strong>Confusión:</strong> Frecuentemente es poco claro y confuso, lo que dificulta darle mucho crédito al discurso.",
+      "58-60": "<strong>Rango: 58-60 puntos</strong><br><br><strong>Relevancia:</strong> Pocas veces las afirmaciones son relevantes.<br><br><strong>Construcción:</strong> Las afirmaciones no son construidas y presentadas como argumentos; puede haber algunos esfuerzos por presentar explicaciones, pero estas son muy vagas.<br><br><strong>Seguimiento:</strong> Es muy difícil de seguir, lo que dificulta darle mucho crédito al discurso.",
+      "55-57": "<strong>Rango: 55-57 puntos</strong><br><br><strong>Presentación:</strong> Se presentan un par de afirmaciones casi nunca relevantes.<br><br><strong>Razonamiento:</strong> Las afirmaciones no están construidas y presentadas como razonamientos, son más observaciones.<br><br><strong>Comprensión:</strong> El discurso es difícil de seguir casi en su totalidad, lo que dificulta darle mucho crédito.",
+      "50-54": "<strong>Rango: 50-54 puntos</strong><br><br><strong>Contenido:</strong> El contenido es irrelevante.<br><br><strong>Análisis:</strong> El contenido no presenta nada que sugiera análisis.<br><br><strong>Seguimiento:</strong> Es imposible seguir el discurso en su mayoría, lo que hace difícil darle crédito alguno."
+    },
+    "feedback": {
+      "prompt": "Ingrese un puntaje válido entre 1 y 10.",
+      "10": "<b>Excepcional</b><br><br><strong>Precisión:</strong> resultados extremadamente exactos, reflejados en una apreciación precisa y una evaluación meticulosa de las comparativas 'cerradas' entre los equipos; reconocimiento exhaustivo de todas las comparativas necesarias entre equipos.<br><br><strong>Razonamiento:</strong> justificación extremadamente bien sustentada, evidenciada a través de explicaciones presentadas sin fallas o casi sin fallas, que son profundas, perspicaces y matizadas; identificación explícita y profunda justificación de métricas utilizadas en ponderaciones, o criterios utilizados para juzgar.<br><br><strong>Discusión:</strong> presenta comentarios sumamente astutos y perspicaces sobre el debate; sumamente eficiente, demuestra una excelente capacidad para gestionar la deliberación y (cuando es apropiado), presenta feedback constructivo a los equipos.",
+      "9": "<b>Excelente</b><br><br><strong>Precisión:</strong> resultados muy exactos, reflejados en una apreciación correcta de las comparativas 'cerradas' entre los equipos; reconocimiento exhaustivo de la mayoría de comparativas necesarias entre equipos.<br><br><strong>Razonamiento:</strong> justificación muy bien sustentada, evidenciada a través de explicaciones claramente definidas que son profundas, perspicaces y matizadas; muy buenos esfuerzos para justificar métricas utilizadas en ponderaciones, o criterios utilizados para juzgar.<br><br><strong>Discusión:</strong> presenta comentarios muy perspicaces sobre el debate; consistentemente eficiente y demuestra buen juicio y efectividad para gestionar la deliberación.",
+      "8": "<b>Muy bien</b><br><br><strong>Precisión:</strong> resultados precisos, reflejados a través de un juicio en gran parte correcto sobre las comparaciones 'cerradas' entre equipos; reconocimiento detallado de la mayoría de comparativas necesarias entre equipos.<br><br><strong>Razonamiento:</strong> justificación presentada de forma comprensible, evidenciada a través de explicaciones bien definidas que son profundas y matizadas; muy de vez en cuando se presentan presunciones menores o sesgos personales al juzgar, o una falta de claridad menor en una o varias comparativas entre equipos; las métricas utilizadas para juzgar son presentadas, pero no justificadas de forma explícita.<br><br><strong>Discusión:</strong> en su mayoría, ofrece comentarios perspicaces del debate, en gran parte eficiente, efectiva al gestionar la deliberación.",
+      "7": "<b>Bien</b><br><br><strong>Precisión:</strong> resultados precisos, reflejados a través de posiciones generalmente correctas, pero potencialmente erróneas en relación a comparativas 'cerradas' entre equipos; reconocimiento cuidadoso de la mayoría de comparativas necesarias entre equipos.<br><br><strong>Razonamiento:</strong> justificación generalmente bien sustentada, evidenciada a través de explicaciones bien definidas; ocasionalmente se presentan presunciones menores, sesgos personales al juzgar, o falta de claridad menor en algunas comparativas entre equipos; las métricas utilizadas para juzgar son presentadas, pero no justificadas.<br><br><strong>Discusión:</strong> en la generalidad, presenta comentarios relevantes sobre el debate; eficiente pero con errores y fallas ocasionales, o problemas de priorización al gestionar la deliberación; demuestra un nivel apropiado de criterio (a veces limitado) al presentar feedback.",
+      "6": "<b>Sobre el promedio</b><br><br><strong>Precisión:</strong> resultados mayoritariamente correctos, aunque puede haber errores en relación a las comparativas 'cerradas' entre equipos.<br><br><strong>Razonamiento:</strong> buen intento por justificar la decisión; explicaciones que demuestran cierto grado de apreciación de los choques principales y la forma en la que son resueltos; ocasionales presunciones o sesgos personales al juzgar que incurren en fallas menores; falta de claridad en algunas comparativas entre equipos; no tan clara en las métricas usadas.<br><br><strong>Discusión:</strong> presenta algunos comentarios útiles sobre el debate; en cierta medida ineficiente y apenas satisfactoria gestión de la deliberación; demuestra fallas de entendimiento sobre los principales temas del debate durante el feedback.",
+      "5": "<b>Promedio</b><br><br><strong>Precisión:</strong> resultados generalmente precisos, correctos en la mayoría de choques 'evidentes'; puede fallar al juzgar comparativas 'cerradas' entre equipos, o puede descuidar una parte significativa, pero no fundamental, del debate.<br><br><strong>Razonamiento:</strong> cierto esfuerzo por justificar la decisión; las explicaciones demuestran cierto grado de apreciación sobre los choques y temas fundamentales; regularmente con presunciones o sesgos personales al juzgar, algunos de los cuales pueden afectar la calidad de la justificación; falta de claridad respecto a comparativas específicas entre equipos.<br><br><strong>Discusión:</strong> a veces ineficiente al gestionar la deliberación; en ocasiones, presenta problemas para comprender a una o más personas del panel sin una razón clara que ocasione dicha dificultad; demuestra una falta de entendimiento significativo sobre criterios de adjudicación y dificultad para presentar feedback.",
+      "4": "<b>Debajo del promedio</b><br><br><strong>Precisión:</strong> resultados inexactos, que sin embargo, reflejan una identificación adecuada de las posiciones 'evidentes'; los resultados reflejan una o varias interpretaciones incorrectas o respuestas defectuosas; cierta falta de capacidad para identificar argumentos o respuestas importantes.<br><br><strong>Razonamiento:</strong> esfuerzos insatisfactorios por justificar la decisión; las explicaciones demuestran cierta apreciación de los principales choques y temas del debate, pero no justificar los resultados presentados, frecuentes presunciones o sesgos personales al juzgar, algunos de los cuales afectan la calidad de la justificación; falta de claridad respecto a la mayoría de comparativas entre equipos.<br><br><strong>Discusión:</strong> incompetencia para gestionar la deliberación; tiene problemas para considerar o incluir en la discusión a todas las juezas del panel; hasta cierto punto inoportuna al presentar feedback.",
+      "3": "<b>Deficiente</b><br><br><strong>Precisión:</strong> resultados inexactos que fallan al identificar correctamente una o más posiciones 'evidentes'; los resultados reflejan múltiples interpretaciones erróneas del debate, algunas de las cuales pueden ser fundamentales; cierta incapacidad para seguir argumentos o respuestas importantes.<br><br><strong>Razonamiento:</strong> esfuerzos deficientes por justificar la decisión; las explicaciones demuestran una falta de apreciación de los choques y temas más importantes; frecuentes presunciones o sesgos personales al juzgar que pueden afectar los resultados de forma severa; falta de claridad respecto a la mayoría de comparativas entre equipos; las explicaciones son irrelevantes para comprender los resultados.<br><br><strong>Discusión:</strong> gran incompetencia para gestionar la deliberación; tiene problemas para considerar o incluir en la discusión a todas las juezas del panel; inoportuna y hasta cierto punto contraproducente al presentar feedback.",
+      "2": "<b>Muy deficiente</b><br><br><strong>Precisión:</strong> resultados significativamente inexactos que fallan completamente en identificar más de una de las posiciones 'evidentes'; los resultados reflejan varias interpretaciones erróneas que son centrales para el debate; evidente incapacidad para seguir argumentos y respuestas importantes.<br><br><strong>Razonamiento:</strong> poco o nulo esfuerzo por justificar la decisión; las explicaciones demuestran una falta de apreciación de los choques y temas más importantes; frecuentes presunciones o sesgos personales o percepciones irrelevantes que dañan la calidad de la justificación y los resultados de forma severa; falta de claridad respecto a la mayoría de comparativas entre equipos; las explicaciones son irrelevantes para comprender los resultados.<br><br><strong>Discusión:</strong> gran incompetencia para gestionar la deliberación; tiene problemas para considerar o incluir en la discusión a las juezas del panel; inoportuna y hasta cierto punto contraproducente al presentar feedback.",
+      "1": "<b>Deplorable</b><br><br><strong>Precisión:</strong> resultado completamente inexacto que falla totalmente al identificar una de las posiciones 'evidentes' de forma correcta; los resultados reflejan problemas de entendimiento fundamentales en relación al debate y al formato parlamentario británico; evidente incapacidad de seguir argumentos y respuestas importantes.<br><br><strong>Razonamiento:</strong> no hay un intento razonable de justificar la decisión; las explicaciones demuestran una falta de apreciación o una apreciación equivocada de los choques y temas principales del debate; constantemente hay presunciones o sesgos personales que dañan significativamente la calidad de la justificación y afectan seriamente los resultados; las explicaciones son irrelevantes para comprender los resultados.<br><br><strong>Discusión:</strong> extrema incompetencia para gestionar la deliberación; tiene problemas para considerar o incluir en la discusión a las juezas del panel; inoportuna y muy contraproducente al presentar feedback."
+    },
+    "wsdc": {
+      "prompt": "Ingrese un puntaje válido entre 60 y 80.",
+      "80": "<strong>Excepcional (80 puntos)</strong><br><br>Contenido: 32/40, Estilo: 32/40, Estrategia: 16/20<br><br>Un discurso sobresaliente que establece el estándar más alto para el debate.",
+      "76-79": "<strong>Excelente (76-79 puntos)</strong><br><br>Contenido: 31/40, Estilo: 31/40, Estrategia: 15-16/20<br><br>Un discurso de muy alta calidad con argumentos sólidos y presentación ejemplar.",
+      "74-75": "<strong>Extremadamente Bueno (74-75 puntos)</strong><br><br>Contenido: 30/40, Estilo: 30/40, Estrategia: 15/20<br><br>Un discurso muy fuerte con excelente contenido y delivery.",
+      "71-73": "<strong>Muy Bueno (71-73 puntos)</strong><br><br>Contenido: 29/40, Estilo: 29/40, Estrategia: 14-15/20<br><br>Un discurso sólido con buenos argumentos y presentación efectiva.",
+      "70": "<strong>Bueno (70 puntos)</strong><br><br>Contenido: 28/40, Estilo: 28/40, Estrategia: 14/20<br><br>Un discurso competente que cumple con los estándares básicos.",
+      "67-69": "<strong>Satisfactorio (67-69 puntos)</strong><br><br>Contenido: 27/40, Estilo: 27/40, Estrategia: 13-14/20<br><br>Un discurso adecuado pero con espacio para mejora.",
+      "65-66": "<strong>Competente (65-66 puntos)</strong><br><br>Contenido: 26/40, Estilo: 26/40, Estrategia: 13/20<br><br>Un discurso básico que muestra comprensión del formato.",
+      "61-64": "<strong>Regular (61-64 puntos)</strong><br><br>Contenido: 25/40, Estilo: 25/40, Estrategia: 12-13/20<br><br>Un discurso que necesita desarrollo en varias áreas.",
+      "60": "<strong>Necesita Mejora (60 puntos)</strong><br><br>Contenido: 24/40, Estilo: 24/40, Estrategia: 12/20<br><br>Un discurso que requiere trabajo significativo en todas las áreas."
+    },
+    "wsdcReply": {
+      "prompt": "Ingrese un puntaje válido entre 30 y 40.",
+      "40": "<strong>Excepcional (40 puntos)</strong><br><br>Contenido: 16/20, Estilo: 16/20, Estrategia: 8/10<br><br>Un discurso de réplica sobresaliente que sintetiza brillantemente el debate.",
+      "37-39": "<strong>Muy Bueno a Excelente (37-39 puntos)</strong><br><br>Contenido: 15/20, Estilo: 15/20, Estrategia: 7.5/10<br><br>Un discurso de réplica de alta calidad con síntesis efectiva.",
+      "35-36": "<strong>Bueno (35-36 puntos)</strong><br><br>Contenido: 14/20, Estilo: 14/20, Estrategia: 7/10<br><br>Un discurso de réplica competente que cumple los estándares básicos.",
+      "32-34": "<strong>Regular a Satisfactorio (32-34 puntos)</strong><br><br>Contenido: 13/20, Estilo: 13/20, Estrategia: 6.5/10<br><br>Un discurso de réplica adecuado pero con espacio para mejora.",
+      "30-31": "<strong>Necesita Mejora (30-31 puntos)</strong><br><br>Contenido: 12/20, Estilo: 12/20, Estrategia: 6/10<br><br>Un discurso de réplica que requiere trabajo significativo."
+    },
+    "panel": {
+      "prompt": "Ingrese un puntaje válido entre 1 y 10.",
+      "10": "<b>Excepcional</b><br><br><strong>Rol:</strong> extraordinariamente bien adaptado al rol esperado; evidente consciencia y respuesta a las necesidades de la jueza principal y la sala.<br><br><strong>Contribución:</strong> aportes extremadamente útiles y perspicaces en la deliberación; ofrece perspectivas y argumentos que enriquecen y mejoran significativamente la calidad del debate y la decisión final.<br><br><strong>Comunicación:</strong> comunicación excepcionalmente clara, concisa y respetuosa; demuestra una escucha activa y una capacidad sobresaliente para construir sobre las ideas de otros, fomentando un ambiente de colaboración y rigor intelectual.",
+      "9": "<b>Excelente</b><br><br><strong>Rol:</strong> muy bien adaptado al rol esperado; demuestra una fuerte consciencia de las necesidades de la jueza principal y la sala.<br><br><strong>Contribución:</strong> aportes muy útiles y perspicaces; consistentemente ofrece perspectivas que mejoran la calidad de la deliberación.<br><br><strong>Comunicación:</strong> comunicación muy clara y efectiva; participa activamente y contribuye a un diálogo constructivo.",
+      "8": "<b>Muy bien</b><br><br><strong>Rol:</strong> bien adaptado al rol esperado; generalmente consciente de las necesidades de la jueza principal y la sala.<br><br><strong>Contribución:</strong> aportes útiles que frecuentemente ayudan a la deliberación; ocasionalmente presenta argumentos que refinan la comprensión del debate.<br><br><strong>Comunicación:</strong> comunicación clara y mayormente efectiva; buen nivel de participación y colaboración.",
+      "7": "<b>Bien</b><br><br><strong>Rol:</strong> adecuadamente adaptado al rol, con algunas inconsistencias menores; demuestra una consciencia básica de las necesidades de la jueza principal.<br><br><strong>Contribución:</strong> aportes generalmente relevantes, aunque no siempre impactan significativamente en la deliberación; puede ofrecer buenas ideas, pero necesita mayor desarrollo.<br><br><strong>Comunicación:</strong> comunicación generalmente clara, pero puede haber momentos de ambigüedad; participa de forma adecuada, pero podría ser más proactivo/a.",
+      "6": "<b>Sobre el promedio</b><br><br><strong>Rol:</strong> adaptación parcial al rol; a veces no responde a las necesidades de la jueza principal o de la deliberación.<br><br><strong>Contribución:</strong> algunos aportes son útiles, pero otros pueden ser irrelevantes o repetitivos; tiene potencial para contribuir más efectivamente.<br><br><strong>Comunicación:</strong> la comunicación es funcional, pero a veces carece de claridad o concisión; la participación es inconsistente.",
+      "5": "<b>Promedio</b><br><br><strong>Rol:</strong> adaptación mínima al rol esperado; a menudo no está sincronizado con las necesidades de la jueza principal.<br><br><strong>Contribución:</strong> los aportes son esporádicos y raramente influyen de manera constructiva en la deliberación; las ideas presentadas suelen ser superficiales.<br><br><strong>Comunicación:</strong> la comunicación es a menudo poco clara o difícil de seguir; la participación es pasiva o disruptiva.",
+      "4": "<b>Debajo del promedio</b><br><br><strong>Rol:</strong> pobre adaptación al rol; demuestra poca o ninguna comprensión de lo que se requiere en la deliberación.<br><br><strong>Contribución:</strong> los aportes son mayormente irrelevantes o contraproducentes; no ayuda a avanzar en la deliberación.<br><br><strong>Comunicación:</strong> la comunicación es consistentemente poco clara; la participación es mínima o nula.",
+      "3": "<b>Deficiente</b><br><br><strong>Rol:</strong> muy pobre adaptación al rol; sus acciones van en contra de las necesidades de una deliberación productiva.<br><br><strong>Contribución:</strong> los aportes, si los hay, son perjudiciales para la deliberación; introduce confusión o información incorrecta.<br><br><strong>Comunicación:</strong> la comunicación es confusa y obstruye el diálogo; la participación es negativa.",
+      "2": "<b>Muy deficiente</b><br><br><strong>Rol:</strong> nula adaptación al rol; activamente socava el proceso de deliberación.<br><br><strong>Contribución:</strong> no hay aportes constructivos; su presencia es un obstáculo para llegar a una decisión.<br><br><strong>Comunicación:</strong> la comunicación es inexistente o totalmente ineficaz; no participa o su participación es destructiva.",
+      "1": "<b>Deplorable</b><br><br><strong>Rol:</strong> muestra un desprecio por el rol y las responsabilidades de un panelista; su comportamiento es completamente inapropiado.<br><br><strong>Contribución:</strong> cualquier intervención es activamente dañina, mostrando un desinterés total en el proceso de adjudicación.<br><br><strong>Comunicación:</strong> se niega a comunicarse o lo hace de manera que impide cualquier forma de deliberación."
+    }
+  }
+} 
