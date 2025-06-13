@@ -41,8 +41,12 @@ function init() {
         addJudgeBtn.parentNode.replaceChild(newAddJudgeBtn, addJudgeBtn);
         newAddJudgeBtn.addEventListener('click', addGenericJudge);
     }
-    callManagerView.updateVisualization();
-    callManagerView.updateCarouselArrows();
+    
+    // Only update visualization if DOM elements are ready
+    if (callManagerView.isReady()) {
+        callManagerView.updateVisualization();
+        callManagerView.updateCarouselArrows();
+    }
 }
 
 function changeJudgeRole(judgeName, newRole) {
@@ -100,8 +104,11 @@ export function initCallManager() {
     // Update default judge names with translations
     updateDefaultJudgeNames(translate);
     
-    callManagerView.updateVisualization();
-    callManagerView.updateCarouselArrows();
+    // Only update visualization if DOM elements are ready
+    if (callManagerView.isReady()) {
+        callManagerView.updateVisualization();
+        callManagerView.updateCarouselArrows();
+    }
 
     subscribe(() => {
         callManagerView.updateVisualization();

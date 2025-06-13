@@ -41,8 +41,8 @@ async function loadTranslations(lang) {
             throw new Error(`Failed to load ${lang}.json`);
         }
         translations = await response.json();
-    } catch (error) {
-        console.error("Error loading translations:", error);
+            } catch (error) {
+            // Error loading translations
         // Fallback to Spanish if the selected language fails
         if (lang !== 'es') {
             await loadTranslations('es');

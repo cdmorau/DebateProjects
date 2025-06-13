@@ -7,14 +7,11 @@ function setupEventListeners() {
         { id: 'athenas-score-calif', descId: 'athenas-description-calif', displayId: 'athenas-display-calif', getter: speaksAndFeedsLogic.getAthenasDescription },
         { id: 'wsdc-score-calif', descId: 'wsdc-description-calif', displayId: 'wsdc-display-calif', getter: speaksAndFeedsLogic.getWsdcDescription },
         { id: 'wsdc-reply-score-calif', descId: 'wsdc-reply-description-calif', displayId: 'wsdc-reply-display-calif', getter: speaksAndFeedsLogic.getWsdcReplyDescription },
+        { id: 'demian-score-calif', descId: 'demian-description-calif', displayId: 'demian-display-calif', getter: speaksAndFeedsLogic.getDemianDescription },
+        { id: 'eva-score-calif', descId: 'eva-description-calif', displayId: 'eva-display-calif', getter: speaksAndFeedsLogic.getEvaDescription },
+        { id: 'eva-panelist-score-calif', descId: 'eva-panelist-description-calif', displayId: 'eva-panelist-display-calif', getter: speaksAndFeedsLogic.getEvaPanelistDescription },
         { id: 'feedback-score-calif', descId: 'feedback-description-calif', displayId: 'feedback-display-calif', getter: speaksAndFeedsLogic.getFeedbackDescription },
-        { id: 'panel-score-calif', descId: 'panel-description-calif', displayId: 'panel-display-calif', getter: speaksAndFeedsLogic.getPanelDescription },
-        // Elementos en las pestañas individuales
-        { id: 'athenas-score', descId: 'athenas-description', displayId: 'athenas-display', getter: speaksAndFeedsLogic.getAthenasDescription },
-        { id: 'wsdc-score', descId: 'wsdc-description', displayId: 'wsdc-display', getter: speaksAndFeedsLogic.getWsdcDescription },
-        { id: 'wsdc-reply-score', descId: 'wsdc-reply-description', displayId: 'wsdc-reply-display', getter: speaksAndFeedsLogic.getWsdcReplyDescription },
-        { id: 'feedback-score', descId: 'feedback-description', displayId: 'feedback-display', getter: speaksAndFeedsLogic.getFeedbackDescription },
-        { id: 'panel-score', descId: 'panel-description', displayId: 'panel-display', getter: speaksAndFeedsLogic.getPanelDescription }
+        { id: 'panel-score-calif', descId: 'panel-description-calif', displayId: 'panel-display-calif', getter: speaksAndFeedsLogic.getPanelDescription }
     ];
 
     inputs.forEach(({ id, descId, displayId, getter }) => {
@@ -64,6 +61,39 @@ function updateScoreColor(element, score, scoringSystem) {
         } else {
             element.classList.add('low');
         }
+    } else if (elementId.includes('demian')) {
+        // Demian scoring (50-100): 50-point range
+        if (score >= 95) {
+            element.classList.add('excellent');
+        } else if (score >= 85) {
+            element.classList.add('high');
+        } else if (score >= 70) {
+            element.classList.add('medium');
+        } else {
+            element.classList.add('low');
+        }
+    } else if (elementId.includes('eva-panelist')) {
+        // Eva Panelist scoring (1-10): 10-point range
+        if (score >= 9) {
+            element.classList.add('excellent');
+        } else if (score >= 7) {
+            element.classList.add('high');
+        } else if (score >= 5) {
+            element.classList.add('medium');
+        } else {
+            element.classList.add('low');
+        }
+    } else if (elementId.includes('eva')) {
+        // Eva scoring (1-10): 10-point range
+        if (score >= 9) {
+            element.classList.add('excellent');
+        } else if (score >= 7) {
+            element.classList.add('high');
+        } else if (score >= 5) {
+            element.classList.add('medium');
+        } else {
+            element.classList.add('low');
+        }
     } else if (elementId.includes('wsdc-reply')) {
         // WSDC Reply scoring (30-40): 10-point range
         if (score >= 39) {
@@ -106,6 +136,9 @@ function setupTableSelector() {
         athenas: document.getElementById('athenas-section'),
         wsdc: document.getElementById('wsdc-section'),
         wsdcReply: document.getElementById('wsdcReply-section'),
+        demian: document.getElementById('demian-section'),
+        eva: document.getElementById('eva-section'),
+        evaPanelist: document.getElementById('eva-panelist-section'),
         feedback: document.getElementById('feedback-section'),
         panel: document.getElementById('panel-section')
     };
@@ -127,13 +160,11 @@ function updateSpeaksAndFeedsView() {
         { id: 'athenas-score-calif', descId: 'athenas-description-calif', displayId: 'athenas-display-calif', getter: speaksAndFeedsLogic.getAthenasDescription },
         { id: 'wsdc-score-calif', descId: 'wsdc-description-calif', displayId: 'wsdc-display-calif', getter: speaksAndFeedsLogic.getWsdcDescription },
         { id: 'wsdc-reply-score-calif', descId: 'wsdc-reply-description-calif', displayId: 'wsdc-reply-display-calif', getter: speaksAndFeedsLogic.getWsdcReplyDescription },
+        { id: 'demian-score-calif', descId: 'demian-description-calif', displayId: 'demian-display-calif', getter: speaksAndFeedsLogic.getDemianDescription },
+        { id: 'eva-score-calif', descId: 'eva-description-calif', displayId: 'eva-display-calif', getter: speaksAndFeedsLogic.getEvaDescription },
+        { id: 'eva-panelist-score-calif', descId: 'eva-panelist-description-calif', displayId: 'eva-panelist-display-calif', getter: speaksAndFeedsLogic.getEvaPanelistDescription },
         { id: 'feedback-score-calif', descId: 'feedback-description-calif', displayId: 'feedback-display-calif', getter: speaksAndFeedsLogic.getFeedbackDescription },
-        { id: 'panel-score-calif', descId: 'panel-description-calif', displayId: 'panel-display-calif', getter: speaksAndFeedsLogic.getPanelDescription },
-        { id: 'athenas-score', descId: 'athenas-description', displayId: 'athenas-display', getter: speaksAndFeedsLogic.getAthenasDescription },
-        { id: 'wsdc-score', descId: 'wsdc-description', displayId: 'wsdc-display', getter: speaksAndFeedsLogic.getWsdcDescription },
-        { id: 'wsdc-reply-score', descId: 'wsdc-reply-description', displayId: 'wsdc-reply-display', getter: speaksAndFeedsLogic.getWsdcReplyDescription },
-        { id: 'feedback-score', descId: 'feedback-description', displayId: 'feedback-display', getter: speaksAndFeedsLogic.getFeedbackDescription },
-        { id: 'panel-score', descId: 'panel-description', displayId: 'panel-display', getter: speaksAndFeedsLogic.getPanelDescription }
+        { id: 'panel-score-calif', descId: 'panel-description-calif', displayId: 'panel-display-calif', getter: speaksAndFeedsLogic.getPanelDescription }
     ];
 
     inputs.forEach(({ id, descId, displayId, getter }) => {

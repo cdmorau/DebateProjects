@@ -1,0 +1,152 @@
+<div class="container">
+    <div class="main-content">
+        <div class="visualization">
+            <!-- Timer Section Redesigned -->
+            <div class="timer-section-new">
+                <div class="timers-container">
+                    <div class="timers-grid" id="timers-grid">
+                        <!-- Aquí se agregarán los timers -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <button class="toggle-add-section" title="Mostrar/Ocultar sección de agregar">
+        <span class="toggle-icon">+</span>
+    </button>
+    <div class="timer-footer hidden">
+        <div class="slider-group" data-value="7 min">
+            <input type="range" class="preset-slider minutes-slider" min="0" max="30" step="1" value="7">
+        </div>
+        <button class="add-timer-compact round" title="Agregar Timer">
+            <span class="add-text">Add</span>
+            <span class="preset-time">07:15</span>
+        </button>
+        <div class="slider-group" data-value="0 seg">
+            <input type="range" class="preset-slider seconds-slider" min="0" max="55" step="5" value="0">
+        </div>
+    </div>
+</div>
+
+<!-- Timer Card Template -->
+<template id="timer-card-template">
+    <div class="timer-card-compact">
+        <div class="timer-card-header">
+            <span class="timer-name-compact" contenteditable="true">Timer 1</span>
+            <div class="timer-status-indicator"></div>
+            <button class="fullscreen-timer-compact" title="Pantalla completa">⛶</button>
+            <button class="remove-timer-compact">×</button>
+        </div>
+        
+        <div class="timer-display-compact">
+            <div class="time-display-large">
+                <div class="time-group">
+                    <span class="time-number minutes">07</span>
+                </div>
+                <span class="time-separator">:</span>
+                <div class="time-group">
+                    <span class="time-number seconds">15</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="timer-controls-compact">
+            <button class="timer-btn-compact config" title="Configurar timer">⚙️</button>
+            <button class="timer-btn-compact mode-toggle" title="Alternar Timer/Cronómetro" data-mode="timer">DESC</button>
+            <button class="timer-btn-compact play-pause" title="Play/Pause">▶</button>
+            <button class="timer-btn-compact reset" title="Reset">⏹</button>
+            <button class="timer-btn-compact sound-test" title="Probar ding">
+                <img src="sounds/campana.png" alt="🔔" class="bell-icon">
+            </button>
+            <div class="sound-switch-container">
+                <label class="sound-switch">
+                    <input type="checkbox" class="sound-switch-input" checked>
+                    <span class="sound-switch-slider"></span>
+                </label>
+            </div>
+        </div>
+        
+        <div class="timer-config-overlay" style="display: none;">
+            <div class="timer-config-header">
+                <h3>⚙️ Configurar Timer</h3>
+                <button class="close-timer-config">×</button>
+            </div>
+            <div class="timer-config-content">
+                <!-- Timer Duration Section -->
+                <div class="config-section time-section">
+                    <h4>⏱️ Duración del Timer</h4>
+                    <div class="time-controls">
+                        <div class="slider-group">
+                            <label>
+                                <span>Minutos</span>
+                                <span class="slider-value minutes-value">7</span>
+                            </label>
+                            <input type="range" class="preset-slider minutes-slider" min="0" max="30" step="1" value="7">
+                        </div>
+                        <div class="slider-group">
+                            <label>
+                                <span>Segundos</span>
+                                <span class="slider-value seconds-value">0</span>
+                            </label>
+                            <input type="range" class="preset-slider seconds-slider" min="0" max="59" step="1" value="0">
+                        </div>
+                        <div class="time-preview">
+                            <span class="preview-label">Tiempo total:</span>
+                            <span class="preset-time">07:00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bell Configuration Section -->
+                <div class="config-section bells-section">
+                    <h4><img src="sounds/campana.png" alt="🔔" class="bell-icon-header"> <span data-i18n-key="timer.dingConfig">Configurar Dings</span></h4>
+                    
+                    <!-- Visual Timeline Slider -->
+                    <div class="bell-timeline-container">
+                        <div class="timeline-labels">
+                            <span class="timeline-start">0:00</span>
+                            <span class="timeline-end">07:00</span>
+                        </div>
+                        <div class="bell-timeline">
+                            <div class="timeline-track"></div>
+                            <div class="timeline-progress"></div>
+                            <!-- Bell dots will be dynamically added here -->
+                        </div>
+                        <div class="timeline-markers">
+                            <!-- Time markers will be added here -->
+                        </div>
+                    </div>
+                    
+                    <!-- Bell Configuration Controls -->
+                    <div class="bell-config-controls">
+                        <!-- Bell quick actions (original design) -->
+                        <div class="bell-quick-actions">
+                            <button class="quick-action-btn add-bell-btn" data-sound="single" title="Agregar ding">
+                                <div class="bell-icon-visual single-bell">+</div>
+                            </button>
+                            <button class="quick-action-btn delete-bell-btn disabled" title="Eliminar ding seleccionado">
+                                <div class="bell-icon-visual finish-bell">×</div>
+                            </button>
+                            <button class="quick-action-btn test-bells-btn" title="Probar dings">🔔</button>
+                        </div>
+                        
+                        <!-- Instructions (original design) -->
+                        <div class="bell-instructions">
+                            <p>💡 <span data-i18n-key="timer.instructions">Instrucciones:</span></p>
+                            <ul>
+                                <li data-i18n-key="timer.adjustDuration">Ajusta la duración del timer arriba</li>
+                                <li data-i18n-key="timer.clickPlus">Haz clic en + para agregar dings</li>
+                                <li><span data-i18n-key="timer.dragDings">Arrastra los dings</span> 🔔 <span data-i18n-key="timer.dragTimeline">en la línea de tiempo</span></li>
+                                <li><span data-i18n-key="timer.selectDing">Selecciona un ding</span> <span data-i18n-key="timer.useX">y usa × para eliminar</span></li>
+                                <li data-i18n-key="timer.doubleclickDing">Doble clic en ding para cambiar cantidad de sonidos</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+
+            </div>
+        </div>
+    </div>
+</template> 

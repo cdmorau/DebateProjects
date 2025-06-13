@@ -28,7 +28,7 @@ function saveStateToLocalStorage(state) {
         const stateToSave = { judges: state.judges };
         localStorage.setItem('debateAppState', JSON.stringify(stateToSave));
     } catch (e) {
-        console.error("Error guardando el estado en localStorage:", e);
+            // Error saving state
     }
 }
 
@@ -40,7 +40,7 @@ function loadStateFromLocalStorage() {
         }
         return JSON.parse(savedState);
     } catch (e) {
-        console.error("Error cargando el estado desde localStorage:", e);
+            // Error loading state
         return null;
     }
 }

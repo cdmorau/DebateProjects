@@ -12,9 +12,28 @@ export function initCallManagerView(dependencies) {
 }
 
 export const callManagerView = {
+    isReady() {
+        return !!(document.getElementById('judges-grid') && 
+                 document.getElementById('judge-card-template') && 
+                 document.getElementById('comparison-grid') && 
+                 document.getElementById('comparison-item-template'));
+    },
+
     updateVisualization() {
         const judgesGrid = document.getElementById('judges-grid');
         const template = document.getElementById('judge-card-template');
+        
+        if (!judgesGrid) {
+            // Silently return if DOM elements are not ready yet
+            // This can happen during component initialization
+            return;
+        }
+        
+        if (!template) {
+            // Silently return if template is not ready yet
+            return;
+        }
+        
         judgesGrid.innerHTML = '';
 
         const principalComparisons = logic.calculateComparisons();
@@ -107,7 +126,10 @@ export const callManagerView = {
             comparisons = logic.calculateComparisons();
         }
         const comparisonGrid = document.getElementById('comparison-grid');
-        if (!comparisonGrid) return;
+        if (!comparisonGrid) {
+            // Silently return if DOM elements are not ready yet
+            return;
+        }
         comparisonGrid.innerHTML = '';
         const totalJudges = state.judges.length;
         if (totalJudges === 0) return;
@@ -133,14 +155,20 @@ export const callManagerView = {
             clone.querySelector('.team-2-name').textContent = translate(`teams.${team2.toLowerCase()}`);
     
             // Minority indicator logic
-            const minorityTeam = votesForTeam1 <= votesForTeam2 ? team1 : team2;
-            const principalJudge = state.judges.find(j => j.role === 'principal');
+            let minorityTeam = null;
             let principalInMinority = false;
-            function normalizeName(name) { return name.trim().toLowerCase(); }
-            if (principalJudge) {
-                const principalVote = data.details.find(d => normalizeName(d.name) === normalizeName(principalJudge.name));
-                if (principalVote && principalVote.winner === minorityTeam) {
-                    principalInMinority = true;
+            
+            // Only determine minority if there's no tie
+            if (votesForTeam1 !== votesForTeam2) {
+                minorityTeam = votesForTeam1 < votesForTeam2 ? team1 : team2;
+                
+                const principalJudge = state.judges.find(j => j.role === 'principal');
+                function normalizeName(name) { return name.trim().toLowerCase(); }
+                if (principalJudge) {
+                    const principalVote = data.details.find(d => normalizeName(d.name) === normalizeName(principalJudge.name));
+                    if (principalVote && principalVote.winner === minorityTeam) {
+                        principalInMinority = true;
+                    }
                 }
             }
             const minorityIndicator = clone.querySelector('.minority-indicator');

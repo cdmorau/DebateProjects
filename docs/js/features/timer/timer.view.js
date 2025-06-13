@@ -1,4 +1,5 @@
 import { timerHandlers } from './timer.handlers.js';
+import { translate } from '../../common/i18n.js';
 
 class TimerView {
     constructor() {
@@ -183,13 +184,13 @@ class TimerView {
             }
         }
 
-        // Update bell toggle button
-        const bellToggleBtn = cardElement.querySelector('.bell-toggle');
-        if (bellToggleBtn) {
-            if (timer.bellEnabled) {
-                bellToggleBtn.classList.add('active');
+        // Update bell config button
+        const bellConfigBtn = cardElement.querySelector('.bell-config');
+        if (bellConfigBtn) {
+            if (timer.alerts && timer.alerts.length > 0) {
+                bellConfigBtn.classList.add('has-alerts');
             } else {
-                bellToggleBtn.classList.remove('active');
+                bellConfigBtn.classList.remove('has-alerts');
             }
         }
     }
@@ -226,8 +227,6 @@ class TimerView {
         });
     }
 
-
-
     updateAudioButton(isMuted) {
         const audioMuteBtn = document.querySelector('.audio-mute');
         if (!audioMuteBtn) return;
@@ -235,12 +234,54 @@ class TimerView {
         if (isMuted) {
             audioMuteBtn.textContent = '🔇';
             audioMuteBtn.classList.add('muted');
-            audioMuteBtn.title = 'Activar campanadas';
+            audioMuteBtn.title = translate('timer.activateDings');
         } else {
             audioMuteBtn.textContent = '🔊';
             audioMuteBtn.classList.remove('muted');
-            audioMuteBtn.title = 'Silenciar campanadas';
+            audioMuteBtn.title = translate('timer.muteDings');
         }
+    }
+
+    updateTimerDisplay(timer) {
+        const cardElement = document.querySelector(`[data-timer-id="${timer.id}"]`);
+        if (!cardElement) return;
+
+        // Update time display to show current time (not initial time)
+        const minutesSpan = cardElement.querySelector('.time-number.minutes');
+        const secondsSpan = cardElement.querySelector('.time-number.seconds');
+        
+        if (minutesSpan && secondsSpan) {
+            minutesSpan.textContent = String(timer.currentMinutes).padStart(2, '0');
+            secondsSpan.textContent = String(timer.currentSeconds).padStart(2, '0');
+        }
+
+        // Update hidden inputs with initial values for editing
+        const minutesInput = cardElement.querySelector('.minutes-input');
+        const secondsInput = cardElement.querySelector('.seconds-input');
+        
+        if (minutesInput) minutesInput.value = timer.initialMinutes;
+        if (secondsInput) secondsInput.value = timer.initialSeconds;
+    }
+
+    updateTimer(timer) {
+        // Update all timer components
+        this.updateTimerDisplay(timer);
+        this.updateTimerState(timer.id, timer);
+        this.updateModeButton(timer.id, timer);
+        this.updateSoundControls(timer.id, timer);
+    }
+
+    updateSoundControls(timerId, timer) {
+        const cardElement = document.querySelector(`[data-timer-id="${timerId}"]`);
+        if (!cardElement) return;
+
+        const soundSwitchInput = cardElement.querySelector('.sound-switch-input');
+        if (soundSwitchInput) {
+            soundSwitchInput.checked = timer.bellEnabled !== false;
+        }
+
+        // Update visual feedback
+        timerHandlers.updateSoundToggleVisual(cardElement, timer.bellEnabled !== false);
     }
 }
 

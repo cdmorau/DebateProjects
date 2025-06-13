@@ -3,11 +3,65 @@ import { initCallManager, callManager } from './features/callManager/callManager
 import { initSpeaksAndFeeds } from './features/speaksAndFeeds/speaksAndFeeds.init.js';
 import { initTimer } from './features/timer/timer.init.js';
 import { updateDefaultJudgeNames } from './common/state.js';
+// Router imports
+import { router } from './router/router.js';
+import { navigationAdapter } from './router/navigation-adapter.js';
+import { configureRoutes } from './router/routes.js';
+// Navigation module import
+import { initNavigation } from './navigation.js';
+// Preloader import
+import { preloader } from './common/preloader.js';
+
+let navigationManager;
 
 document.addEventListener('DOMContentLoaded', async () => {
     await initI18n();
     setupLanguageSelector();
-    setupNavigation();
+    
+    // Initialize navigation system
+    navigationManager = initNavigation();
+    
+    // Start preloading components with progress tracking
+    const preloadIndicator = document.getElementById('preload-indicator');
+    const preloadBar = document.getElementById('preload-bar');
+    
+    // Show indicator only if preloading takes time
+    const showIndicatorTimeout = setTimeout(() => {
+        if (preloadIndicator) {
+            preloadIndicator.style.display = 'block';
+        }
+    }, 100);
+    
+    preloader.preloadWithProgress((completed, total, componentName, error) => {
+        // Update progress bar
+        if (preloadBar) {
+            const percentage = (completed / total) * 100;
+            preloadBar.style.width = `${percentage}%`;
+        }
+        
+        // Hide indicator when complete
+        if (completed === total) {
+            clearTimeout(showIndicatorTimeout);
+            if (preloadIndicator) {
+                setTimeout(() => {
+                    preloadIndicator.style.display = 'none';
+                }, 500);
+            }
+        }
+    }).catch(error => {
+        clearTimeout(showIndicatorTimeout);
+        if (preloadIndicator) {
+            preloadIndicator.style.display = 'none';
+        }
+    });
+    
+    // Initialize router system
+    configureRoutes();
+    navigationAdapter.init();
+    router.init();
+    
+    // Keep existing initialization for backward compatibility
+    setupMainMenuButtons();
     initCallManager();
     initSpeaksAndFeeds();
     initTimer();
@@ -53,77 +107,33 @@ function updateActiveButton(activeLang) {
     });
 }
 
-function setupNavigation() {
-    const tabs = {
-        mainMenu: document.getElementById('main-menu'),
-        callManager: document.getElementById('main-tab'),
-        calificaciones: document.getElementById('calificaciones-tab'),
-        timer: document.getElementById('timer-tab'),
-        athenas: document.getElementById('athenas-tab'),
-        wsdc: document.getElementById('wsdc-tab'),
-        wsdcReply: document.getElementById('wsdc-reply-tab'),
-        feedback: document.getElementById('feedback-tab'),
-        panel: document.getElementById('panel-tab'),
-    };
-
-    const showTab = (tabName) => {
-        Object.values(tabs).forEach(tab => tab.classList.add('hidden'));
-        if (tabs[tabName]) {
-            tabs[tabName].classList.remove('hidden');
-            if (tabName === 'callManager') {
-                callManager.init();
-            }
+function setupMainMenuButtons() {
+    // Main menu buttons navigation
+    document.getElementById('go-call-manager')?.addEventListener('click', () => {
+        navigationManager.navigateToCallManager();
+        // Initialize call manager when navigating to it
+        if (callManager) {
+            callManager.init();
         }
-        
-        // Update mobile tabs visibility
-        updateMobileTabs(tabName);
-    };
+    });
     
-    // Show/hide mobile tabs based on current section
-    const updateMobileTabs = (activeTab) => {
-        const mobileTabs = document.querySelector('.mobile-tabs');
-        const body = document.body;
-        
-        if (activeTab === 'callManager') {
-            mobileTabs?.classList.add('show');
-            body.classList.add('show-mobile-tabs');
-        } else {
-            mobileTabs?.classList.remove('show');
-            body.classList.remove('show-mobile-tabs');
-        }
-    };
-
-    document.getElementById('go-call-manager').addEventListener('click', () => showTab('callManager'));
-    document.getElementById('go-calificaciones').addEventListener('click', () => showTab('calificaciones'));
-    document.getElementById('go-timer').addEventListener('click', () => showTab('timer'));
+    document.getElementById('go-calificaciones')?.addEventListener('click', () => {
+        navigationManager.navigateToSpeaksFeeds();
+    });
     
-    document.getElementById('back-main-menu-calif').addEventListener('click', () => showTab('mainMenu'));
-    document.getElementById('back-main-menu-timer').addEventListener('click', () => showTab('mainMenu'));
+    document.getElementById('go-timer')?.addEventListener('click', () => {
+        navigationManager.navigateToTimer();
+    });
     
-    document.getElementById('back-main-tab').addEventListener('click', () => showTab('callManager'));
-    document.getElementById('back-main-tab-wsdc').addEventListener('click', () => showTab('callManager'));
-    document.getElementById('back-main-tab-wsdc-reply').addEventListener('click', () => showTab('callManager'));
-    document.getElementById('back-main-tab-feedback').addEventListener('click', () => showTab('callManager'));
-    document.getElementById('back-main-tab-panel').addEventListener('click', () => showTab('callManager'));
-
-    // Mobile tab navigation
-    const mobileTabButtons = document.querySelectorAll('.mobile-tab-button');
-    mobileTabButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            const tabName = button.getAttribute('data-tab');
-            
-            // Update active button
-            mobileTabButtons.forEach(btn => btn.classList.remove('active'));
-            button.classList.add('active');
-            
-            // Show/hide sections
-            if (tabName === 'judges') {
-                document.querySelector('.mobile-judges-section').style.display = 'block';
-                document.querySelector('.mobile-comparison-section').style.display = 'none';
-            } else if (tabName === 'discussion') {
-                document.querySelector('.mobile-judges-section').style.display = 'none';
-                document.querySelector('.mobile-comparison-section').style.display = 'block';
-            }
-        });
+    document.getElementById('go-break-predict')?.addEventListener('click', () => {
+        navigationManager.navigateToBreakPredict();
     });
 }
+
+// Utility function to check preload status (useful for debugging)
+function getPreloadStatus() {
+    return preloader.getCacheStatus();
+}
+
+// Export navigation manager and utilities for use by other modules
+export { navigationManager, getPreloadStatus };

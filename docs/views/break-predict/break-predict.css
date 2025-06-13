@@ -1,0 +1,672 @@
+/**
+ * Break Predict Component Styles
+ * Styles for the break prediction functionality
+ */
+
+/* Break Predict Menu Button */
+.menu-button-quaternary {
+    background: linear-gradient(135deg, #9b59b6, #8e44ad);
+    color: white;
+}
+
+.menu-button-quaternary:hover {
+    background: linear-gradient(135deg, #8e44ad, #7d3c98);
+    transform: translateY(-2px);
+}
+
+/* Break Predict Component Layout */
+#break-predict-tab {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.break-predict-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #e9ecef;
+}
+
+.break-predict-header h2 {
+    color: #2c3e50;
+    margin: 0;
+    font-size: 2.2em;
+    font-weight: 600;
+}
+
+.header-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.header-actions .btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Button Styles */
+.btn-secondary {
+    background: #6c757d;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: #5a6268;
+    transform: translateY(-1px);
+}
+
+.btn-danger {
+    background: #dc3545;
+    color: white;
+}
+
+.btn-danger:hover {
+    background: #c82333;
+    transform: translateY(-1px);
+}
+
+.btn-primary {
+    background: #007bff;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #0056b3;
+    transform: translateY(-1px);
+}
+
+/* Tabs Container */
+.tabs-container {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.tabs {
+    display: flex;
+    background: #f8f9fa;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 15px 20px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    color: #6c757d;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.tab-btn:hover {
+    background: #e9ecef;
+    color: #495057;
+}
+
+.tab-btn.active {
+    background: white;
+    color: #007bff;
+    border-bottom: 3px solid #007bff;
+}
+
+.tab-content {
+    display: none;
+    padding: 30px;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* Form Elements */
+.form-input {
+    flex: 1;
+    padding: 12px 15px;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+.form-select {
+    padding: 10px 15px;
+    border: 2px solid #e9ecef;
+    border-radius: 6px;
+    font-size: 14px;
+    background: white;
+    cursor: pointer;
+}
+
+/* Teams Tab Styles */
+.add-team-section {
+    background: #f8f9fa;
+    padding: 25px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+}
+
+.add-team-section h3 {
+    margin: 0 0 20px 0;
+    color: #2c3e50;
+    font-size: 1.4em;
+}
+
+.input-row {
+    display: flex;
+    gap: 15px;
+    align-items: end;
+}
+
+.teams-section h3 {
+    color: #2c3e50;
+    margin-bottom: 20px;
+    font-size: 1.4em;
+}
+
+.teams-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.team-item {
+    background: white;
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    padding: 20px;
+    transition: all 0.3s ease;
+}
+
+.team-item:hover {
+    border-color: #007bff;
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.1);
+}
+
+.team-info {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.team-name {
+    font-size: 1.2em;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.team-speakers {
+    color: #6c757d;
+    font-size: 14px;
+}
+
+.team-stats {
+    color: #495057;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.team-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.team-actions button {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.edit-team-btn {
+    background: #28a745;
+    color: white;
+}
+
+.edit-team-btn:hover {
+    background: #218838;
+}
+
+.remove-team-btn {
+    background: #dc3545;
+    color: white;
+}
+
+.remove-team-btn:hover {
+    background: #c82333;
+}
+
+.team-edit-form {
+    margin-top: 15px;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.edit-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.save-team-btn {
+    background: #28a745;
+    color: white;
+}
+
+.cancel-team-btn {
+    background: #6c757d;
+    color: white;
+}
+
+/* Rounds Tab Styles */
+.rounds-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.rounds-header h3 {
+    color: #2c3e50;
+    margin: 0;
+    font-size: 1.4em;
+}
+
+.rounds-controls {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.rounds-instructions {
+    background: #e3f2fd;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 25px;
+}
+
+.info-box h4 {
+    color: #1976d2;
+    margin: 0 0 15px 0;
+    font-size: 1.2em;
+}
+
+.info-box ul {
+    margin: 0;
+    padding-left: 20px;
+    color: #424242;
+}
+
+.info-box li {
+    margin-bottom: 8px;
+    line-height: 1.5;
+}
+
+.rounds-table-container {
+    overflow-x: auto;
+    border-radius: 10px;
+    border: 1px solid #e9ecef;
+}
+
+.rounds-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+}
+
+.rounds-table th,
+.rounds-table td {
+    padding: 12px 15px;
+    text-align: center;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.rounds-table th {
+    background: #f8f9fa;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.sub-header {
+    background: #e9ecef !important;
+    font-size: 12px;
+    color: #6c757d;
+}
+
+.round-result-input {
+    width: 80px;
+    padding: 6px 8px;
+    border: 1px solid #e9ecef;
+    border-radius: 4px;
+    text-align: center;
+    font-size: 13px;
+}
+
+.points-input {
+    width: 60px;
+}
+
+/* Predictions Tab Styles */
+.predictions-header {
+    margin-bottom: 25px;
+}
+
+.predictions-header h3 {
+    color: #2c3e50;
+    margin: 0 0 15px 0;
+    font-size: 1.4em;
+}
+
+.predictions-info {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.legend {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+}
+
+.status-badge {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.status-badge.safe {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status-badge.likely {
+    background: #d1ecf1;
+    color: #0c5460;
+}
+
+.status-badge.bubble {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.status-badge.unlikely {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.predictions-table-container {
+    overflow-x: auto;
+    border-radius: 10px;
+    border: 1px solid #e9ecef;
+}
+
+.predictions-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+}
+
+.predictions-table th,
+.predictions-table td {
+    padding: 15px 12px;
+    text-align: left;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.predictions-table th {
+    background: #f8f9fa;
+    font-weight: 600;
+    color: #2c3e50;
+    text-align: center;
+}
+
+.prediction-row.safe {
+    background: rgba(212, 237, 218, 0.3);
+}
+
+.prediction-row.likely {
+    background: rgba(209, 236, 241, 0.3);
+}
+
+.prediction-row.bubble {
+    background: rgba(255, 243, 205, 0.3);
+}
+
+.prediction-row.unlikely {
+    background: rgba(248, 215, 218, 0.3);
+}
+
+.rank {
+    font-weight: 700;
+    font-size: 1.1em;
+    text-align: center;
+}
+
+.team-name .name {
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.team-name .speakers {
+    font-size: 12px;
+    color: #6c757d;
+    margin-top: 4px;
+}
+
+.probability-bar {
+    position: relative;
+    width: 100px;
+    height: 20px;
+    background: #e9ecef;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.probability-fill {
+    height: 100%;
+    border-radius: 10px;
+    transition: width 0.5s ease;
+}
+
+.probability-fill.safe {
+    background: linear-gradient(90deg, #28a745, #20c997);
+}
+
+.probability-fill.likely {
+    background: linear-gradient(90deg, #17a2b8, #20c997);
+}
+
+.probability-fill.bubble {
+    background: linear-gradient(90deg, #ffc107, #fd7e14);
+}
+
+.probability-fill.unlikely {
+    background: linear-gradient(90deg, #dc3545, #e74c3c);
+}
+
+.probability-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 11px;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+/* Empty State Styles */
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #6c757d;
+}
+
+.empty-icon {
+    font-size: 3em;
+    margin-bottom: 15px;
+    opacity: 0.5;
+}
+
+.empty-state p {
+    font-size: 1.1em;
+    margin: 0 0 8px 0;
+    color: #495057;
+}
+
+.empty-state small {
+    font-size: 14px;
+    color: #6c757d;
+}
+
+/* Toast Notifications */
+.toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 20px;
+    border-radius: 8px;
+    color: white;
+    font-weight: 500;
+    z-index: 1000;
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+}
+
+.toast.show {
+    transform: translateX(0);
+}
+
+.toast-info {
+    background: #17a2b8;
+}
+
+.toast-success {
+    background: #28a745;
+}
+
+.toast-error {
+    background: #dc3545;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    #break-predict-tab {
+        padding: 15px;
+    }
+    
+    .break-predict-header {
+        flex-direction: column;
+        gap: 15px;
+        align-items: stretch;
+    }
+    
+    .header-actions {
+        justify-content: center;
+    }
+    
+    .input-row {
+        flex-direction: column;
+    }
+    
+    .rounds-header {
+        flex-direction: column;
+        gap: 15px;
+        align-items: stretch;
+    }
+    
+    .rounds-controls {
+        justify-content: center;
+    }
+    
+    .legend {
+        justify-content: center;
+    }
+    
+    .tab-content {
+        padding: 20px;
+    }
+    
+    .predictions-table th,
+    .predictions-table td {
+        padding: 10px 8px;
+        font-size: 14px;
+    }
+    
+    .probability-bar {
+        width: 80px;
+        height: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .break-predict-header h2 {
+        font-size: 1.8em;
+    }
+    
+    .tab-btn {
+        padding: 12px 15px;
+        font-size: 14px;
+    }
+    
+    .tab-content {
+        padding: 15px;
+    }
+    
+    .add-team-section {
+        padding: 20px;
+    }
+    
+    .team-item {
+        padding: 15px;
+    }
+    
+    .predictions-table {
+        font-size: 12px;
+    }
+    
+    .probability-bar {
+        width: 60px;
+        height: 14px;
+    }
+    
+    .probability-text {
+        font-size: 10px;
+    }
+} 

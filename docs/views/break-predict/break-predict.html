@@ -1,0 +1,149 @@
+<div class="container">
+    <div class="main-content">
+        <div class="break-predict-header">
+            <h2 data-i18n-key="breakPredict.title">Break Predict</h2>
+            <div class="header-actions">
+                <button id="import-teams-btn" class="btn btn-secondary" data-i18n-key="breakPredict.importData">
+                    📥 Import Data
+                </button>
+                <button id="export-data-btn" class="btn btn-secondary" data-i18n-key="breakPredict.exportData">
+                    📤 Export Data
+                </button>
+                <button id="clear-data-btn" class="btn btn-danger" data-i18n-key="breakPredict.clearAll">
+                    🗑️ Clear All
+                </button>
+            </div>
+        </div>
+
+        <div class="tabs-container">
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="teams" data-i18n-key="breakPredict.teamsTab">
+                    👥 Teams
+                </button>
+                <button class="tab-btn" data-tab="rounds" data-i18n-key="breakPredict.roundsTab">
+                    🏆 Rounds
+                </button>
+                <button class="tab-btn" data-tab="predictions" data-i18n-key="breakPredict.predictionsTab">
+                    📊 Predictions
+                </button>
+            </div>
+
+            <!-- Teams Tab -->
+            <div class="tab-content active" id="teams-tab">
+                <div class="add-team-section">
+                    <h3 data-i18n-key="breakPredict.addTeam">Add Team</h3>
+                    <div class="form-group">
+                        <div class="input-row">
+                            <input type="text" 
+                                   id="team-name-input" 
+                                   placeholder="Team Name" 
+                                   class="form-input"
+                                   data-i18n-placeholder="breakPredict.teamNamePlaceholder">
+                            <input type="text" 
+                                   id="speaker1-input" 
+                                   placeholder="Speaker 1" 
+                                   class="form-input"
+                                   data-i18n-placeholder="breakPredict.speaker1Placeholder">
+                            <input type="text" 
+                                   id="speaker2-input" 
+                                   placeholder="Speaker 2" 
+                                   class="form-input"
+                                   data-i18n-placeholder="breakPredict.speaker2Placeholder">
+                            <button id="add-team-btn" 
+                                    class="btn btn-primary"
+                                    data-i18n-key="breakPredict.addTeamButton">
+                                ➕ Add Team
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="teams-section">
+                    <h3 data-i18n-key="breakPredict.teamsList">Teams List</h3>
+                    <div id="teams-list" class="teams-list">
+                        <div class="empty-state">
+                            <div class="empty-icon">👥</div>
+                            <p data-i18n-key="breakPredict.noTeamsAdded">No teams added yet</p>
+                            <small data-i18n-key="breakPredict.addTeamsHint">Add teams using the form above</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rounds Tab -->
+            <div class="tab-content" id="rounds-tab">
+                <div class="rounds-header">
+                    <h3 data-i18n-key="breakPredict.roundResults">Round Results</h3>
+                    <div class="rounds-controls">
+                        <button id="add-round-btn" 
+                                class="btn btn-primary"
+                                data-i18n-key="breakPredict.addRound">
+                            ➕ Add Round
+                        </button>
+                        <select id="current-round-select" class="form-select">
+                            <option value="" data-i18n-key="breakPredict.selectRound">Select Round</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="rounds-instructions">
+                    <div class="info-box">
+                        <h4 data-i18n-key="breakPredict.howToUse">How to Use</h4>
+                        <ul>
+                            <li data-i18n-key="breakPredict.instruction1">Add teams in the Teams tab first</li>
+                            <li data-i18n-key="breakPredict.instruction2">Click "Add Round" to create a new round</li>
+                            <li data-i18n-key="breakPredict.instruction3">Enter position (1st-4th) and points (0-3) for each team</li>
+                            <li data-i18n-key="breakPredict.instruction4">Check predictions in the Predictions tab</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div id="rounds-table" class="rounds-table-container">
+                    <div class="empty-state">
+                        <div class="empty-icon">🏆</div>
+                        <p data-i18n-key="breakPredict.noRoundsAdded">No rounds added yet</p>
+                        <small data-i18n-key="breakPredict.addRoundsHint">Add teams first, then create rounds</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Predictions Tab -->
+            <div class="tab-content" id="predictions-tab">
+                <div class="predictions-header">
+                    <h3 data-i18n-key="breakPredict.breakPredictions">Break Predictions</h3>
+                    <div class="predictions-info">
+                        <div class="legend">
+                            <div class="legend-item">
+                                <span class="status-badge safe"></span>
+                                <span data-i18n-key="breakPredict.status.safe">Safe (80%+)</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="status-badge likely"></span>
+                                <span data-i18n-key="breakPredict.status.likely">Likely (60-79%)</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="status-badge bubble"></span>
+                                <span data-i18n-key="breakPredict.status.bubble">Bubble (30-59%)</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="status-badge unlikely"></span>
+                                <span data-i18n-key="breakPredict.status.unlikely">Unlikely (0-29%)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="predictions-table" class="predictions-table-container">
+                    <div class="empty-state">
+                        <div class="empty-icon">📊</div>
+                        <p data-i18n-key="breakPredict.noPredictionsAvailable">No predictions available</p>
+                        <small data-i18n-key="breakPredict.addDataForPredictions">Add teams and round results to see predictions</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Hidden file input for import -->
+<input type="file" id="import-file-input" accept=".json" style="display: none;"> 

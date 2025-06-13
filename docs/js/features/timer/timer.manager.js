@@ -1,12 +1,14 @@
 import { timerView } from './timer.view.js';
+import { translate } from '../../common/i18n.js';
 
 class TimerManager {
     constructor() {
         this.timers = [];
         this.nextTimerId = 1;
         this.intervals = new Map();
-        this.audioContext = null;
         this.audioMuted = false;
+        this.bellSounds = null;
+        this.isInitialized = false;
         this.presets = {
             preptime: { 
                 minutes: 15, 
@@ -50,23 +52,29 @@ class TimerManager {
 
     init() {
         this.setupAudio();
-        this.updateAudioUI();
+        this.isInitialized = true;
     }
 
     setupAudio() {
-        try {
-            this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            console.log('Audio context created, state:', this.audioContext.state);
-        } catch (e) {
-            console.log('Audio context not available:', e);
-            // Fallback to simple HTML5 audio
-            this.audioContext = null;
-        }
+        // Initialize bell audio file - using only bell-98033.mp3
+        this.bellSounds = {
+            main: new Audio('sounds/bell-98033.mp3')
+        };
+        
+        // Configure audio file
+        this.bellSounds.main.volume = 0.7;
+        this.bellSounds.main.preload = 'auto';
+        
+        // Error handling for audio loading
+        this.bellSounds.main.addEventListener('error', (e) => {
+            this.setupFallbackAudio();
+        });
     }
 
-    createBeepSound() {
+    setupFallbackAudio() {
+        if (this.bellSounds.fallback) return;
+
         try {
-            // Generate a simple sine wave beep programmatically
             const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             const oscillator = audioCtx.createOscillator();
             const gainNode = audioCtx.createGain();
@@ -74,109 +82,86 @@ class TimerManager {
             oscillator.connect(gainNode);
             gainNode.connect(audioCtx.destination);
             
-            oscillator.frequency.value = 800; // 800Hz beep
+            oscillator.frequency.value = 800;
             oscillator.type = 'sine';
             
-            gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
-            gainNode.gain.linearRampToValueAtTime(0.3, audioCtx.currentTime + 0.01);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
-            
-            oscillator.start(audioCtx.currentTime);
-            oscillator.stop(audioCtx.currentTime + 0.3);
-            
-            return { success: true, context: audioCtx };
+            this.bellSounds.fallback = {
+                context: audioCtx,
+                oscillator: oscillator,
+                gainNode: gainNode
+            };
         } catch (error) {
-            console.error('Failed to create beep sound:', error);
-            return { success: false };
+            // ... existing code ...
         }
     }
 
     playBell(count = 1) {
         if (this.audioMuted) {
-            console.log('Audio muted');
             return;
         }
 
-        // Try Web Audio API first
-        if (this.audioContext && this.audioContext.state === 'running') {
-            this.playWebAudioBell(count);
-        } else {
-            // Fallback to HTML5 Audio
-            this.playHTML5Bell(count);
+        // Always use the main bell sound (bell-98033.mp3)
+        if (!this.bellSounds.main) {
+            this.playFallbackSound();
+            return;
+        }
+
+        // Play the bell sound multiple times based on count
+        this.playMultipleBells(count);
+    }
+
+    playAudioFile(audioElement) {
+        try {
+            // Reset audio to beginning
+            audioElement.currentTime = 0;
+            
+            // Play the sound
+            const playPromise = audioElement.play();
+            
+            if (playPromise !== undefined) {
+                playPromise.catch(error => {
+                    this.playFallbackSound();
+                });
+            }
+        } catch (error) {
+            this.playFallbackSound();
         }
     }
 
-    playWebAudioBell(count = 1) {
+    playFallbackSound() {
+        if (!this.bellSounds.fallback) {
+            this.setupFallbackAudio();
+        }
+
+        try {
+            const { context, oscillator, gainNode } = this.bellSounds.fallback;
+            const now = context.currentTime;
+
+            gainNode.gain.setValueAtTime(0, now);
+            gainNode.gain.linearRampToValueAtTime(0.5, now + 0.01);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+            
+            oscillator.start(now);
+            oscillator.stop(now + 0.3);
+            
+        } catch (error) {
+            // ... existing code ...
+        }
+    }
+
+    playMultipleBells(count) {
         let bellIndex = 0;
         
         const playOneBell = () => {
-            try {
-                const oscillator = this.audioContext.createOscillator();
-                const gainNode = this.audioContext.createGain();
-                
-                oscillator.connect(gainNode);
-                gainNode.connect(this.audioContext.destination);
-                
-                // Bell-like sound with higher frequency
-                oscillator.frequency.value = 1000;
-                oscillator.type = 'sine';
-                
-                gainNode.gain.setValueAtTime(0, this.audioContext.currentTime);
-                gainNode.gain.linearRampToValueAtTime(0.5, this.audioContext.currentTime + 0.01);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.3);
-                
-                oscillator.start(this.audioContext.currentTime);
-                oscillator.stop(this.audioContext.currentTime + 0.3);
-                
-                console.log(`Playing Web Audio bell ${bellIndex + 1} of ${count}`);
-                
-                bellIndex++;
-                if (bellIndex < count) {
-                    setTimeout(playOneBell, 400); // 400ms between bells
-                }
-            } catch (error) {
-                console.error('Error playing Web Audio bell:', error);
-                // Fallback to HTML5 if Web Audio fails
-                this.playHTML5Bell(count - bellIndex);
+            this.playAudioFile(this.bellSounds.main);
+            
+            bellIndex++;
+            if (bellIndex < count) {
+                setTimeout(playOneBell, 600); // 600ms between individual bells
             }
         };
         
         playOneBell();
-    }
-
-    playHTML5Bell(count = 1) {
-        let bellIndex = 0;
-        
-        const playOneBell = () => {
-            try {
-                console.log(`Attempting to play HTML5 bell ${bellIndex + 1} of ${count}`);
-                const result = this.createBeepSound();
-                
-                if (result.success) {
-                    console.log(`Successfully created and played bell ${bellIndex + 1}`);
-                } else {
-                    console.log(`Failed to create bell ${bellIndex + 1}, but continuing...`);
-                }
-                
-                bellIndex++;
-                if (bellIndex < count) {
-                    setTimeout(playOneBell, 400);
-                }
-                
-            } catch (error) {
-                console.error('Error in playHTML5Bell:', error);
-                bellIndex++;
-                if (bellIndex < count) {
-                    setTimeout(playOneBell, 400);
-                }
-            }
-        };
-        
-        playOneBell();
-    }
-
-    playBeep() {
-        this.playBell(1);
     }
 
     toggleAudioMute() {
@@ -185,28 +170,12 @@ class TimerManager {
     }
 
     async testAudio() {
-        console.log('Testing audio...');
-        
-        // Try to initialize audio if not ready
-        if (!this.audioContext) {
-            this.setupAudio();
+        if (this.audioMuted) {
+            this.audioMuted = false;
         }
         
-        // Resume audio context if suspended
-        if (this.audioContext && this.audioContext.state === 'suspended') {
-            try {
-                await this.audioContext.resume();
-                console.log('Audio context resumed for test');
-            } catch (error) {
-                console.warn('Failed to resume audio context:', error);
-            }
-        }
-        
-        this.updateAudioUI();
-        
-        // Play test sound - this will automatically fallback to HTML5 if needed
+        // Play test sound
         this.playBell(2);
-        console.log('Test audio initiated');
     }
 
     updateAudioUI() {
@@ -215,14 +184,14 @@ class TimerManager {
         const audioTestBtn = document.querySelector('.audio-test');
         const audioMuteBtn = document.querySelector('.audio-mute');
         
-        const hasWorkingAudio = this.audioContext && this.audioContext.state === 'running';
+        const hasWorkingAudio = this.bellSounds && this.bellSounds.main;
         
         if (!hasWorkingAudio) {
             // Audio might not be optimal - show init button
             if (audioInitBtn) audioInitBtn.classList.remove('hidden');
             if (audioStatus) {
                 audioStatus.classList.remove('hidden');
-                audioStatus.textContent = 'Click 🎵 para audio optimizado, o usa 🔔 directamente';
+                audioStatus.textContent = translate('timer.audioOptimized');
             }
         } else {
             // Audio ready - hide init button and status
@@ -235,28 +204,38 @@ class TimerManager {
         if (audioMuteBtn) audioMuteBtn.style.opacity = '1';
     }
 
-    async initializeAudio() {
-        try {
-            if (!this.audioContext) {
-                this.setupAudio();
+    toggleTimerBell(timerId, isEnabled) {
+        const timer = this.getTimer(timerId);
+        if (timer) {
+            timer.bellEnabled = isEnabled;
+            
+            // Update timer view
+            const cardElement = document.querySelector(`[data-timer-id="${timerId}"]`);
+            if (cardElement) {
+                timerView.updateTimer(timer);
             }
             
-            if (this.audioContext && this.audioContext.state === 'suspended') {
-                await this.audioContext.resume();
-                console.log('Audio context initialized and resumed');
+            return isEnabled;
+        }
+        return false;
+    }
+
+    async initializeAudio() {
+        try {
+            if (!this.bellSounds.main) {
+                this.setupAudio();
             }
             
             this.updateAudioUI();
             
             // Play a quick test sound to confirm audio is working
-            if (this.audioContext && this.audioContext.state === 'running') {
+            if (this.bellSounds.main) {
                 this.playBell(1);
                 return true;
             }
             
             return false;
         } catch (error) {
-            console.error('Failed to initialize audio:', error);
             return false;
         }
     }
@@ -267,21 +246,16 @@ class TimerManager {
 
     // Simple direct audio test
     directAudioTest() {
-        console.log('=== DIRECT AUDIO TEST STARTED ===');
-        
         // Create a new audio context specifically for this test
         let audioContext;
         try {
             audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            console.log('Audio context created, state:', audioContext.state);
             
             // If suspended, try to resume
             if (audioContext.state === 'suspended') {
                 audioContext.resume().then(() => {
-                    console.log('Audio context resumed');
                     this.playTestBeep(audioContext);
                 }).catch(err => {
-                    console.error('Failed to resume audio context:', err);
                     this.fallbackAudioTest();
                 });
             } else {
@@ -289,7 +263,6 @@ class TimerManager {
             }
             
         } catch (error) {
-            console.error('Failed to create audio context:', error);
             this.fallbackAudioTest();
         }
     }
@@ -315,41 +288,38 @@ class TimerManager {
             oscillator.start(now);
             oscillator.stop(now + 0.6);
             
-            console.log('✅ Test beep played successfully');
-            
             // Give feedback after the sound should have played
             setTimeout(() => {
-                const heard = confirm('¿Escuchaste la campanada? (OK = Sí, Cancelar = No)');
+                const heard = confirm(translate('timer.didYouHearDing'));
                 if (heard) {
-                    alert('¡Excelente! El audio funciona correctamente. Las campanadas sonarán durante los debates.');
+                    alert('¡Excelente! El audio funciona correctamente.');
                 } else {
-                    alert('Verifica:\n• El volumen del dispositivo\n• Que no haya audífonos desconectados\n• Los permisos de audio del navegador');
+                    alert('El audio parece tener problemas. Puedes usar el sistema de audio optimizado haciendo clic en 🎵 o contactar soporte.');
                 }
             }, 700);
             
         } catch (error) {
-            console.error('Error playing test beep:', error);
             this.fallbackAudioTest();
         }
     }
 
     fallbackAudioTest() {
-        console.log('Using fallback audio test');
-        // Try with Speech API as absolute fallback
         try {
-            const utterance = new SpeechSynthesisUtterance('Beep');
-            utterance.rate = 3;
-            utterance.pitch = 2;
-            utterance.volume = 0.8;
-            speechSynthesis.speak(utterance);
-            
-            setTimeout(() => {
-                alert('Se usó síntesis de voz como prueba. Si no escuchaste nada, el audio puede no estar disponible en este navegador.');
-            }, 1000);
-            
+            // Try speech synthesis as last resort
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance('Test de audio');
+                utterance.rate = 0.8;
+                utterance.pitch = 1.2;
+                speechSynthesis.speak(utterance);
+                
+                setTimeout(() => {
+                    alert('Audio de prueba completado. Si no escuchaste nada, por favor verifica tu configuración de audio.');
+                }, 2000);
+            } else {
+                alert('No se pudo realizar la prueba de audio. Por favor verifica tu configuración de audio del navegador.');
+            }
         } catch (speechError) {
-            console.error('Speech synthesis also failed:', speechError);
-            alert('Audio no disponible en este navegador. Las campanadas no funcionarán.');
+            alert('El sistema de audio no está funcionando. Por favor verifica tu configuración de audio.');
         }
     }
 
@@ -372,7 +342,7 @@ class TimerManager {
             isFinished: false,
             isStopwatch: isStopwatch,
             preset: null,
-            alerts: [],
+            alerts: this.getDefaultAlerts(minutes, seconds, false), // Default to DSC mode
             alertsTriggered: new Set(),
             bellEnabled: true
         };
@@ -423,42 +393,190 @@ class TimerManager {
     }
 
     updateTimerSettings(timerId, minutes, seconds) {
+        const timer = this.getTimer(timerId);
+        if (timer) {
+            timer.initialMinutes = minutes;
+            timer.initialSeconds = seconds;
+            
+            // If timer is not running, update current values to new initial values
+            if (!timer.isRunning) {
+                if (timer.isStopwatch) {
+                    // Stopwatch: keep current time if paused, reset to 0 if stopped
+                    if (!timer.isPaused) {
+                        timer.currentMinutes = 0;
+                        timer.currentSeconds = 0;
+                    }
+                } else {
+                    // Timer: update to new initial values
+                    timer.currentMinutes = minutes;
+                    timer.currentSeconds = seconds;
+                }
+            }
+            
+            // Always update default alerts when timer settings change
+            // This ensures new default configuration is applied
+            timer.alerts = this.getDefaultAlerts(minutes, seconds, timer.isStopwatch);
+            timer.alertsTriggered.clear();
+    
+            
+            // Update the display
+            timerView.updateTimeDisplay(timerId, timer);
+            
+            // Dispatch event to notify of changes
+            window.dispatchEvent(new CustomEvent('timerSettingsChanged', {
+                detail: { timerId, minutes, seconds }
+            }));
+        }
+    }
+
+    getDefaultAlerts(minutes, seconds, isStopwatch = false) {
+        const totalSeconds = minutes * 60 + seconds;
+        const alerts = [];
+        
+        // No default alerts for timers shorter than 2:30
+        if (totalSeconds < 150) { // Less than 2:30
+            return alerts;
+        }
+        
+        // Calculate correct positions based on timer mode
+        if (isStopwatch) {
+            // ASC Mode (Stopwatch)
+            alerts.push({ 
+                at: 60, // Bell at 1:00 elapsed
+                soundType: 'single', 
+                description: '1 minuto transcurrido'
+            });
+            
+            alerts.push({ 
+                at: totalSeconds - 60, // Bell 1 minute before target
+                soundType: 'single', 
+                description: 'Falta 1 minuto'
+            });
+            
+            alerts.push({ 
+                at: totalSeconds, // Bell when target reached
+                soundType: 'double', 
+                description: 'Tiempo terminado'
+            });
+        } else {
+            // DSC Mode (Countdown) - DEFAULT
+            // For countdown timers, 'at' represents the time remaining when the alert should trigger
+            
+            // First alert: when 1 minute has elapsed (should appear near START of timeline)
+            // For DSC mode: high remaining time = left side of timeline
+            alerts.push({ 
+                at: totalSeconds - 60, // Trigger when 1 minute has elapsed (17min remaining for 18min timer)
+                soundType: 'single', 
+                description: '1 minuto transcurrido'
+                // No visualTime needed - use 'at' value for positioning
+            });
+            
+            // Second alert: when 1 minute remains (should appear near END of timeline)
+            // For DSC mode: low remaining time = right side of timeline
+            alerts.push({ 
+                at: 60, // Trigger when 1 minute remains
+                soundType: 'single', 
+                description: 'Falta 1 minuto'
+                // No visualTime needed - use 'at' value for positioning
+            });
+            
+            // Third alert: when timer finishes (at the very END)
+            // For DSC mode: 0 remaining time = far right of timeline
+            alerts.push({ 
+                at: 0, // Trigger when timer finishes
+                soundType: 'double', 
+                description: 'Tiempo terminado'
+                // No visualTime needed - use 'at' value for positioning
+            });
+        }
+        
+
+        
+        return alerts;
+    }
+
+    updateTimerAlerts(timerId, alerts) {
         const timer = this.timers.find(t => t.id === timerId);
         if (!timer) return;
 
-        timer.initialMinutes = minutes;
-        timer.initialSeconds = seconds;
+        timer.alerts = alerts;
+        timer.alertsTriggered.clear();
         
-        // Clear triggered alerts if we're editing time - this allows alerts to fire again
-        if (timer.preset && timer.alerts && timer.alerts.length > 0) {
-            timer.alertsTriggered.clear();
+
+        
+        // Update visual state in the UI
+        const cardElement = document.querySelector(`[data-timer-id="${timerId}"]`);
+        if (cardElement && typeof timerHandlers !== 'undefined') {
+            timerHandlers.updateBellConfigButton(cardElement, timer);
         }
         
-        if (!timer.isRunning && !timer.isPaused) {
-            timer.currentMinutes = minutes;
-            timer.currentSeconds = seconds;
-            timerView.updateTimeDisplay(timerId, timer);
-        }
+        return true;
+    }
+
+    getTimerAlerts(timerId) {
+        const timer = this.timers.find(t => t.id === timerId);
+        return timer ? timer.alerts : [];
+    }
+
+    addCustomAlert(timerId, minutes, seconds, soundType, description) {
+        const timer = this.timers.find(t => t.id === timerId);
+        if (!timer) return false;
+
+        const totalSeconds = minutes * 60 + seconds;
+        const alert = {
+            at: totalSeconds,
+            soundType: soundType || 'single',
+            description: description || `Alerta a ${minutes}:${seconds.toString().padStart(2, '0')}`
+        };
+
+        // Remove any existing alert at the same time
+        timer.alerts = timer.alerts.filter(a => a.at !== totalSeconds);
+        
+        // Add new alert and sort by time (descending)
+        timer.alerts.push(alert);
+        timer.alerts.sort((a, b) => b.at - a.at);
+
+
+        return true;
+    }
+
+    removeCustomAlert(timerId, alertTime) {
+        const timer = this.timers.find(t => t.id === timerId);
+        if (!timer) return false;
+
+        timer.alerts = timer.alerts.filter(a => a.at !== alertTime);
+        
+
+        return true;
+    }
+
+    testSoundType(soundType) {
+        const soundMap = {
+            'single': 1,
+            'double': 2,
+            'triple': 3,
+            'finish': 5
+        };
+        
+        const count = soundMap[soundType] || 1;
+        this.playBell(count);
+    }
+
+    // Force regenerate default alerts for existing timers
+    regenerateDefaultAlerts(timerId) {
+        const timer = this.timers.find(t => t.id === timerId);
+        if (!timer) return false;
+
+        timer.alerts = this.getDefaultAlerts(timer.initialMinutes, timer.initialSeconds, timer.isStopwatch);
+        timer.alertsTriggered.clear();
+        
+
+        return true;
     }
 
     async startTimer(timerId) {
         const timer = this.timers.find(t => t.id === timerId);
         if (!timer) return;
-
-        // Ensure audio context is ready
-        if (!this.audioContext) {
-            this.setupAudio();
-        }
-
-        // Resume audio context if needed
-        if (this.audioContext && this.audioContext.state === 'suspended') {
-            try {
-                await this.audioContext.resume();
-                console.log('Audio context resumed for timer start');
-            } catch (error) {
-                console.warn('Could not resume audio context:', error);
-            }
-        }
 
         timer.isRunning = true;
         timer.isPaused = false;
@@ -491,11 +609,7 @@ class TimerManager {
                 this.checkStopwatchAlerts(timer, totalSecondsElapsed);
             } else {
                 // Timer mode - count down
-                const totalSecondsRemaining = timer.currentMinutes * 60 + timer.currentSeconds;
-                
-                // Check for alerts before decrementing
-                this.checkAlerts(timer, totalSecondsRemaining);
-                
+                // Decrement first
                 if (timer.currentSeconds > 0) {
                     timer.currentSeconds--;
                 } else if (timer.currentMinutes > 0) {
@@ -506,6 +620,11 @@ class TimerManager {
                     this.finishTimer(timerId);
                     return;
                 }
+                
+                // Check for alerts after decrementing (using current remaining time)
+                const totalSecondsRemaining = timer.currentMinutes * 60 + timer.currentSeconds;
+        
+                this.checkAlerts(timer, totalSecondsRemaining);
             }
 
             timerView.updateTimeDisplay(timerId, timer);
@@ -557,73 +676,84 @@ class TimerManager {
 
         timerView.updateTimeDisplay(timerId, timer);
         timerView.updateTimerState(timerId, timer);
+        
+        // Update bell config button visual state
+        const cardElement = document.querySelector(`[data-timer-id="${timerId}"]`);
+        if (cardElement && typeof timerHandlers !== 'undefined') {
+            timerHandlers.updateBellConfigButton(cardElement, timer);
+        }
     }
 
     checkAlerts(timer, totalSecondsRemaining) {
         // Only play bells if enabled for this timer
-        if (!timer.bellEnabled) return;
-        
-        // Check preset alerts first
-        if (timer.alerts && timer.alerts.length > 0) {
-            timer.alerts.forEach((alert, index) => {
-                const alertKey = `${alert.at}-${alert.bells}`;
-                if (totalSecondsRemaining === alert.at && !timer.alertsTriggered.has(alertKey)) {
-                    timer.alertsTriggered.add(alertKey);
-                    this.playBell(alert.bells);
-                }
-            });
-        } else {
-            // Default bell system for timers without presets
-            this.checkDefaultBells(timer, totalSecondsRemaining);
-        }
-    }
-
-    checkDefaultBells(timer, totalSecondsRemaining) {
-        // First minute bell (when entering the last minute)
-        if (totalSecondsRemaining === 60) {
-            const alertKey = 'first-minute';
-            if (!timer.alertsTriggered.has(alertKey)) {
-                timer.alertsTriggered.add(alertKey);
-                console.log('Playing first minute bell (2 bells)');
-                this.playBell(2);
-            }
+        if (!timer.bellEnabled) {
+            return;
         }
         
-        // 15 seconds remaining bell
-        if (totalSecondsRemaining === 15) {
-            const alertKey = 'fifteen-seconds';
-            if (!timer.alertsTriggered.has(alertKey)) {
-                timer.alertsTriggered.add(alertKey);
-                console.log('Playing 15 seconds bell (2 bells)');
-                this.playBell(2);
-            }
+        if (!timer.alerts || timer.alerts.length === 0) {
+            return;
         }
         
-        // When timer reaches exactly 0 (3 bells)
-        if (totalSecondsRemaining === 1) {
-            const alertKey = 'final-warning';
-            if (!timer.alertsTriggered.has(alertKey)) {
+        timer.alerts.forEach((alert) => {
+            // Use the alert.at value directly for all alerts (both default and custom)
+            // This ensures that visually configured alerts work correctly
+            const shouldTrigger = totalSecondsRemaining === alert.at;
+            const alertKey = `alert-${alert.at}-${alert.soundType}`;
+            
+            if (shouldTrigger && !timer.alertsTriggered.has(alertKey)) {
                 timer.alertsTriggered.add(alertKey);
-                console.log('Playing final warning bell (3 bells)');
-                this.playBell(3);
+                
+                const soundMap = {
+                    'single': 1,
+                    'double': 2,
+                    'triple': 3,
+                    'finish': 5
+                };
+                
+                const bellCount = soundMap[alert.soundType] || 1;
+    
+                this.playBell(bellCount);
+                
+                // Debug log for testing
+                console.log(`🔔 Alert triggered: ${alert.description} at ${Math.floor(alert.at/60)}:${(alert.at%60).toString().padStart(2, '0')} (${bellCount} bell${bellCount > 1 ? 's' : ''})`);
             }
-        }
+        });
     }
 
     checkStopwatchAlerts(timer, totalSecondsElapsed) {
         // Only play bells if enabled for this timer
-        if (!timer.bellEnabled) return;
-        
-        // Bell every minute (at 60, 120, 180, 240, 300 seconds, etc.)
-        if (totalSecondsElapsed > 0 && totalSecondsElapsed % 60 === 0) {
-            const minutes = Math.floor(totalSecondsElapsed / 60);
-            const alertKey = `minute-${minutes}`;
-            if (!timer.alertsTriggered.has(alertKey)) {
-                timer.alertsTriggered.add(alertKey);
-                console.log(`Playing minute ${minutes} bell (1 bell)`);
-                this.playBell(1);
-            }
+        if (!timer.bellEnabled) {
+            return;
         }
+        
+        if (!timer.alerts || timer.alerts.length === 0) {
+            return;
+        }
+        
+        timer.alerts.forEach((alert) => {
+            // Use the alert.at value directly for all alerts (both default and custom)
+            // This ensures that visually configured alerts work correctly
+            const shouldTrigger = totalSecondsElapsed === alert.at;
+            const alertKey = `stopwatch-alert-${alert.at}-${alert.soundType}`;
+            
+            if (shouldTrigger && !timer.alertsTriggered.has(alertKey)) {
+                timer.alertsTriggered.add(alertKey);
+                
+                const soundMap = {
+                    'single': 1,
+                    'double': 2,
+                    'triple': 3,
+                    'finish': 5
+                };
+                
+                const bellCount = soundMap[alert.soundType] || 1;
+    
+                this.playBell(bellCount);
+                
+                // Debug log for testing
+                console.log(`🔔 Stopwatch Alert triggered: ${alert.description} at ${Math.floor(alert.at/60)}:${(alert.at%60).toString().padStart(2, '0')} (${bellCount} bell${bellCount > 1 ? 's' : ''})`);
+            }
+        });
     }
 
     finishTimer(timerId) {
@@ -644,10 +774,8 @@ class TimerManager {
         timerView.updateTimeDisplay(timerId, timer);
         timerView.updateTimerState(timerId, timer);
 
-        // Play 5 bells when timer is completely finished (after reaching 0)
-        if (timer.bellEnabled) {
-            this.playBell(5);
-        }
+        // The "Tiempo terminado" alert is handled in checkAlerts/checkStopwatchAlerts
+        // so we don't need to play additional bells here to avoid duplicates
         
         // Flash the timer
         timerView.flashTimer(timerId);
@@ -691,6 +819,12 @@ class TimerManager {
         timerView.updateModeButton(timerId, timer);
         timerView.updatePresetButtons(timerId, timer);
         timerView.updateTimerInputs(timerId, timer.initialMinutes, timer.initialSeconds);
+        
+        // Update bell config button visual state
+        const cardElement = document.querySelector(`[data-timer-id="${timerId}"]`);
+        if (cardElement && typeof timerHandlers !== 'undefined') {
+            timerHandlers.updateBellConfigButton(cardElement, timer);
+        }
     }
 
     toggleTimerMode(timerId) {
@@ -704,6 +838,24 @@ class TimerManager {
 
         // Toggle mode
         timer.isStopwatch = !timer.isStopwatch;
+
+        // Convert existing alerts to their mirror positions for the new mode
+        const totalSeconds = timer.initialMinutes * 60 + timer.initialSeconds;
+        if (timer.alerts && timer.alerts.length > 0) {
+            timer.alerts = timer.alerts.map(alert => {
+                // Calculate the mirror position
+                const mirrorPosition = totalSeconds - alert.at;
+                
+                // Create new alert with mirrored position
+                return {
+                    ...alert,
+                    at: mirrorPosition
+                };
+            });
+        }
+
+        // Clear triggered alerts so they can trigger again in the new mode
+        timer.alertsTriggered.clear();
 
         // Reset to appropriate starting values
         if (timer.isStopwatch) {
@@ -721,6 +873,14 @@ class TimerManager {
         timerView.updateTimerState(timerId, timer);
         timerView.updateModeButton(timerId, timer);
         
+        // Update bell config button visual state
+        const cardElement = document.querySelector(`[data-timer-id="${timerId}"]`);
+        if (cardElement && typeof timerHandlers !== 'undefined') {
+            timerHandlers.updateBellConfigButton(cardElement, timer);
+        }
+        
+
+        
         // Trigger global update event
         window.dispatchEvent(new CustomEvent('timerListChanged'));
     }
@@ -732,8 +892,6 @@ class TimerManager {
     getAllTimers() {
         return this.timers;
     }
-
-
 }
 
 export const timerManager = new TimerManager(); 

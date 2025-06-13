@@ -1,4 +1,4 @@
-import { athenasRanges, feedbackRanges, panelRanges, wsdcRanges, wsdcReplyRanges } from '../../common/constants.js';
+import { athenasRanges, feedbackRanges, panelRanges, wsdcRanges, wsdcReplyRanges, demianRanges, evaRanges, evaPanelistRanges } from '../../common/constants.js';
 import { translate } from '../../common/i18n.js';
 
 export const speaksAndFeedsLogic = {
@@ -53,5 +53,32 @@ export const speaksAndFeedsLogic = {
             return translate(`speaks.wsdcReply.${range.key}`);
         }
         return translate("speaks.wsdcReply.prompt");
+    },
+
+    getDemianDescription(score) {
+        for (const range of demianRanges) {
+            if (score >= range.min && score <= range.max) {
+                return translate(`speaks.demian.${range.key}`);
+            }
+        }
+        return translate('speaks.demian.prompt');
+    },
+
+    getEvaDescription(score) {
+        for (const range of evaRanges) {
+            if (score >= range.min && score <= range.max) {
+                return translate(`speaks.eva.${range.key}`);
+            }
+        }
+        return translate('speaks.eva.prompt');
+    },
+
+    getEvaPanelistDescription(score) {
+        for (const range of evaPanelistRanges) {
+            if (score >= range.min && score <= range.max) {
+                return translate(`speaks.evaPanelist.${range.key}`);
+            }
+        }
+        return translate('speaks.evaPanelist.prompt');
     }
 };

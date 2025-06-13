@@ -60,4 +60,47 @@ export const wsdcReplyRanges = [
   { min: 35, max: 36, key: "35-36" },
   { min: 32, max: 34, key: "32-34" },
   { min: 30, max: 31, key: "30-31" },
+];
+
+export const demianRanges = [
+  { min: 95, max: 100, key: "excelente" },
+  { min: 89, max: 94, key: "sobresaliente" },
+  { min: 86, max: 88, key: "muyBueno" },
+  { min: 83, max: 85, key: "bueno" },
+  { min: 80, max: 82, key: "satisfactorio" },
+  { min: 77, max: 79, key: "aceptable" },
+  { min: 74, max: 76, key: "regular" },
+  { min: 71, max: 73, key: "deficiente" },
+  { min: 68, max: 70, key: "malo" },
+  { min: 65, max: 67, key: "muyMalo" },
+  { min: 62, max: 64, key: "insuficiente" },
+  { min: 59, max: 61, key: "inadecuado" },
+  { min: 56, max: 58, key: "pobre" },
+  { min: 50, max: 55, key: "inaceptable" },
+];
+
+export const evaRanges = [
+  { min: 10, max: 10, key: "excelente" },
+  { min: 9, max: 9, key: "sobresaliente" },
+  { min: 8, max: 8, key: "muyBueno" },
+  { min: 7, max: 7, key: "bueno" },
+  { min: 6, max: 6, key: "satisfactorio" },
+  { min: 5, max: 5, key: "regular" },
+  { min: 4, max: 4, key: "deficiente" },
+  { min: 3, max: 3, key: "malo" },
+  { min: 2, max: 2, key: "pobre" },
+  { min: 1, max: 1, key: "inaceptable" },
+];
+
+export const evaPanelistRanges = [
+  { min: 10, max: 10, key: "excelente" },
+  { min: 9, max: 9, key: "sobresaliente" },
+  { min: 8, max: 8, key: "muyBueno" },
+  { min: 7, max: 7, key: "bueno" },
+  { min: 6, max: 6, key: "satisfactorio" },
+  { min: 5, max: 5, key: "regular" },
+  { min: 4, max: 4, key: "deficiente" },
+  { min: 3, max: 3, key: "malo" },
+  { min: 2, max: 2, key: "pobre" },
+  { min: 1, max: 1, key: "inaceptable" },
 ]; 
