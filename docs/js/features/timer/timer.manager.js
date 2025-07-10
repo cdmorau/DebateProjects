@@ -22,9 +22,9 @@ class TimerManager {
             },
             bpspeech: { 
                 minutes: 7, 
-                seconds: 15, 
+                seconds: 0, 
                 alerts: [
-                    { at: 345, bells: 1 }, // Al completar 1 minuto (quedan 6:15 = 375s)
+                    { at: 360, bells: 1 }, // Al completar 1 minuto (quedan 6:00 = 360s)
                     { at: 60, bells: 2 },  // Faltando 1 minuto
                     { at: 15, bells: 2 },  // Faltando 15 segundos
                     { at: 0, bells: 5 }    // Al terminar
@@ -360,7 +360,7 @@ class TimerManager {
         }
     }
 
-    addTimer(name = null, minutes = 7, seconds = 15) {
+    addTimer(name = null, minutes = 7, seconds = 0) {
         const timerId = this.nextTimerId++;
         const timerName = name || `Timer ${timerId}`;
         

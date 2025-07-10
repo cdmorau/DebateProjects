@@ -74,8 +74,8 @@ export class TimerComponent {
                 <!-- Footer con botones de tiempo rápido - solo visible con un timer -->
                 <div class="quick-time-footer" id="quick-time-footer" style="display: none;">
                     <div class="quick-time-buttons">
-                        <button class="quick-time-btn" data-preset="bpspeech" title="7:15 - Discurso BP">
-                            <span class="time-label">7:15</span>
+                        <button class="quick-time-btn" data-preset="bpspeech" title="7:00 - Discurso BP">
+                            <span class="time-label">7:00</span>
                             <span class="preset-label">Discurso</span>
                         </button>
                         <button class="quick-time-btn" data-preset="preptime" title="15:00 - Tiempo de preparación">
@@ -95,10 +95,10 @@ export class TimerComponent {
                     </div>
                     <button class="add-timer-compact round" title="Agregar Timer">
                         <span class="add-text">Add</span>
-                        <span class="preset-time">07:15</span>
+                        <span class="preset-time">07:00</span>
                     </button>
-                    <div class="slider-group" data-value="15 seg">
-                        <input type="range" class="preset-slider seconds-slider" min="0" max="55" step="5" value="15">
+                    <div class="slider-group" data-value="0 seg">
+                        <input type="range" class="preset-slider seconds-slider" min="0" max="55" step="5" value="0">
                     </div>
                 </div>
             </div>

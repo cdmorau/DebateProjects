@@ -24,7 +24,7 @@ export function initTimer() {
     
     // If no timers exist, add a default one
     if (globalTimer.timers.length === 0) {
-        globalTimer.addTimer('Timer 1', 7, 15);
+        globalTimer.addTimer('Timer 1', 7, 0);
     }
     
     // Render all existing timers
@@ -56,7 +56,7 @@ function setupAddButton(globalTimer) {
         const secondsSlider = document.querySelector('.seconds-slider');
         
         const minutes = minutesSlider ? parseInt(minutesSlider.value) : 7;
-        const seconds = secondsSlider ? parseInt(secondsSlider.value) : 15;
+        const seconds = secondsSlider ? parseInt(secondsSlider.value) : 0;
         
         const timer = globalTimer.addTimer(`Timer ${globalTimer.timers.length + 1}`, minutes, seconds);
         globalTimer.renderTimer(timer);

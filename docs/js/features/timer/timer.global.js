@@ -47,6 +47,12 @@ class GlobalTimerManager {
         if (this.isSetup) return;
         
         this.setupAudio();
+        this.setupWakeLockAndVisibility();
+        this.setupPeriodicSync();
+        
+        // Clean up obsolete data on startup
+        this.cleanupObsoleteTimerData();
+        
         this.isSetup = true;
     }
 
@@ -259,6 +265,9 @@ class GlobalTimerManager {
     }
 
     syncAllRunningTimers() {
+        // First, clean up any sync conflicts
+        this.cleanupSyncConflicts();
+        
         // Sync all running timers to prevent drift after visibility change
         this.timers.forEach(timer => {
             if (timer.isRunning && timer.startTime) {
@@ -266,12 +275,36 @@ class GlobalTimerManager {
             }
         });
     }
+    
+    // Clean up sync conflicts between timers
+    cleanupSyncConflicts() {
+        const syncIds = new Set();
+        
+        this.timers.forEach(timer => {
+            if (timer.syncId) {
+                if (syncIds.has(timer.syncId)) {
+                    console.warn(`Duplicate syncId found for timer ${timer.id}, clearing sync data`);
+                    this.clearTimerSyncData(timer);
+                } else {
+                    syncIds.add(timer.syncId);
+                }
+            }
+        });
+    }
 
     syncTimer(timer) {
+        // Validate timer sync data to prevent conflicts
+        if (!this.validateTimerSyncData(timer)) {
+            return;
+        }
+        
         // Calculate how much time should have passed since start
         const now = Date.now();
         const elapsedMs = now - timer.startTime;
         const elapsedSeconds = Math.floor(elapsedMs / 1000);
+        
+        // Add unique sync identifier to prevent cross-contamination
+        const syncId = `${timer.id}-${timer.startTime}`;
         
         if (timer.isStopwatch) {
             // For stopwatch, add elapsed time
@@ -288,16 +321,20 @@ class GlobalTimerManager {
                 timer.isRunning = false;
                 timer.isFinished = true;
                 
+                // Clear all sync data for this timer
+                this.clearTimerSyncData(timer);
+                
                 // Clear interval
                 if (this.intervals.has(timer.id)) {
                     clearInterval(this.intervals.get(timer.id));
                     this.intervals.delete(timer.id);
                 }
                 
-                // Play finish sound
-                if (timer.bellEnabled) {
-                    this.playBell(2);
-                }
+                // No need to play finish sound here - it's handled by the finish alert
+                // that triggers 1 second before the timer ends
+                
+                // Update localStorage
+                this.saveTimersState();
             } else {
                 timer.currentMinutes = Math.floor(totalRemaining / 60);
                 timer.currentSeconds = totalRemaining % 60;
@@ -306,6 +343,33 @@ class GlobalTimerManager {
         
         // Update UI
         this.updateTimerUI(timer);
+    }
+    
+    // Clear sync data for a specific timer to prevent cross-contamination
+    clearTimerSyncData(timer) {
+        timer.startTime = null;
+        timer.startingCurrentSeconds = null;
+        timer.syncId = null;
+    }
+    
+    // Validate timer sync data to prevent conflicts
+    validateTimerSyncData(timer) {
+        // Check if timer has valid sync data
+        if (!timer.isRunning || !timer.startTime || timer.startingCurrentSeconds === null || timer.startingCurrentSeconds === undefined) {
+            return false;
+        }
+        
+        // Check if sync ID is unique
+        if (timer.syncId) {
+            const conflictingTimer = this.timers.find(t => t.id !== timer.id && t.syncId === timer.syncId);
+            if (conflictingTimer) {
+                console.warn(`Timer sync conflict detected: ${timer.id} and ${conflictingTimer.id} have same syncId`);
+                this.clearTimerSyncData(timer);
+                return false;
+            }
+        }
+        
+        return true;
     }
 
     // Method to be called by the router when switching to timer module
@@ -500,7 +564,7 @@ class GlobalTimerManager {
         playOneBell();
     }
     
-    addTimer(name = 'Timer 1', minutes = 7, seconds = 15) {
+    addTimer(name = 'Timer 1', minutes = 7, seconds = 0) {
         const timer = {
             id: this.nextTimerId++,
             name: name,
@@ -518,6 +582,10 @@ class GlobalTimerManager {
         };
         
         this.timers.push(timer);
+        
+        // Update localStorage
+        this.saveTimersState();
+        
         return timer;
     }
     
@@ -527,14 +595,33 @@ class GlobalTimerManager {
         
         // Las alarmas por defecto están configuradas para modo DSC (countdown)
         // En DSC, las alarmas se basan en tiempo transcurrido desde el inicio
-        return [
-            // 1 minuto transcurrido (cuando han pasado 60 segundos)
-            { minutes: 1, seconds: 0, type: 'single' },
-            // Falta 1 minuto (cuando han transcurrido totalSeconds - 60)
-            { minutes: Math.floor((totalSeconds - 60) / 60), seconds: (totalSeconds - 60) % 60, type: 'single' },
-            // Al terminar (cuando han transcurrido totalSeconds)
-            { minutes: Math.floor(totalSeconds / 60), seconds: totalSeconds % 60, type: 'double' }
-        ];
+        const alerts = [];
+        
+        // 1 minuto transcurrido (cuando han pasado 60 segundos)
+        alerts.push({ minutes: 1, seconds: 0, type: 'single' });
+        
+        // Falta 1 minuto (cuando han transcurrido totalSeconds - 60)
+        if (totalSeconds > 60) {
+            const elapsedForOneMinuteLeft = totalSeconds - 60;
+            alerts.push({ 
+                minutes: Math.floor(elapsedForOneMinuteLeft / 60), 
+                seconds: elapsedForOneMinuteLeft % 60, 
+                type: 'single' 
+            });
+        }
+        
+        // Al terminar - usamos una alarma especial que se dispara 1 segundo antes del final
+        // para asegurar que se active antes de que el timer se detenga
+        if (totalSeconds > 1) {
+            const elapsedForFinish = totalSeconds - 1;
+            alerts.push({ 
+                minutes: Math.floor(elapsedForFinish / 60), 
+                seconds: elapsedForFinish % 60, 
+                type: 'double' 
+            });
+        }
+        
+        return alerts;
     }
     
     startTimer(timerId) {
@@ -545,9 +632,13 @@ class GlobalTimerManager {
         timer.isPaused = false;
         timer.isFinished = false;
         
+        // Clear any previous sync data to prevent contamination
+        this.clearTimerSyncData(timer);
+        
         // Record start time and current state for sync purposes
         timer.startTime = Date.now();
         timer.startingCurrentSeconds = timer.currentMinutes * 60 + timer.currentSeconds;
+        timer.syncId = `${timer.id}-${timer.startTime}`;
         
         // Clear existing interval
         if (this.intervals.has(timerId)) {
@@ -580,10 +671,8 @@ class GlobalTimerManager {
                     clearInterval(interval);
                     this.intervals.delete(timerId);
                     
-                    // Play finish sound
-                    if (timer.bellEnabled) {
-                        this.playBell(2);
-                    }
+                    // No need to play finish sound here - it's handled by the finish alert
+                    // that triggers 1 second before the timer ends
                     
                     // Update UI if visible
                     this.updateTimerUI(timer);
@@ -600,6 +689,9 @@ class GlobalTimerManager {
         
         this.intervals.set(timerId, interval);
         this.updateTimerUI(timer);
+        
+        // Update localStorage
+        this.saveTimersState();
     }
     
     pauseTimer(timerId) {
@@ -614,10 +706,16 @@ class GlobalTimerManager {
             this.intervals.delete(timerId);
         }
         
+        // Clear sync data for this timer
+        this.clearTimerSyncData(timer);
+        
         // Check if we should release wake lock
         this.checkWakeLockStatus();
         
         this.updateTimerUI(timer);
+        
+        // Update localStorage
+        this.saveTimersState();
     }
     
     resetTimer(timerId) {
@@ -629,9 +727,8 @@ class GlobalTimerManager {
         timer.isFinished = false;
         timer.alertsTriggered.clear();
         
-        // Clear timing data
-        timer.startTime = null;
-        timer.startingCurrentSeconds = null;
+        // Clear all sync data for this timer
+        this.clearTimerSyncData(timer);
         
         if (timer.isStopwatch) {
             timer.currentMinutes = 0;
@@ -650,6 +747,9 @@ class GlobalTimerManager {
         this.checkWakeLockStatus();
         
         this.updateTimerUI(timer);
+        
+        // Update localStorage
+        this.saveTimersState();
     }
     
     toggleTimerMode(timerId) {
@@ -670,6 +770,9 @@ class GlobalTimerManager {
         // Convert alerts to maintain the same temporal point
         this.convertAlertsForModeChange(timer, wasStopwatch);
         
+        // Clear all sync data for this timer
+        this.clearTimerSyncData(timer);
+        
         // Reset to appropriate starting values
         if (timer.isStopwatch) {
             timer.currentMinutes = 0;
@@ -687,6 +790,9 @@ class GlobalTimerManager {
         
         // Update any open configuration overlay
         this.updateConfigOverlayForModeChange(timerId);
+        
+        // Update localStorage
+        this.saveTimersState();
     }
     
     checkAlerts(timer) {
@@ -1088,11 +1194,16 @@ class GlobalTimerManager {
         const timerIndex = this.timers.findIndex(t => t.id === timerId);
         if (timerIndex === -1) return;
         
+        const timer = this.timers[timerIndex];
+        
         // Clear interval
         if (this.intervals.has(timerId)) {
             clearInterval(this.intervals.get(timerId));
             this.intervals.delete(timerId);
         }
+        
+        // Clear sync data for this timer
+        this.clearTimerSyncData(timer);
         
         // Remove from array
         this.timers.splice(timerIndex, 1);
@@ -1113,6 +1224,9 @@ class GlobalTimerManager {
                 window.updateQuickTimeFooterVisibility(this);
             }
         }
+        
+        // Update localStorage
+        this.saveTimersState();
     }
     
     getTimer(timerId) {
@@ -1134,7 +1248,7 @@ class GlobalTimerManager {
         if (timer.isRunning) return false;
         
         const presets = {
-            'bpspeech': { minutes: 7, seconds: 15 },
+            'bpspeech': { minutes: 7, seconds: 0 },
             'preptime': { minutes: 15, seconds: 0 },
             'deliberation': { minutes: 20, seconds: 0 }
         };
@@ -1151,6 +1265,9 @@ class GlobalTimerManager {
         timer.isPaused = false;
         timer.alertsTriggered.clear();
         
+        // Clear sync data when applying preset
+        this.clearTimerSyncData(timer);
+        
         // Reset to DSC mode (countdown) - default mode for quick presets
         timer.isStopwatch = false;
         
@@ -1159,6 +1276,9 @@ class GlobalTimerManager {
         
         // Update UI
         this.updateTimerUI(timer);
+        
+        // Update localStorage
+        this.saveTimersState();
         
         return true;
     }
@@ -1248,6 +1368,9 @@ class GlobalTimerManager {
                     timer.initialMinutes = newMinutes;
                     timer.initialSeconds = newSeconds;
                     
+                    // Clear sync data when changing configuration
+                    this.clearTimerSyncData(timer);
+                    
                     // If timer is not running, update current time too
                     if (!timer.isRunning) {
                         if (timer.isStopwatch) {
@@ -1264,6 +1387,8 @@ class GlobalTimerManager {
                     
                     // Update UI
                     this.updateTimerUI(timer);
+                    
+                    // Update localStorage
                 this.saveTimersState();
             };
             
@@ -1858,6 +1983,9 @@ class GlobalTimerManager {
         timer.alerts = alerts;
         timer.alertsTriggered.clear();
         
+        // Clear sync data when alerts change
+        this.clearTimerSyncData(timer);
+        
         // Save to localStorage
         this.saveTimersState();
     }
@@ -1914,6 +2042,9 @@ class GlobalTimerManager {
         if (deleteBtn) {
             deleteBtn.classList.add('disabled');
         }
+        
+        // Update localStorage
+        this.saveTimersState();
     }
 
     setupTimelineDragAndDrop(overlay, timerId) {
@@ -2060,33 +2191,208 @@ class GlobalTimerManager {
     loadTimersState() {
         try {
             const saved = localStorage.getItem('globalTimers');
-            if (saved) {
-                const timersData = JSON.parse(saved);
-                timersData.forEach(timerData => {
-                    const timer = {
-                        ...timerData,
-                        alertsTriggered: new Set()
-                    };
+            if (!saved) return;
+            
+            const timersData = JSON.parse(saved);
+            if (!Array.isArray(timersData)) {
+                console.warn('Invalid timers data format, clearing localStorage');
+                localStorage.removeItem('globalTimers');
+                return;
+            }
+            
+            // Clear existing timers and intervals to avoid conflicts
+            this.clearAllTimers();
+            
+            const loadedTimers = [];
+            const currentTime = Date.now();
+            
+            timersData.forEach(timerData => {
+                // Validate timer data structure
+                if (!this.isValidTimerData(timerData)) {
+                    console.warn('Invalid timer data, skipping:', timerData);
+                    return;
+                }
+                
+                // Check if timer data is too old (more than 24 hours)
+                if (timerData.startTime && (currentTime - timerData.startTime) > 24 * 60 * 60 * 1000) {
+                    console.warn('Timer data too old, skipping:', timerData);
+                    return;
+                }
+                
+                // Prevent duplicate IDs
+                if (loadedTimers.some(t => t.id === timerData.id)) {
+                    console.warn('Duplicate timer ID found, skipping:', timerData.id);
+                    return;
+                }
+                
+                const timer = {
+                    ...timerData,
+                    alertsTriggered: new Set(),
+                    // Ensure alerts have correct structure
+                    alerts: this.validateAndFixAlerts(timerData.alerts || [], timerData.initialMinutes, timerData.initialSeconds)
+                };
+                
+                // If timer was running when saved, validate and sync it
+                if (timer.isRunning && timer.startTime) {
+                    // Check if the timer should have finished by now
+                    const elapsedMs = currentTime - timer.startTime;
+                    const totalMs = (timer.initialMinutes * 60 + timer.initialSeconds) * 1000;
                     
-                    // If timer was running when saved, sync it
-                    if (timer.isRunning && timer.startTime) {
+                    if (!timer.isStopwatch && elapsedMs >= totalMs) {
+                        // Timer should have finished, mark as finished
+                        timer.isRunning = false;
+                        timer.isFinished = true;
+                        timer.currentMinutes = 0;
+                        timer.currentSeconds = 0;
+                        timer.startTime = null;
+                        timer.startingCurrentSeconds = null;
+                    } else {
                         // Sync the timer to current time
                         this.syncTimer(timer);
-                        
-                        // If timer is still running after sync, restart its interval
-                        if (timer.isRunning) {
-                            this.startTimer(timer.id);
-                        }
                     }
-                    
-                    this.timers.push(timer);
-                    if (timerData.id >= this.nextTimerId) {
-                        this.nextTimerId = timerData.id + 1;
-                    }
-                });
-            }
+                }
+                
+                loadedTimers.push(timer);
+                
+                // Update nextTimerId to avoid conflicts
+                if (timer.id >= this.nextTimerId) {
+                    this.nextTimerId = timer.id + 1;
+                }
+            });
+            
+            // Add validated timers to the manager
+            this.timers = loadedTimers;
+            
+            // Restart running timers
+            this.timers.forEach(timer => {
+                if (timer.isRunning) {
+                    this.startTimer(timer.id);
+                }
+            });
+            
         } catch (error) {
             console.error('Failed to load timers state:', error);
+            // Clear corrupted data
+            localStorage.removeItem('globalTimers');
+        }
+    }
+    
+    // Helper method to validate timer data structure
+    isValidTimerData(timerData) {
+        return timerData && 
+               typeof timerData.id === 'number' &&
+               typeof timerData.name === 'string' &&
+               typeof timerData.initialMinutes === 'number' &&
+               typeof timerData.initialSeconds === 'number' &&
+               typeof timerData.currentMinutes === 'number' &&
+               typeof timerData.currentSeconds === 'number' &&
+               typeof timerData.isRunning === 'boolean' &&
+               typeof timerData.isPaused === 'boolean' &&
+               typeof timerData.isFinished === 'boolean' &&
+               typeof timerData.isStopwatch === 'boolean' &&
+               typeof timerData.bellEnabled === 'boolean' &&
+               timerData.initialMinutes >= 0 &&
+               timerData.initialSeconds >= 0 &&
+               timerData.currentMinutes >= 0 &&
+               timerData.currentSeconds >= 0;
+    }
+    
+    // Helper method to validate and fix alerts structure
+    validateAndFixAlerts(alerts, initialMinutes, initialSeconds) {
+        if (!Array.isArray(alerts)) return this.getDefaultAlerts(initialMinutes, initialSeconds);
+        
+        const totalSeconds = initialMinutes * 60 + initialSeconds;
+        const validAlerts = [];
+        
+        for (const alert of alerts) {
+            if (alert && 
+                typeof alert.minutes === 'number' &&
+                typeof alert.seconds === 'number' &&
+                typeof alert.type === 'string' &&
+                alert.minutes >= 0 &&
+                alert.seconds >= 0) {
+                
+                const alertTime = alert.minutes * 60 + alert.seconds;
+                
+                // Check if alert time is within valid range
+                // Allow alerts at totalSeconds - 1 (finish alert) but not at totalSeconds
+                // Alerts at exactly totalSeconds will never trigger because timer stops at 0:00
+                if (alertTime < totalSeconds) {
+                    validAlerts.push({
+                        minutes: alert.minutes,
+                        seconds: alert.seconds,
+                        type: alert.type
+                    });
+                }
+            }
+        }
+        
+        // Check if we have the problematic pattern of old incorrect alerts
+        // Allow alerts at totalSeconds - 1 (finish alert) but not at totalSeconds
+        const hasProblematicAlerts = alerts.some(alert => {
+            const alertTime = alert.minutes * 60 + alert.seconds;
+            return alertTime === totalSeconds; // Alert that would never trigger
+        });
+        
+        // If no valid alerts or has problematic alerts, use defaults
+        if (validAlerts.length === 0 || hasProblematicAlerts) {
+            return this.getDefaultAlerts(initialMinutes, initialSeconds);
+        }
+        
+        return validAlerts;
+    }
+    
+    // Helper method to clear all timers and intervals
+    clearAllTimers() {
+        // Clear all running intervals
+        this.intervals.forEach((interval, timerId) => {
+            clearInterval(interval);
+        });
+        this.intervals.clear();
+        
+        // Clear timers array
+        this.timers = [];
+        
+        // Release wake lock if active
+        this.releaseWakeLock();
+    }
+    
+    // Clear timer data from localStorage
+    clearTimerStorage() {
+        try {
+            localStorage.removeItem('globalTimers');
+            console.log('Timer localStorage cleared');
+        } catch (error) {
+            console.error('Failed to clear timer localStorage:', error);
+        }
+    }
+    
+    // Clean up obsolete timer data (older than 24 hours)
+    cleanupObsoleteTimerData() {
+        try {
+            const saved = localStorage.getItem('globalTimers');
+            if (!saved) return;
+            
+            const timersData = JSON.parse(saved);
+            if (!Array.isArray(timersData)) return;
+            
+            const currentTime = Date.now();
+            const cleanedData = timersData.filter(timerData => {
+                // Keep timers that are not too old (less than 24 hours)
+                if (timerData.startTime && (currentTime - timerData.startTime) > 24 * 60 * 60 * 1000) {
+                    console.log(`Removing obsolete timer data for timer ${timerData.id}`);
+                    return false;
+                }
+                return true;
+            });
+            
+            // Save cleaned data back to localStorage
+            if (cleanedData.length !== timersData.length) {
+                localStorage.setItem('globalTimers', JSON.stringify(cleanedData));
+                console.log(`Cleaned up ${timersData.length - cleanedData.length} obsolete timer entries`);
+            }
+        } catch (error) {
+            console.error('Failed to cleanup obsolete timer data:', error);
         }
     }
 } 
@@ -2113,6 +2419,49 @@ window.checkWakeLockStatus = () => {
         const status = globalTimerManager.getWakeLockStatus();
         console.table(status);
         return status;
+    }
+    return 'Timer manager not available';
+};
+
+// Global function to clear timer data (useful for debugging/cleanup)
+window.clearTimerData = () => {
+    if (globalTimerManager) {
+        globalTimerManager.clearAllTimers();
+        globalTimerManager.clearTimerStorage();
+        console.log('Timer data cleared');
+        return 'Timer data cleared';
+    }
+    return 'Timer manager not available';
+};
+
+// Global function to check and fix timer alerts (useful for debugging)
+window.checkTimerAlerts = () => {
+    if (globalTimerManager) {
+        console.log('Current timer alerts:');
+        globalTimerManager.timers.forEach((timer, index) => {
+            console.log(`Timer ${index + 1} (${timer.name}) - ${timer.initialMinutes}:${timer.initialSeconds.toString().padStart(2, '0')}:`);
+            timer.alerts.forEach((alert, alertIndex) => {
+                const totalSeconds = alert.minutes * 60 + alert.seconds;
+                console.log(`  ${alertIndex + 1}. A los ${alert.minutes}:${alert.seconds.toString().padStart(2, '0')} (${totalSeconds}s) - ${alert.type}`);
+            });
+        });
+        return 'Timer alerts displayed in console';
+    }
+    return 'Timer manager not available';
+};
+
+// Global function to fix timer alerts (useful for debugging)
+window.fixTimerAlerts = () => {
+    if (globalTimerManager) {
+        globalTimerManager.timers.forEach(timer => {
+            const oldAlerts = [...timer.alerts];
+            timer.alerts = globalTimerManager.getDefaultAlerts(timer.initialMinutes, timer.initialSeconds);
+            console.log(`Fixed alerts for ${timer.name}:`);
+            console.log('  Old:', oldAlerts);
+            console.log('  New:', timer.alerts);
+        });
+        globalTimerManager.saveTimersState();
+        return 'Timer alerts fixed and saved';
     }
     return 'Timer manager not available';
 };
