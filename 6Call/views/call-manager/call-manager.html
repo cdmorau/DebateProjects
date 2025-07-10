@@ -1,0 +1,127 @@
+<div class="container">
+    <div class="main-content">
+        <div class="visualization">
+            <!-- Mobile Judges Section -->
+            <div class="mobile-judges-section">
+                <div class="white-box judges-box">
+                    <h3 class="box-title" data-i18n-key="callManager.judges">Jueces</h3>
+                    <div class="judges-carousel-container">
+                        <div class="carousel-arrow prev">‹</div>
+                        <div class="judges-grid" id="judges-grid"></div>
+                        <div class="carousel-arrow next">›</div>
+                    </div>
+                    <div class="judges-grid judges-grid-center">
+                        <div class="add-judge-button"></div>
+                    </div>
+                </div>
+            </div>
+            <!-- Desktop: Fila para Orden de Discusión y Resultado de Votación Actual -->
+            <div class="callmanager-row desktop-only">
+                <div class="callmanager-col">
+                    <div class="white-box discussion-box">
+                        <h3 class="box-title" data-i18n-key="callManager.discussionOrder">Orden De Discusión</h3>
+                        <div class="comparison-section">
+                            <div class="comparison-grid" id="comparison-grid"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="callmanager-col">
+                    <div class="white-box voting-result-section">
+                        <h3 class="box-title" data-i18n-key="callManager.currentVotingResult">Resultado de Votación Actual</h3>
+                        <div id="current-voting-result-placeholder" class="instructions">
+                            Aquí se mostrarán los resultados de la votación actual próximamente.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mobile: Secciones independientes -->
+            <div class="mobile-comparison-section hidden">
+                <div class="white-box discussion-box">
+                    <h3 class="box-title" data-i18n-key="callManager.discussionOrder">Orden De Discusión</h3>
+                    <div class="comparison-section">
+                        <div class="comparison-grid" id="comparison-grid"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="mobile-voting-section hidden">
+                <div class="white-box voting-result-section">
+                    <h3 class="box-title" data-i18n-key="callManager.currentVotingResult">Resultado de Votación Actual</h3>
+                    <div id="current-voting-result-mobile" class="instructions">
+                        Aquí se mostrarán los resultados de la votación actual próximamente.
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Templates for Call Manager -->
+<template id="judge-card-template">
+    <div class="judge-card">
+        <div class="judge-header">
+            <div class="judge-info">
+                <div class="judge-name">
+                    <span class="judge-role"></span>
+                    <span class="name-text"></span>
+                </div>
+            </div>
+            <button class="remove-judge">×</button>
+        </div>
+        <div class="position-grid">
+        </div>
+        <div class="judge-switch">
+            <span class="switch-label-on" data-i18n-key="common.on">ON</span>
+            <label class="switch">
+                <input type="checkbox">
+                <span class="slider"></span>
+            </label>
+            <span class="switch-label-off" data-i18n-key="common.off">OFF</span>
+        </div>
+    </div>
+</template>
+
+<template id="comparison-item-template">
+    <div class="comparison-item collapsed">
+        <div class="comparison-header">
+            <div class="comparison-teams">
+                <span class="team-1-name"></span>
+                <span class="votes"></span>
+                <span class="team-2-name"></span>
+                <span class="minority-indicator"></span>
+            </div>
+            <button class="toggle-details collapsed" data-i18n-key="common.info">Inf</button>
+        </div>
+        <div class="all-votes">
+            <div class="votes-by-team-columns">
+                <div class="votes-column team-1">
+                    <div class="team-name"></div>
+                    <div class="judges-votes"></div>
+                </div>
+                <div class="votes-column team-2">
+                    <div class="team-name"></div>
+                    <div class="judges-votes"></div>
+                </div>
+        </div>
+    </div>
+</div>
+</template>
+
+<!-- Mobile Tab Navigation -->
+<div class="mobile-tabs">
+    <div class="mobile-tabs-container">
+        <button class="mobile-tab-button" data-tab="judges">
+            <span>👥</span>
+            <span data-i18n-key="callManager.judges">Jueces</span>
+        </button>
+        <button class="mobile-tab-button" data-tab="discussion">
+            <span>📋</span>
+            <span data-i18n-key="callManager.discussion">Discusión</span>
+        </button>
+        <button class="mobile-tab-button" data-tab="voting">
+            <span>🗳️</span>
+            <span data-i18n-key="callManager.currentVotingResult">Votación</span>
+        </button>
+    </div>
+</div> 

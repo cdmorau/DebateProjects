@@ -1,0 +1,137 @@
+<div class="content-wrapper max-width-900">
+    <div class="form-section">
+        <select id="table-selector" class="styled-select">
+            <!-- BP (British Parliamentary) -->
+            <option value="athenas" data-i18n-key="speaksAndFeeds.athenasTitle">Puntos de Orador</option>
+            <option value="feedback" data-i18n-key="speaksAndFeeds.chairFeedbackTitle">Feedback jueza principal</option>
+            <option value="panel" data-i18n-key="speaksAndFeeds.panelFeedbackTitle">Feedback panelista/trainee</option>
+            <!-- Discursos -->
+            <option value="demian" data-i18n-key="speaksAndFeeds.demianTitle">Tabla Demian (evaluación a discursistas)</option>
+            <option value="eva" data-i18n-key="speaksAndFeeds.evaTitle">Tabla Eva (retroalimentación a juezas)</option>
+            <option value="evaPanelist" data-i18n-key="speaksAndFeeds.evaPanelistTitle">Tabla Eva (feedback a panelistas y trainee)</option>
+            <!-- WSDC -->
+            <option value="wsdc" data-i18n-key="speaksAndFeeds.wsdcTitle">Puntos de Orador (WSDC)</option>
+            <option value="wsdcReply" data-i18n-key="speaksAndFeeds.wsdcReplyTitle">Discursos de Réplica (WSDC)</option>
+        </select>
+    </div>
+
+    <div id="athenas-section" class="table-section">
+        <div class="score-slider-container">
+            <div class="score-display">
+                <span id="athenas-display-calif" class="score-number">75</span>
+            </div>
+            <input type="range" id="athenas-score-calif" min="50" max="100" step="1" value="75" class="score-slider athenas-slider">
+            <div class="slider-labels">
+                <span class="slider-label-start">50</span>
+                <span class="slider-label-mid">75</span>
+                <span class="slider-label-end">100</span>
+            </div>
+        </div>
+        <div id="athenas-description-calif" class="description-box min-height-120"></div>
+    </div>
+
+    <div id="wsdc-section" class="table-section hidden">
+        <div class="score-slider-container">
+            <div class="score-display">
+                <span id="wsdc-display-calif" class="score-number">70</span>
+            </div>
+            <input type="range" id="wsdc-score-calif" min="60" max="80" step="1" value="70" class="score-slider wsdc-slider">
+            <div class="slider-labels">
+                <span class="slider-label-start">60</span>
+                <span class="slider-label-mid">70</span>
+                <span class="slider-label-end">80</span>
+            </div>
+        </div>
+        <div id="wsdc-description-calif" class="description-box min-height-120"></div>
+    </div>
+
+    <div id="wsdcReply-section" class="table-section hidden">
+        <div class="score-slider-container">
+            <div class="score-display">
+                <span id="wsdc-reply-display-calif" class="score-number">35</span>
+            </div>
+            <input type="range" id="wsdc-reply-score-calif" min="30" max="40" step="1" value="35" class="score-slider wsdc-reply-slider">
+            <div class="slider-labels">
+                <span class="slider-label-start">30</span>
+                <span class="slider-label-mid">35</span>
+                <span class="slider-label-end">40</span>
+            </div>
+        </div>
+        <div id="wsdc-reply-description-calif" class="description-box min-height-120"></div>
+    </div>
+
+    <div id="demian-section" class="table-section hidden">
+        <div class="score-slider-container">
+            <div class="score-display">
+                <span id="demian-display-calif" class="score-number">75</span>
+            </div>
+            <input type="range" id="demian-score-calif" min="50" max="100" step="1" value="75" class="score-slider demian-slider">
+            <div class="slider-labels">
+                <span class="slider-label-start">50</span>
+                <span class="slider-label-mid">75</span>
+                <span class="slider-label-end">100</span>
+            </div>
+        </div>
+        <div id="demian-description-calif" class="description-box min-height-120"></div>
+    </div>
+
+    <div id="eva-section" class="table-section hidden">
+        <div class="score-slider-container">
+            <div class="score-display">
+                <span id="eva-display-calif" class="score-number">5</span>
+            </div>
+            <input type="range" id="eva-score-calif" min="1" max="10" step="1" value="5" class="score-slider eva-slider">
+            <div class="slider-labels">
+                <span class="slider-label-start">1</span>
+                <span class="slider-label-mid">5</span>
+                <span class="slider-label-end">10</span>
+            </div>
+        </div>
+        <div id="eva-description-calif" class="description-box min-height-120"></div>
+    </div>
+
+    <div id="eva-panelist-section" class="table-section hidden">
+        <div class="score-slider-container">
+            <div class="score-display">
+                <span id="eva-panelist-display-calif" class="score-number">5</span>
+            </div>
+            <input type="range" id="eva-panelist-score-calif" min="1" max="10" step="1" value="5" class="score-slider eva-slider">
+            <div class="slider-labels">
+                <span class="slider-label-start">1</span>
+                <span class="slider-label-mid">5</span>
+                <span class="slider-label-end">10</span>
+            </div>
+        </div>
+        <div id="eva-panelist-description-calif" class="description-box min-height-120"></div>
+    </div>
+
+    <div id="feedback-section" class="table-section hidden">
+        <div class="score-slider-container">
+            <div class="score-display">
+                <span id="feedback-display-calif" class="score-number">5</span>
+            </div>
+            <input type="range" id="feedback-score-calif" min="1" max="10" step="1" value="5" class="score-slider feedback-slider">
+            <div class="slider-labels">
+                <span class="slider-label-start">1</span>
+                <span class="slider-label-mid">5</span>
+                <span class="slider-label-end">10</span>
+            </div>
+        </div>
+        <div id="feedback-description-calif" class="description-box min-height-150"></div>
+    </div>
+
+    <div id="panel-section" class="table-section hidden">
+        <div class="score-slider-container">
+            <div class="score-display">
+                <span id="panel-display-calif" class="score-number">5</span>
+            </div>
+            <input type="range" id="panel-score-calif" min="1" max="10" step="1" value="5" class="score-slider panel-slider">
+            <div class="slider-labels">
+                <span class="slider-label-start">1</span>
+                <span class="slider-label-mid">5</span>
+                <span class="slider-label-end">10</span>
+            </div>
+        </div>
+        <div id="panel-description-calif" class="description-box min-height-150"></div>
+    </div>
+</div> 
