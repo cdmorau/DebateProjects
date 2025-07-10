@@ -419,7 +419,6 @@ button:hover {
 .nav-dropdown {
     position: absolute;
     top: calc(100% + 8px);
-    left: 0;
     background: white;
     border-radius: 12px;
     box-shadow: 0 4px 20px rgba(0,0,0,0.1);
@@ -539,6 +538,30 @@ button:hover {
         min-width: 200px;
         right: 0;
         left: auto;
+    }
+}
+
+@media (max-width: 768px) {
+    .nav-dropdown {
+        right: 0 !important;
+        left: auto !important;
+        border-top-left-radius: 16px !important;
+        border-top-right-radius: 0 !important;
+        border-bottom-left-radius: 16px !important;
+        border-bottom-right-radius: 0 !important;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+    }
+}
+
+@media (max-width: 480px) {
+    .nav-dropdown {
+        right: 0 !important;
+        left: auto !important;
+        border-top-left-radius: 16px !important;
+        border-top-right-radius: 0 !important;
+        border-bottom-left-radius: 16px !important;
+        border-bottom-right-radius: 0 !important;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.12);
     }
 }
 
@@ -681,4 +704,93 @@ button:hover {
 
 /* Bell Context Menu Styles */
 /* Preload Indicator */
+
+@media (max-width: 768px) {
+  .nav-dropdown {
+    position: fixed !important;
+    top: 60px !important;
+    left: 10px !important;
+    right: auto !important;
+    z-index: 2000 !important;
+    min-width: 180px !important;
+    border-top-left-radius: 0 !important;
+    border-top-right-radius: 16px !important;
+    border-bottom-left-radius: 0 !important;
+    border-bottom-right-radius: 16px !important;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.12) !important;
+  }
+}
+
+/* --- LIMPIEZA: Solo una regla definitiva para el botón de Instagram --- */
+button#go-instagram {
+    background: #e74c3c !important;
+    background-color: #e74c3c !important;
+    color: #fff !important;
+    background-image: none !important;
+}
+button#go-instagram:hover {
+    background: #c0392b !important;
+    background-color: #c0392b !important;
+    color: #fff !important;
+    background-image: none !important;
+}
+
+@media (max-width: 768px) {
+    button#go-instagram {
+        background: #e74c3c !important;
+        background-color: #e74c3c !important;
+        background-image: none !important;
+        color: #fff !important;
+        border: none !important;
+    }
+    button#go-instagram:hover {
+        background: #c0392b !important;
+        background-color: #c0392b !important;
+        background-image: none !important;
+        color: #fff !important;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+}
+
+@media (max-width: 480px) {
+    button#go-instagram {
+        background: #e74c3c !important;
+        background-color: #e74c3c !important;
+        background-image: none !important;
+        color: #fff !important;
+        border: none !important;
+    }
+    button#go-instagram:hover {
+        background: #c0392b !important;
+        background-color: #c0392b !important;
+        background-image: none !important;
+        color: #fff !important;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+}
+
+.menu-button-danger {
+    background: #e74c3c !important;
+    background-color: #e74c3c !important;
+    color: #fff !important;
+    border: none;
+    border-radius: 16px;
+    font-size: 1.3em;
+    padding: 24px 0;
+    width: 90%;
+    margin: 0 auto 20px auto;
+    display: block;
+    font-weight: 600;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: all 0.2s;
+}
+
+.menu-button-danger:hover {
+    background: #c0392b !important;
+    color: #fff !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
 

@@ -3,8 +3,6 @@
  * Handles all navigation logic for the main application
  */
 
-import { callManagerView } from './features/callManager/callManager.view.js';
-
 export class NavigationManager {
     constructor() {
         this.currentTab = 'main-menu';
@@ -56,6 +54,10 @@ export class NavigationManager {
 
         document.getElementById('nav-timer')?.addEventListener('click', () => {
             this.navigateToTimer();
+        });
+
+        document.getElementById('nav-break-predict')?.addEventListener('click', () => {
+            this.navigateToBreakPredict();
         });
     }
 
@@ -159,12 +161,22 @@ export class NavigationManager {
         this.currentTab = 'timer';
     }
 
+    navigateToBreakPredict() {
+        this.hideAllTabs();
+        document.getElementById('break-predict-tab')?.classList.remove('hidden');
+        this.hideMobileTabs();
+        this.updateActiveNavItem('nav-break-predict');
+        this.closeNavMenu();
+        this.currentTab = 'break-predict';
+    }
+
     hideAllTabs() {
         const tabs = [
             'main-menu',
             'main-tab',
             'calificaciones-tab',
-            'timer-tab'
+            'timer-tab',
+            'break-predict-tab'
         ];
 
         tabs.forEach(tabId => {
@@ -200,46 +212,59 @@ export class NavigationManager {
     switchMobileTab(tabName) {
         console.log(`🔄 switchMobileTab called with tabName: "${tabName}"`);
         
-        // Ocultar todas las secciones móviles y remover 'active'
-        document.querySelector('.mobile-judges-section')?.classList.add('hidden');
-        document.querySelector('.mobile-judges-section')?.classList.remove('active');
-        document.querySelector('.mobile-comparison-section')?.classList.add('hidden');
-        document.querySelector('.mobile-comparison-section')?.classList.remove('active');
-        document.querySelector('.mobile-voting-section')?.classList.add('hidden');
-        document.querySelector('.mobile-voting-section')?.classList.remove('active');
-        // Quitar clase activa de todos los botones
-        document.querySelectorAll('.mobile-tab-button').forEach(btn => btn.classList.remove('active'));
-        // Mostrar la sección correspondiente
+        const judgesSection = document.querySelector('.mobile-judges-section');
+        const comparisonSection = document.querySelector('.mobile-comparison-section');
+        const tabButtons = document.querySelectorAll('.mobile-tab-button');
+        
+        console.log('📍 Elements found:');
+        console.log('  - judgesSection:', judgesSection);
+        console.log('  - comparisonSection:', comparisonSection);
+        console.log('  - tabButtons count:', tabButtons.length);
+        
+        // Remove active class from all buttons
+        tabButtons.forEach(btn => {
+            console.log(`  - Removing active from button: ${btn.getAttribute('data-tab')}`);
+            btn.classList.remove('active');
+        });
+        
         if (tabName === 'judges') {
-            document.querySelector('.mobile-judges-section')?.classList.remove('hidden');
-            document.querySelector('.mobile-judges-section')?.classList.add('active');
-        } else if (tabName === 'discussion') {
-            document.querySelector('.mobile-comparison-section')?.classList.remove('hidden');
-            document.querySelector('.mobile-comparison-section')?.classList.add('active');
-            // Actualizar las comparaciones cuando se cambia a la pestaña de discusión
-            console.log('🔍 Attempting to update comparisons...');
-            console.log('  - callManagerView available:', !!callManagerView);
-            console.log('  - updateComparisons method available:', !!(callManagerView && callManagerView.updateComparisons));
-            
-            if (callManagerView && callManagerView.updateComparisons) {
-                console.log('  ✅ Calling updateComparisons()');
-                callManagerView.updateComparisons();
-                console.log('  ✅ updateComparisons() called successfully');
-                
-                // Verificar si el elemento comparison-grid existe y tiene contenido
-                const comparisonGrid = document.getElementById('comparison-grid');
-                console.log('  - comparison-grid element:', comparisonGrid);
-                console.log('  - comparison-grid innerHTML length:', comparisonGrid ? comparisonGrid.innerHTML.length : 'N/A');
-                console.log('  - comparison-grid children count:', comparisonGrid ? comparisonGrid.children.length : 'N/A');
-            } else {
-                console.log('  ❌ callManagerView or updateComparisons not available');
+            console.log('🏛️ Switching to JUDGES section');
+            // Show judges section, hide discussion section
+            if (judgesSection) {
+                judgesSection.classList.remove('hidden');
+                console.log('  ✅ Removed hidden from judges section');
             }
-        } else if (tabName === 'voting') {
-            document.querySelector('.mobile-voting-section')?.classList.remove('hidden');
-            document.querySelector('.mobile-voting-section')?.classList.add('active');
+            if (comparisonSection) {
+                comparisonSection.classList.remove('active');
+                console.log('  ✅ Removed active from comparison section');
+            }
+            const judgesButton = document.querySelector('[data-tab="judges"]');
+            if (judgesButton) {
+                judgesButton.classList.add('active');
+                console.log('  ✅ Added active to judges button');
+            }
+        } else if (tabName === 'discussion') {
+            console.log('💬 Switching to DISCUSSION section');
+            // Hide judges section, show discussion section
+            if (judgesSection) {
+                judgesSection.classList.add('hidden');
+                console.log('  ✅ Added hidden to judges section');
+            }
+            if (comparisonSection) {
+                comparisonSection.classList.add('active');
+                console.log('  ✅ Added active to comparison section');
+                console.log('  📊 Comparison section classes after:', comparisonSection.className);
+            }
+            const discussionButton = document.querySelector('[data-tab="discussion"]');
+            if (discussionButton) {
+                discussionButton.classList.add('active');
+                console.log('  ✅ Added active to discussion button');
+            }
         }
-        // Activar el botón correspondiente
-        document.querySelector(`.mobile-tab-button[data-tab="${tabName}"]`)?.classList.add('active');
+        
+        console.log('🔍 Final state check:');
+        console.log('  - judgesSection classes:', judgesSection?.className);
+        console.log('  - comparisonSection classes:', comparisonSection?.className);
     }
 
     // Public method to get current tab

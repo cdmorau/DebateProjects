@@ -64,8 +64,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     setupMainMenuButtons();
     initCallManager();
     initSpeaksAndFeeds();
-    // Note: initTimer() is now handled by timer.component.js when navigating to timer
-    // initTimer();
+    initTimer();
     
     // Initialize mobile tabs state (hidden by default)
     const mobileTabs = document.querySelector('.mobile-tabs');
@@ -124,6 +123,10 @@ function setupMainMenuButtons() {
     
     document.getElementById('go-timer')?.addEventListener('click', () => {
         navigationManager.navigateToTimer();
+    });
+    
+    document.getElementById('go-break-predict')?.addEventListener('click', () => {
+        navigationManager.navigateToBreakPredict();
     });
 }
 

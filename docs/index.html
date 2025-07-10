@@ -24,6 +24,17 @@
             visibility: visible; 
             opacity: 1; 
         }
+        @media (max-width: 768px) {
+            .nav-dropdown {
+                left: auto !important;
+                right: 0 !important;
+                border-top-left-radius: 16px !important;
+                border-top-right-radius: 0 !important;
+                border-bottom-left-radius: 16px !important;
+                border-bottom-right-radius: 0 !important;
+                box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+            }
+        }
     </style>
     
     <link rel="stylesheet" href="style.css">
@@ -57,12 +68,9 @@
                     <div class="nav-dropdown-item" id="nav-timer" data-i18n-key="mainMenu.timerButton">
                         Timer
                     </div>
-                    <div class="nav-dropdown-item" id="nav-break-predict" data-i18n-key="mainMenu.breakPredictButton">
-                        Break Predict
-                    </div>
                 </div>
             </div>
-            <div class="nav-bar-title" data-i18n-key="mainMenu.welcome">Debtools</div>
+            <div class="nav-bar-title" data-i18n-key="mainMenu.welcome">DebaTools</div>
         </div>
         <div class="language-selector">
             <button id="lang-es" class="lang-button active" data-lang="es">ES</button>
@@ -71,7 +79,10 @@
     </nav>
     <div id="main-menu" class="flex-center-container">
         <div class="content-wrapper max-width-600">
-            <h1 class="main-title" data-i18n-key="mainMenu.title">Bienvenido</h1>
+            <div class="main-logo" style="display: flex; justify-content: center; margin-bottom: 24px;">
+                <img src="images/debatools-logo.png" alt="DebaTools Logo" style="max-width: 180px; height: auto;">
+            </div>
+            <!-- <h1 class="main-title" data-i18n-key="mainMenu.title">Bienvenido</h1> -->
             
             <!-- Optional preload indicator (hidden by default) -->
             <div id="preload-indicator" class="preload-indicator" style="display: none;">
@@ -84,7 +95,11 @@
             <button id="go-call-manager" class="menu-button menu-button-primary max-width-400" data-i18n-key="mainMenu.callManagerButton">Gestor de Call</button>
             <button id="go-calificaciones" class="menu-button menu-button-secondary max-width-400" data-i18n-key="mainMenu.speaksAndFeedsButton">Speaks & Feeds</button>
             <button id="go-timer" class="menu-button menu-button-tertiary max-width-400" data-i18n-key="mainMenu.timerButton">Timer</button>
-            <button id="go-break-predict" class="menu-button menu-button-quaternary max-width-400" data-i18n-key="mainMenu.breakPredictButton">Break Predict</button>
+            <a href="https://www.instagram.com/debatools_cm?igsh=MzBkeXNoNnQ1dmJy" target="_blank" rel="noopener" style="text-decoration: none; width: 100%; display: block;">
+                <button class="menu-button menu-button-danger max-width-400" id="go-instagram">
+                    Instagram
+                </button>
+            </a>
         </div>
     </div>
     <div id="calificaciones-tab" class="flex-center-container hidden">
@@ -95,9 +110,6 @@
     </div>
     <div id="main-tab" class="hidden">
         <!-- Call Manager content will be loaded dynamically -->
-    </div>
-    <div id="break-predict-tab" class="hidden">
-        <!-- Break Predict content will be loaded dynamically -->
     </div>
 
     <!-- Context Menu for Bell Dots -->
