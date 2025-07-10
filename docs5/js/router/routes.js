@@ -123,22 +123,12 @@ export function configureRoutes() {
                     if (!timerComponent.isReady()) {
                         await timerComponent.init(timerContainer);
                     }
-                    
-                    // Sync timers when entering timer module
-                    if (window.globalTimerManager) {
-                        window.globalTimerManager.onModuleEnter();
-                    }
                 } catch (error) {
                     console.error('Error loading timer content:', error);
                 }
             }
         },
         cleanup: async () => {
-            // Notify timer manager we're leaving the module
-            if (window.globalTimerManager) {
-                window.globalTimerManager.onModuleExit();
-            }
-            
             // Cleanup timer component when leaving route
             const { timerComponent } = await import('../features/timer/timer.component.js');
             if (timerComponent.isReady()) {

@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Bell Dots Fix</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .test-container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+        }
+        .test-results {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .status-success { background: #28a745; }
+        .status-error { background: #dc3545; }
+        .status-warning { background: #ffc107; }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🔧 Test: Bell Dots Fix</h1>
+        <p>Este test verifica que los bell dots fantasma han sido eliminados y los botones mantienen su estilo.</p>
+        
+        <!-- Test Section 1: Button Styles -->
+        <div class="test-section">
+            <h3>Test 1: Estilos de Botones</h3>
+            <p>Verificar que los botones de agregar campanadas mantienen su estilo visual.</p>
+            
+            <div class="bell-quick-actions" style="display: flex; gap: 10px; margin: 10px 0;">
+                <button class="quick-action-btn add-bell-btn" data-sound="single" title="Agregar ding">
+                    <div class="bell-icon-visual single-bell">+</div>
+                </button>
+                <button class="quick-action-btn delete-bell-btn disabled" title="Eliminar ding seleccionado">
+                    <div class="bell-icon-visual finish-bell">×</div>
+                </button>
+                <button class="quick-action-btn test-bells-btn" title="Probar dings">🔔</button>
+            </div>
+            
+            <button id="testButtonStyles">Verificar Estilos de Botones</button>
+            <div id="buttonStylesResults" class="test-results"></div>
+        </div>
+        
+        <!-- Test Section 2: Bell Dots Creation -->
+        <div class="test-section">
+            <h3>Test 2: Creación de Bell Dots</h3>
+            <p>Verificar que no se crean bell dots fantasma sin atributos.</p>
+            
+            <!-- Simular estructura de timer -->
+            <div class="bell-config-overlay" style="display: block; position: relative; background: #f8f9fa; padding: 20px; border-radius: 8px;">
+                <div class="bell-timeline-container">
+                    <div class="timeline-labels">
+                        <span class="timeline-start">0:00</span>
+                        <span class="timeline-end">07:00</span>
+                    </div>
+                    <div class="bell-timeline">
+                        <div class="timeline-track"></div>
+                        <div class="timeline-progress"></div>
+                        <!-- Bell dots will be dynamically added here -->
+                    </div>
+                </div>
+                
+                <div class="bell-quick-actions" style="margin-top: 15px;">
+                    <button class="quick-action-btn add-bell-btn" data-sound="single" title="Agregar ding">
+                        <div class="bell-icon-visual single-bell">+</div>
+                    </button>
+                    <button class="quick-action-btn add-bell-btn" data-sound="double" title="Agregar ding doble">
+                        <div class="bell-icon-visual double-bell">2</div>
+                    </button>
+                    <button class="quick-action-btn delete-bell-btn disabled" title="Eliminar ding seleccionado">
+                        <div class="bell-icon-visual finish-bell">×</div>
+                    </button>
+                    <button class="quick-action-btn test-bells-btn" title="Probar dings">🔔</button>
+                </div>
+            </div>
+            
+            <div style="margin-top: 15px;">
+                <button id="testAddBells">Agregar Bell Dots</button>
+                <button id="testCleanup">Test Cleanup</button>
+                <button id="testAutoSave">Test AutoSave</button>
+            </div>
+            <div id="bellDotsResults" class="test-results"></div>
+        </div>
+        
+        <!-- Test Section 3: Console Monitoring -->
+        <div class="test-section">
+            <h3>Test 3: Monitor de Consola</h3>
+            <p>Captura de logs de consola para detectar errores.</p>
+            <button id="clearConsole">Limpiar Logs</button>
+            <div id="consoleResults" class="test-results"></div>
+        </div>
+    </div>
+
+    <!-- Include necessary scripts -->
+    <script src="js/core/timer.manager.js"></script>
+    <script src="js/features/timer/timer.handlers.js"></script>
+    
+    <script>
+        // Initialize timer system
+        const timerManager = new TimerManager();
+        const timerHandlers = new TimerHandlers();
+        timerHandlers.init();
+        
+        // Create a test timer
+        const testTimer = timerManager.addTimer('Test Timer', 7, 0);
+        const testTimerId = testTimer.id;
+        
+        // Get overlay element
+        const overlay = document.querySelector('.bell-config-overlay');
+        
+        // Console monitoring
+        const consoleLogs = [];
+        const originalConsole = {
+            log: console.log,
+            warn: console.warn,
+            error: console.error
+        };
+        
+        function captureConsole() {
+            ['log', 'warn', 'error'].forEach(method => {
+                console[method] = function(...args) {
+                    const timestamp = new Date().toLocaleTimeString();
+                    const message = args.map(arg => 
+                        typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)
+                    ).join(' ');
+                    
+                    consoleLogs.push({
+                        timestamp,
+                        level: method,
+                        message
+                    });
+                    
+                    // Update console display
+                    updateConsoleDisplay();
+                    
+                    // Call original console method
+                    originalConsole[method].apply(console, args);
+                };
+            });
+        }
+        
+        function updateConsoleDisplay() {
+            const consoleResults = document.getElementById('consoleResults');
+            const recent = consoleLogs.slice(-20); // Show last 20 logs
+            
+            consoleResults.innerHTML = recent.map(log => {
+                const indicator = log.level === 'error' ? '🔴' : 
+                                log.level === 'warn' ? '🟡' : '🟢';
+                return `${indicator} [${log.timestamp}] ${log.level.toUpperCase()}: ${log.message}`;
+            }).join('\n');
+            
+            consoleResults.scrollTop = consoleResults.scrollHeight;
+        }
+        
+        // Test 1: Button Styles
+        document.getElementById('testButtonStyles').addEventListener('click', () => {
+            const results = document.getElementById('buttonStylesResults');
+            results.innerHTML = 'Testing button styles...\n';
+            
+            const buttons = document.querySelectorAll('.add-bell-btn, .delete-bell-btn, .test-bells-btn');
+            let allGood = true;
+            
+            buttons.forEach((btn, index) => {
+                const icon = btn.querySelector('.bell-icon-visual');
+                const computedStyle = window.getComputedStyle(btn);
+                const iconStyle = icon ? window.getComputedStyle(icon) : null;
+                
+                const hasBackground = computedStyle.background !== 'rgba(0, 0, 0, 0)';
+                const hasIcon = !!icon;
+                const iconVisible = iconStyle ? iconStyle.display !== 'none' : false;
+                
+                const status = hasBackground && hasIcon && iconVisible ? '✅' : '❌';
+                if (!hasBackground || !hasIcon || !iconVisible) allGood = false;
+                
+                results.innerHTML += `Button ${index + 1}: ${status}\n`;
+                results.innerHTML += `  Background: ${hasBackground ? '✅' : '❌'}\n`;
+                results.innerHTML += `  Icon present: ${hasIcon ? '✅' : '❌'}\n`;
+                results.innerHTML += `  Icon visible: ${iconVisible ? '✅' : '❌'}\n\n`;
+            });
+            
+            results.innerHTML += `Overall: ${allGood ? '✅ ALL GOOD' : '❌ ISSUES FOUND'}\n`;
+        });
+        
+        // Test 2: Bell Dots Creation
+        document.getElementById('testAddBells').addEventListener('click', () => {
+            const results = document.getElementById('bellDotsResults');
+            results.innerHTML = 'Adding bell dots...\n';
+            
+            // Setup quick actions first
+            timerHandlers.setupQuickActions(overlay, testTimerId);
+            
+            // Add some bell dots
+            timerHandlers.addBellToTimeline(overlay, testTimerId, 'single');
+            timerHandlers.addBellToTimeline(overlay, testTimerId, 'double');
+            
+            setTimeout(() => {
+                const bellDots = overlay.querySelectorAll('.bell-dot');
+                results.innerHTML += `Bell dots found: ${bellDots.length}\n\n`;
+                
+                let validCount = 0;
+                let invalidCount = 0;
+                
+                bellDots.forEach((dot, index) => {
+                    const timeAttr = dot.getAttribute('data-time');
+                    const soundAttr = dot.getAttribute('data-sound');
+                    const isValid = timeAttr && soundAttr && !isNaN(parseInt(timeAttr));
+                    
+                    if (isValid) validCount++;
+                    else invalidCount++;
+                    
+                    const status = isValid ? '✅' : '❌';
+                    results.innerHTML += `Bell ${index + 1}: ${status}\n`;
+                    results.innerHTML += `  data-time: ${timeAttr || 'NULL'}\n`;
+                    results.innerHTML += `  data-sound: ${soundAttr || 'NULL'}\n`;
+                    results.innerHTML += `  classes: ${dot.className}\n\n`;
+                });
+                
+                results.innerHTML += `Summary:\n`;
+                results.innerHTML += `  Valid: ${validCount}\n`;
+                results.innerHTML += `  Invalid: ${invalidCount}\n`;
+                results.innerHTML += `  Status: ${invalidCount === 0 ? '✅ NO GHOST DOTS' : '❌ GHOST DOTS FOUND'}\n`;
+            }, 100);
+        });
+        
+        document.getElementById('testCleanup').addEventListener('click', () => {
+            const results = document.getElementById('bellDotsResults');
+            results.innerHTML += '\nTesting cleanup...\n';
+            
+            timerHandlers.cleanupInvalidBellDots(overlay);
+            
+            setTimeout(() => {
+                const bellDots = overlay.querySelectorAll('.bell-dot');
+                results.innerHTML += `Bell dots after cleanup: ${bellDots.length}\n`;
+                
+                const allValid = Array.from(bellDots).every(dot => 
+                    dot.getAttribute('data-time') && 
+                    dot.getAttribute('data-sound') && 
+                    !isNaN(parseInt(dot.getAttribute('data-time')))
+                );
+                
+                results.innerHTML += `All valid: ${allValid ? '✅ YES' : '❌ NO'}\n`;
+            }, 50);
+        });
+        
+        document.getElementById('testAutoSave').addEventListener('click', () => {
+            const results = document.getElementById('bellDotsResults');
+            results.innerHTML += '\nTesting autoSave...\n';
+            
+            timerHandlers.autoSaveTimeline(overlay, testTimerId);
+            
+            setTimeout(() => {
+                const bellDots = overlay.querySelectorAll('.bell-dot');
+                results.innerHTML += `Bell dots after autoSave: ${bellDots.length}\n`;
+                
+                const timer = timerManager.getTimer(testTimerId);
+                results.innerHTML += `Timer alerts: ${timer.alerts ? timer.alerts.length : 0}\n`;
+            }, 50);
+        });
+        
+        // Test 3: Console monitoring
+        document.getElementById('clearConsole').addEventListener('click', () => {
+            consoleLogs.length = 0;
+            updateConsoleDisplay();
+        });
+        
+        // Initialize
+        captureConsole();
+        timerHandlers.setupQuickActions(overlay, testTimerId);
+        
+        console.log('Test page loaded successfully');
+        console.log('Timer ID:', testTimerId);
+    </script>
+</body>
+</html> 

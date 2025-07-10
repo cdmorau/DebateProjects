@@ -190,40 +190,6 @@ body.footer-visible .timer-section-new {
     animation: pulse-floating 2s ease-in-out infinite;
 }
 
-/* Picture-in-Picture Button */
-.pip-timer-compact {
-    background: none;
-    border: none;
-    color: #9c27b0;
-    font-size: 16px;
-    padding: 4px;
-    cursor: pointer;
-    opacity: 0.7;
-    transition: all 0.2s ease;
-    margin-right: 4px;
-    position: relative;
-}
-
-.pip-timer-compact:hover {
-    opacity: 1;
-    transform: scale(1.1);
-}
-
-.pip-timer-compact.active {
-    color: #e91e63;
-    opacity: 1;
-    animation: pulse-pip 2s ease-in-out infinite;
-}
-
-@keyframes pulse-pip {
-    0%, 100% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(1.1);
-    }
-}
-
 @keyframes pulse-floating {
     0%, 100% {
         transform: scale(1);

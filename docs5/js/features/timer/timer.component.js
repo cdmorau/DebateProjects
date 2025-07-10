@@ -110,7 +110,6 @@ export class TimerComponent {
                         <span class="timer-name-compact" contenteditable="true">Timer 1</span>
                         <div class="timer-status-indicator"></div>
                         <button class="floating-timer-compact" title="Abrir ventana flotante">📌</button>
-                        <button class="pip-timer-compact" title="Picture-in-Picture">🎭</button>
                         <button class="fullscreen-timer-compact" title="Pantalla completa">⛶</button>
                         <button class="remove-timer-compact">×</button>
                     </div>

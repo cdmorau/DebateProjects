@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test - Ventana Flotante de Timer</title>
+    <link rel="stylesheet" href="views/timer/timer.css">
+    <style>
+        body {
+            padding: 20px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f5f5f5;
+        }
+        .test-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        .test-title {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .test-instructions {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #2196f3;
+        }
+        .test-instructions h3 {
+            margin-top: 0;
+            color: #1976d2;
+        }
+        .test-instructions ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        .test-instructions li {
+            margin: 5px 0;
+        }
+        .timer-demo {
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1 class="test-title">🪟 Test de Ventana Flotante para Timers</h1>
+        
+        <div class="test-instructions">
+            <h3>📋 Instrucciones de Prueba:</h3>
+            <ul>
+                <li><strong>📌 Botón Flotante:</strong> Haz clic en el icono 📌 para abrir la ventana flotante interna</li>
+                <li><strong>🎮 Controles:</strong> Usa los botones de la ventana flotante para controlar el timer</li>
+                <li><strong>🔄 Sincronización:</strong> Los cambios se sincronizan entre ambas ventanas en tiempo real</li>
+                <li><strong>🪟 Cambio de icono:</strong> El botón cambia a 🪟 cuando está activo</li>
+                <li><strong>🖱️ Arrastrar:</strong> Arrastra la ventana por el header para moverla</li>
+                <li><strong>📏 Redimensionar:</strong> Usa el handle en la esquina inferior derecha - el timer se adapta automáticamente</li>
+                <li><strong>➖ Minimizar:</strong> Usa el botón − o doble-clic en el header</li>
+                <li><strong>⌨️ Atajos:</strong> Espacio (play/pause), Ctrl+R (reset), Escape (cerrar)</li>
+                <li><strong>❌ Cerrar:</strong> Usa la X en la ventana flotante o vuelve a hacer clic en 📌</li>
+            </ul>
+        </div>
+
+        <div class="timer-demo">
+            <div class="timers-grid">
+                <!-- Timer card de ejemplo -->
+                <div class="timer-card-compact" data-timer-id="test-1">
+                    <div class="timer-card-header">
+                        <span class="timer-name-compact" contenteditable="true">Timer Flotante Demo</span>
+                        <div class="timer-status-indicator"></div>
+                        <button class="floating-timer-compact" title="Abrir ventana flotante">📌</button>
+                        <button class="fullscreen-timer-compact" title="Pantalla completa">⛶</button>
+                        <button class="remove-timer-compact">×</button>
+                    </div>
+                    
+                    <div class="timer-display-compact">
+                        <div class="time-display-large">
+                            <div class="time-group">
+                                <span class="time-number minutes">05</span>
+                            </div>
+                            <span class="time-separator">:</span>
+                            <div class="time-group">
+                                <span class="time-number seconds">30</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="timer-controls-compact">
+                        <button class="timer-btn-compact mode-toggle" title="Alternar Timer/Cronómetro" data-mode="timer">DESC</button>
+                        <button class="timer-btn-compact play-pause" title="Play/Pause">▶</button>
+                        <button class="timer-btn-compact reset" title="Reset">⏹</button>
+                        <button class="timer-btn-compact sound-test" title="Probar ding">
+                            <img src="sounds/campana.png" alt="🔔" class="bell-icon">
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="test-instructions">
+            <h3>🔧 Características Implementadas:</h3>
+            <ul>
+                <li><strong>True Picture-in-Picture:</strong> Se mantiene encima de TODAS las aplicaciones</li>
+                <li><strong>Document PiP API:</strong> API nativa de Chrome para ventanas flotantes</li>
+                <li><strong>Video PiP Fallback:</strong> Canvas-based para navegadores más antiguos</li>
+                <li><strong>Sincronización en Tiempo Real:</strong> 100ms de actualización para fluidez</li>
+                <li><strong>Control Bidireccional:</strong> Controla desde cualquier ventana</li>
+                <li><strong>Detección de macOS:</strong> Advertencias específicas para limitaciones</li>
+                <li><strong>Atajos de Teclado:</strong> Navegación rápida con teclado</li>
+                <li><strong>Gestión de Memoria:</strong> Limpieza automática al cerrar</li>
+                <li><strong>Estado Visual:</strong> Indicadores de estado y animaciones</li>
+                <li><strong>Múltiples Fallbacks:</strong> Garantiza compatibilidad en todos los navegadores</li>
+                <li><strong>Redimensionamiento Adaptativo:</strong> El timer se ajusta automáticamente al tamaño de la ventana</li>
+            </ul>
+        </div>
+
+        <div class="test-instructions" style="background: #fff3cd; border-left: 4px solid #ffc107;">
+            <h3>⚠️ Limitaciones en macOS:</h3>
+            <ul>
+                <li><strong>Aplicaciones en Pantalla Completa:</strong> Las ventanas flotantes pueden no aparecer encima de aplicaciones en fullscreen debido a los "Spaces" de macOS</li>
+                <li><strong>Soluciones:</strong>
+                    <ul>
+                        <li>Sal de pantalla completa con ⌘+F o Esc</li>
+                        <li>Usa aplicaciones en modo ventana normal</li>
+                        <li>La ventana aparecerá cuando cambies entre aplicaciones</li>
+                        <li>En Mission Control, arrastra la ventana del timer a "Todos los escritorios"</li>
+                    </ul>
+                </li>
+                <li><strong>Funcionamiento Normal:</strong> La ventana flotante sí aparece encima de aplicaciones en modo ventana</li>
+            </ul>
+        </div>
+    </div>
+
+    <script type="module">
+        // Mock timer manager for demo
+        class MockTimer {
+            constructor(id, name, minutes, seconds) {
+                this.id = id;
+                this.name = name;
+                this.initialMinutes = minutes;
+                this.initialSeconds = seconds;
+                this.currentMinutes = minutes;
+                this.currentSeconds = seconds;
+                this.isRunning = false;
+                this.isStopwatch = false;
+                this.interval = null;
+            }
+
+            start() {
+                if (this.isRunning) return;
+                this.isRunning = true;
+                
+                this.interval = setInterval(() => {
+                    if (this.isStopwatch) {
+                        // Cronómetro ascendente
+                        this.currentSeconds++;
+                        if (this.currentSeconds >= 60) {
+                            this.currentSeconds = 0;
+                            this.currentMinutes++;
+                        }
+                    } else {
+                        // Timer descendente
+                        if (this.currentSeconds > 0) {
+                            this.currentSeconds--;
+                        } else if (this.currentMinutes > 0) {
+                            this.currentMinutes--;
+                            this.currentSeconds = 59;
+                        } else {
+                            this.stop();
+                        }
+                    }
+                }, 1000);
+            }
+
+            stop() {
+                this.isRunning = false;
+                if (this.interval) {
+                    clearInterval(this.interval);
+                    this.interval = null;
+                }
+            }
+
+            reset() {
+                this.stop();
+                this.currentMinutes = this.initialMinutes;
+                this.currentSeconds = this.initialSeconds;
+            }
+
+            toggleMode() {
+                this.stop();
+                this.isStopwatch = !this.isStopwatch;
+                if (this.isStopwatch) {
+                    this.currentMinutes = 0;
+                    this.currentSeconds = 0;
+                } else {
+                    this.currentMinutes = this.initialMinutes;
+                    this.currentSeconds = this.initialSeconds;
+                }
+            }
+        }
+
+        // Import floating window functionality
+        import { timerFloating } from './js/features/timer/timer.floating.js';
+
+        // Create mock timer
+        const mockTimer = new MockTimer('test-1', 'Timer Flotante Demo', 5, 30);
+
+        // Setup demo functionality
+        const timerCard = document.querySelector('.timer-card-compact');
+        const floatingBtn = timerCard.querySelector('.floating-timer-compact');
+        const playBtn = timerCard.querySelector('.play-pause');
+        const resetBtn = timerCard.querySelector('.reset');
+        const modeBtn = timerCard.querySelector('.mode-toggle');
+        const minutesDisplay = timerCard.querySelector('.minutes');
+        const secondsDisplay = timerCard.querySelector('.seconds');
+        const statusIndicator = timerCard.querySelector('.timer-status-indicator');
+
+        // Update display function
+        function updateDisplay() {
+            minutesDisplay.textContent = mockTimer.currentMinutes.toString().padStart(2, '0');
+            secondsDisplay.textContent = mockTimer.currentSeconds.toString().padStart(2, '0');
+            playBtn.textContent = mockTimer.isRunning ? '⏸' : '▶';
+            modeBtn.textContent = mockTimer.isStopwatch ? 'ASC' : 'DESC';
+            modeBtn.className = `timer-btn-compact mode-toggle ${mockTimer.isStopwatch ? 'stopwatch' : 'timer'}`;
+            
+            if (mockTimer.isRunning) {
+                timerCard.classList.add('running');
+                statusIndicator.style.backgroundColor = '#51cf66';
+            } else {
+                timerCard.classList.remove('running');
+                statusIndicator.style.backgroundColor = '#ff6b6b';
+            }
+        }
+
+        // Setup event listeners
+        floatingBtn.addEventListener('click', () => {
+            if (timerFloating.hasFloatingWindow(mockTimer.id)) {
+                timerFloating.closeFloatingWindow(mockTimer.id);
+            } else {
+                timerFloating.createFloatingWindow(mockTimer.id, timerCard, mockTimer);
+            }
+        });
+
+        playBtn.addEventListener('click', () => {
+            if (mockTimer.isRunning) {
+                mockTimer.stop();
+            } else {
+                mockTimer.start();
+            }
+            updateDisplay();
+        });
+
+        resetBtn.addEventListener('click', () => {
+            mockTimer.reset();
+            updateDisplay();
+        });
+
+        modeBtn.addEventListener('click', () => {
+            mockTimer.toggleMode();
+            updateDisplay();
+        });
+
+        // Initial display update
+        updateDisplay();
+        
+        // Update display every 100ms for smooth animation
+        setInterval(updateDisplay, 100);
+
+        // Check and display Picture-in-Picture support
+        function checkPiPSupport() {
+            if ('documentPictureInPicture' in window) {
+                return 'Document Picture-in-Picture (Chrome 116+)';
+            }
+            if ('pictureInPictureEnabled' in document) {
+                return 'Video Picture-in-Picture (Canvas fallback)';
+            }
+            return 'Popup/Internal fallback';
+        }
+
+        const pipSupport = checkPiPSupport();
+        console.log('🪟 Demo de Ventana Flotante cargado correctamente');
+        console.log('📌 Haz clic en el botón flotante para abrir/cerrar la ventana');
+        console.log(`🔧 API disponible: ${pipSupport}`);
+        
+        // Add support info to the page
+        const supportInfo = document.createElement('div');
+        supportInfo.style.cssText = `
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            z-index: 1000;
+            max-width: 200px;
+        `;
+        supportInfo.innerHTML = `
+            <strong>🔧 API Support:</strong><br>
+            ${pipSupport}
+        `;
+        document.body.appendChild(supportInfo);
+    </script>
+</body>
+</html> 

@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Alarm Functionality</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        .test-section h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        .test-button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .test-button:hover {
+            background: #2980b9;
+        }
+        .test-result {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        .timer-info {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .alert-list {
+            background: #fff3cd;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🔔 Test de Funcionalidad de Alarmas</h1>
+        <p>Esta página verifica que las alarmas configuradas visualmente funcionen correctamente durante la ejecución del timer.</p>
+        
+        <div class="test-section">
+            <h3>1. Verificar Timer Manager</h3>
+            <button class="test-button" onclick="testTimerManager()">Verificar Timer Manager</button>
+            <div id="timer-manager-result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>2. Crear Timer de Prueba</h3>
+            <button class="test-button" onclick="createTestTimer()">Crear Timer (2 min)</button>
+            <button class="test-button" onclick="addCustomAlerts()">Agregar Alarmas Personalizadas</button>
+            <div id="test-timer-result"></div>
+            <div id="timer-info"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>3. Simular Ejecución de Timer</h3>
+            <button class="test-button" onclick="simulateTimerExecution()">Simular Timer (Acelerado)</button>
+            <button class="test-button" onclick="stopSimulation()">Detener Simulación</button>
+            <div id="simulation-result"></div>
+            <div id="alerts-triggered"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>4. Verificar Audio</h3>
+            <button class="test-button" onclick="testAudio()">Test Audio (1 campanada)</button>
+            <button class="test-button" onclick="testMultipleAudio()">Test Audio (3 campanadas)</button>
+            <div id="audio-result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>5. Verificar Configuración Visual</h3>
+            <button class="test-button" onclick="testVisualConfig()">Verificar Configuración Visual</button>
+            <div id="visual-config-result"></div>
+        </div>
+    </div>
+
+    <script type="module">
+        // Import timer modules
+        import { timerManager } from './js/features/timer/timer.manager.js';
+        import { timerHandlers } from './js/features/timer/timer.handlers.js';
+
+        let testTimerId = null;
+        let simulationInterval = null;
+        let alertsTriggered = [];
+
+        // Initialize timer manager
+        timerManager.init();
+
+        // Make functions global for onclick handlers
+        window.testTimerManager = function() {
+            const result = document.getElementById('timer-manager-result');
+            try {
+                if (typeof timerManager !== 'undefined' && timerManager.isInitialized) {
+                    result.innerHTML = '<div class="test-result success">✅ Timer Manager inicializado correctamente</div>';
+                } else {
+                    result.innerHTML = '<div class="test-result error">❌ Timer Manager no está inicializado</div>';
+                }
+            } catch (error) {
+                result.innerHTML = `<div class="test-result error">❌ Error: ${error.message}</div>`;
+            }
+        };
+
+        window.createTestTimer = function() {
+            const result = document.getElementById('test-timer-result');
+            const timerInfo = document.getElementById('timer-info');
+            
+            try {
+                // Create a 2-minute timer for testing
+                testTimerId = timerManager.addTimer('Test Timer', 2, 0);
+                
+                if (testTimerId) {
+                    const timer = timerManager.getTimer(testTimerId);
+                    result.innerHTML = '<div class="test-result success">✅ Timer de prueba creado (ID: ' + testTimerId + ')</div>';
+                    
+                    timerInfo.innerHTML = `
+                        <div class="timer-info">
+                            <strong>Timer Info:</strong><br>
+                            ID: ${timer.id}<br>
+                            Duración: ${timer.initialMinutes}:${timer.initialSeconds.toString().padStart(2, '0')}<br>
+                            Alertas por defecto: ${timer.alerts.length}<br>
+                            Campanadas habilitadas: ${timer.bellEnabled !== false ? 'Sí' : 'No'}
+                        </div>
+                    `;
+                } else {
+                    result.innerHTML = '<div class="test-result error">❌ No se pudo crear el timer</div>';
+                }
+            } catch (error) {
+                result.innerHTML = `<div class="test-result error">❌ Error: ${error.message}</div>`;
+            }
+        };
+
+        window.addCustomAlerts = function() {
+            const result = document.getElementById('test-timer-result');
+            
+            if (!testTimerId) {
+                result.innerHTML = '<div class="test-result error">❌ Primero crea un timer de prueba</div>';
+                return;
+            }
+
+            try {
+                // Add custom alerts at specific times
+                const customAlerts = [
+                    { at: 90, soundType: 'single', description: 'Alerta a 1:30' },
+                    { at: 60, soundType: 'double', description: 'Falta 1 minuto' },
+                    { at: 30, soundType: 'triple', description: 'Faltan 30 segundos' },
+                    { at: 0, soundType: 'finish', description: 'Tiempo terminado' }
+                ];
+
+                timerManager.updateTimerAlerts(testTimerId, customAlerts);
+                
+                const timer = timerManager.getTimer(testTimerId);
+                result.innerHTML = '<div class="test-result success">✅ Alarmas personalizadas agregadas</div>';
+                
+                const alertsList = timer.alerts.map(alert => 
+                    `• ${alert.description} (${alert.soundType}) - ${Math.floor(alert.at/60)}:${(alert.at%60).toString().padStart(2, '0')}`
+                ).join('<br>');
+                
+                document.getElementById('timer-info').innerHTML += `
+                    <div class="alert-list">
+                        <strong>Alarmas configuradas:</strong><br>
+                        ${alertsList}
+                    </div>
+                `;
+            } catch (error) {
+                result.innerHTML = `<div class="test-result error">❌ Error: ${error.message}</div>`;
+            }
+        };
+
+        window.simulateTimerExecution = function() {
+            const result = document.getElementById('simulation-result');
+            const alertsDiv = document.getElementById('alerts-triggered');
+            
+            if (!testTimerId) {
+                result.innerHTML = '<div class="test-result error">❌ Primero crea un timer de prueba</div>';
+                return;
+            }
+
+            try {
+                const timer = timerManager.getTimer(testTimerId);
+                alertsTriggered = [];
+                
+                // Reset timer to initial state
+                timer.currentMinutes = timer.initialMinutes;
+                timer.currentSeconds = timer.initialSeconds;
+                timer.alertsTriggered.clear();
+                
+                result.innerHTML = '<div class="test-result info">🔄 Simulando timer acelerado (1 segundo = 10 segundos reales)...</div>';
+                alertsDiv.innerHTML = '<div class="alert-list"><strong>Alertas disparadas:</strong><br><em>Ninguna aún...</em></div>';
+                
+                // Simulate timer countdown at 10x speed
+                simulationInterval = setInterval(() => {
+                    // Decrement 10 seconds each iteration (10x speed)
+                    let totalSeconds = timer.currentMinutes * 60 + timer.currentSeconds;
+                    totalSeconds -= 10;
+                    
+                    if (totalSeconds <= 0) {
+                        timer.currentMinutes = 0;
+                        timer.currentSeconds = 0;
+                        
+                        // Check final alert
+                        checkAlertsManually(timer, 0);
+                        
+                        clearInterval(simulationInterval);
+                        result.innerHTML = '<div class="test-result success">✅ Simulación completada</div>';
+                        return;
+                    }
+                    
+                    timer.currentMinutes = Math.floor(totalSeconds / 60);
+                    timer.currentSeconds = totalSeconds % 60;
+                    
+                    // Check for alerts at current time
+                    checkAlertsManually(timer, totalSeconds);
+                    
+                    // Update display
+                    result.innerHTML = `<div class="test-result info">🔄 Tiempo restante: ${timer.currentMinutes}:${timer.currentSeconds.toString().padStart(2, '0')}</div>`;
+                }, 100); // Update every 100ms for smooth simulation
+                
+            } catch (error) {
+                result.innerHTML = `<div class="test-result error">❌ Error: ${error.message}</div>`;
+            }
+        };
+
+        window.stopSimulation = function() {
+            if (simulationInterval) {
+                clearInterval(simulationInterval);
+                simulationInterval = null;
+                document.getElementById('simulation-result').innerHTML = '<div class="test-result info">⏹️ Simulación detenida</div>';
+            }
+        };
+
+        function checkAlertsManually(timer, totalSecondsRemaining) {
+            if (!timer.alerts || timer.alerts.length === 0) return;
+            
+            timer.alerts.forEach((alert) => {
+                const alertKey = `alert-${alert.at}-${alert.soundType}`;
+                
+                if (totalSecondsRemaining === alert.at && !timer.alertsTriggered.has(alertKey)) {
+                    timer.alertsTriggered.add(alertKey);
+                    
+                    const soundMap = {
+                        'single': 1,
+                        'double': 2,
+                        'triple': 3,
+                        'finish': 5
+                    };
+                    
+                    const bellCount = soundMap[alert.soundType] || 1;
+                    
+                    // Record triggered alert
+                    alertsTriggered.push({
+                        time: `${Math.floor(alert.at/60)}:${(alert.at%60).toString().padStart(2, '0')}`,
+                        description: alert.description,
+                        soundType: alert.soundType,
+                        bellCount: bellCount
+                    });
+                    
+                    // Play sound
+                    timerManager.playBell(bellCount);
+                    
+                    // Update display
+                    updateAlertsDisplay();
+                }
+            });
+        }
+
+        function updateAlertsDisplay() {
+            const alertsDiv = document.getElementById('alerts-triggered');
+            if (alertsTriggered.length === 0) {
+                alertsDiv.innerHTML = '<div class="alert-list"><strong>Alertas disparadas:</strong><br><em>Ninguna aún...</em></div>';
+            } else {
+                const alertsList = alertsTriggered.map(alert => 
+                    `• ${alert.time} - ${alert.description} (${alert.bellCount} campanada${alert.bellCount > 1 ? 's' : ''})`
+                ).join('<br>');
+                
+                alertsDiv.innerHTML = `
+                    <div class="alert-list">
+                        <strong>Alertas disparadas (${alertsTriggered.length}):</strong><br>
+                        ${alertsList}
+                    </div>
+                `;
+            }
+        }
+
+        window.testAudio = function() {
+            const result = document.getElementById('audio-result');
+            try {
+                timerManager.playBell(1);
+                result.innerHTML = '<div class="test-result success">✅ Audio test ejecutado (1 campanada)</div>';
+            } catch (error) {
+                result.innerHTML = `<div class="test-result error">❌ Error de audio: ${error.message}</div>`;
+            }
+        };
+
+        window.testMultipleAudio = function() {
+            const result = document.getElementById('audio-result');
+            try {
+                timerManager.playBell(3);
+                result.innerHTML = '<div class="test-result success">✅ Audio test ejecutado (3 campanadas)</div>';
+            } catch (error) {
+                result.innerHTML = `<div class="test-result error">❌ Error de audio: ${error.message}</div>`;
+            }
+        };
+
+        window.testVisualConfig = function() {
+            const result = document.getElementById('visual-config-result');
+            
+            if (!testTimerId) {
+                result.innerHTML = '<div class="test-result error">❌ Primero crea un timer de prueba</div>';
+                return;
+            }
+
+            try {
+                const timer = timerManager.getTimer(testTimerId);
+                
+                // Check if alerts are properly stored
+                const hasAlerts = timer.alerts && timer.alerts.length > 0;
+                const alertsCount = hasAlerts ? timer.alerts.length : 0;
+                
+                // Check if bell is enabled
+                const bellEnabled = timer.bellEnabled !== false;
+                
+                // Check if alerts have proper structure
+                const validAlerts = hasAlerts ? timer.alerts.every(alert => 
+                    typeof alert.at === 'number' && 
+                    typeof alert.soundType === 'string' && 
+                    typeof alert.description === 'string'
+                ) : false;
+                
+                let resultHTML = '<div class="test-result success">✅ Configuración visual verificada:</div>';
+                resultHTML += `<div class="timer-info">`;
+                resultHTML += `• Alertas configuradas: ${alertsCount}<br>`;
+                resultHTML += `• Campanadas habilitadas: ${bellEnabled ? 'Sí' : 'No'}<br>`;
+                resultHTML += `• Estructura de alertas válida: ${validAlerts ? 'Sí' : 'No'}<br>`;
+                
+                if (hasAlerts) {
+                    resultHTML += `• Tipos de sonido: ${timer.alerts.map(a => a.soundType).join(', ')}<br>`;
+                    resultHTML += `• Tiempos de alerta: ${timer.alerts.map(a => `${Math.floor(a.at/60)}:${(a.at%60).toString().padStart(2, '0')}`).join(', ')}`;
+                }
+                
+                resultHTML += `</div>`;
+                
+                result.innerHTML = resultHTML;
+                
+            } catch (error) {
+                result.innerHTML = `<div class="test-result error">❌ Error: ${error.message}</div>`;
+            }
+        };
+    </script>
+</body>
+</html> 

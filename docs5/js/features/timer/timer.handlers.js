@@ -184,9 +184,6 @@ class TimerHandlers {
         // Floating window button
         this.setupFloatingButton(cardElement, timer);
         
-        // Picture-in-Picture button
-        this.setupPiPButton(cardElement, timer);
-        
         // Time inputs (legacy - hidden)
         this.setupTimeInputs(cardElement, timer);
         
@@ -1011,97 +1008,37 @@ class TimerHandlers {
         const fullscreenBtn = cardElement.querySelector('.fullscreen-timer-compact');
         
         if (fullscreenBtn) {
-            fullscreenBtn.addEventListener('click', async () => {
+            fullscreenBtn.addEventListener('click', () => {
                 const isFullscreen = cardElement.classList.contains('fullscreen');
-                const isBrowserFullscreen = document.fullscreenElement || 
-                                          document.webkitFullscreenElement || 
-                                          document.mozFullScreenElement ||
-                                          document.msFullscreenElement;
                 
-                if (!isFullscreen && !isBrowserFullscreen) {
+                // Remover la clase fullscreen de todas las cards primero
+                document.querySelectorAll('.timer-card-compact').forEach(card => {
+                    card.classList.remove('fullscreen');
+                });
+                
+                if (!isFullscreen) {
                     // Activar pantalla completa
-                    try {
-                        // Primero aplicar el estilo CSS fullscreen
-                        document.querySelectorAll('.timer-card-compact').forEach(card => {
-                            card.classList.remove('fullscreen');
-                        });
-                        cardElement.classList.add('fullscreen');
-                        
-                        // Luego intentar activar fullscreen del navegador
-                        if (cardElement.requestFullscreen) {
-                            await cardElement.requestFullscreen();
-                        } else if (cardElement.webkitRequestFullscreen) {
-                            await cardElement.webkitRequestFullscreen();
-                        } else if (cardElement.mozRequestFullScreen) {
-                            await cardElement.mozRequestFullScreen();
-                        } else if (cardElement.msRequestFullscreen) {
-                            await cardElement.msRequestFullscreen();
-                        }
-                        
-                        fullscreenBtn.textContent = '⛶';
-                        fullscreenBtn.title = 'Salir de pantalla completa (Esc)';
-                        
-                    } catch (error) {
-                        console.log('Fullscreen API not available, using CSS fallback');
-                        // Fallback: solo usar CSS fullscreen
-                        fullscreenBtn.textContent = '⛶';
-                        fullscreenBtn.title = 'Salir de pantalla completa (Esc)';
-                    }
+                    cardElement.classList.add('fullscreen');
+                    fullscreenBtn.textContent = '⛶';
+                    fullscreenBtn.title = 'Salir de pantalla completa';
                     
                     // Escuchar la tecla Escape
                     const handleEscape = (e) => {
                         if (e.key === 'Escape') {
-                            this.exitFullscreen(cardElement, fullscreenBtn);
+                            cardElement.classList.remove('fullscreen');
+                            fullscreenBtn.textContent = '⛶';
+                            fullscreenBtn.title = 'Pantalla completa';
                             document.removeEventListener('keydown', handleEscape);
                         }
                     };
                     document.addEventListener('keydown', handleEscape);
-                    
-                    // Escuchar cambios en el estado de fullscreen del navegador
-                    const handleFullscreenChange = () => {
-                        const isStillFullscreen = document.fullscreenElement || 
-                                                document.webkitFullscreenElement || 
-                                                document.mozFullScreenElement ||
-                                                document.msFullscreenElement;
-                        
-                        if (!isStillFullscreen) {
-                            this.exitFullscreen(cardElement, fullscreenBtn);
-                            document.removeEventListener('fullscreenchange', handleFullscreenChange);
-                            document.removeEventListener('webkitfullscreenchange', handleFullscreenChange);
-                            document.removeEventListener('mozfullscreenchange', handleFullscreenChange);
-                            document.removeEventListener('MSFullscreenChange', handleFullscreenChange);
-                        }
-                    };
-                    
-                    document.addEventListener('fullscreenchange', handleFullscreenChange);
-                    document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
-                    document.addEventListener('mozfullscreenchange', handleFullscreenChange);
-                    document.addEventListener('MSFullscreenChange', handleFullscreenChange);
-                    
                 } else {
                     // Desactivar pantalla completa
-                    this.exitFullscreen(cardElement, fullscreenBtn);
+                    fullscreenBtn.textContent = '⛶';
+                    fullscreenBtn.title = 'Pantalla completa';
                 }
             });
         }
-    }
-
-    exitFullscreen(cardElement, fullscreenBtn) {
-        // Salir del fullscreen del navegador
-        if (document.exitFullscreen) {
-            document.exitFullscreen();
-        } else if (document.webkitExitFullscreen) {
-            document.webkitExitFullscreen();
-        } else if (document.mozCancelFullScreen) {
-            document.mozCancelFullScreen();
-        } else if (document.msExitFullscreen) {
-            document.msExitFullscreen();
-        }
-        
-        // Remover clase CSS
-        cardElement.classList.remove('fullscreen');
-        fullscreenBtn.textContent = '⛶';
-        fullscreenBtn.title = 'Pantalla completa';
     }
 
     setupFloatingButton(cardElement, timer) {
@@ -1120,203 +1057,6 @@ class TimerHandlers {
                 }
             });
         }
-    }
-
-    setupPiPButton(cardElement, timer) {
-        const pipBtn = cardElement.querySelector('.pip-timer-compact');
-        
-        if (pipBtn) {
-            pipBtn.addEventListener('click', async () => {
-                const timerId = timer.id;
-                
-                // Check if Picture-in-Picture is supported
-                if (!('documentPictureInPicture' in window) && !('pictureInPictureEnabled' in document)) {
-                    this.showPiPNotSupportedMessage();
-                    return;
-                }
-                
-                if (timerFloating.hasFloatingWindow(timerId)) {
-                    // Close existing PiP window
-                    timerFloating.closeFloatingWindow(timerId);
-                    pipBtn.classList.remove('active');
-                } else {
-                    // Create new Picture-in-Picture window
-                    try {
-                        await timerFloating.createFloatingWindow(timerId, cardElement, timer);
-                        pipBtn.classList.add('active');
-                        
-                        // Update button state when PiP window closes
-                        const checkPiPStatus = () => {
-                            if (!timerFloating.hasFloatingWindow(timerId)) {
-                                pipBtn.classList.remove('active');
-                            } else {
-                                setTimeout(checkPiPStatus, 1000);
-                            }
-                        };
-                        setTimeout(checkPiPStatus, 1000);
-                        
-                    } catch (error) {
-                        console.error('Failed to create Picture-in-Picture window:', error);
-                        this.showPiPErrorMessage();
-                    }
-                }
-            });
-        }
-    }
-
-    showPiPNotSupportedMessage() {
-        const message = document.createElement('div');
-        message.className = 'pip-message pip-not-supported';
-        message.innerHTML = `
-            <div class="pip-message-content">
-                <div class="pip-message-icon">❌</div>
-                <div class="pip-message-text">
-                    <strong>Picture-in-Picture no soportado</strong><br>
-                    Tu navegador no soporta la función Picture-in-Picture.<br>
-                    Usa Chrome 116+ o prueba el botón flotante 📌
-                </div>
-                <button class="pip-message-close">×</button>
-            </div>
-        `;
-        
-        this.showPiPMessage(message);
-    }
-
-    showPiPErrorMessage() {
-        const message = document.createElement('div');
-        message.className = 'pip-message pip-error';
-        message.innerHTML = `
-            <div class="pip-message-content">
-                <div class="pip-message-icon">⚠️</div>
-                <div class="pip-message-text">
-                    <strong>Error al abrir Picture-in-Picture</strong><br>
-                    No se pudo abrir la ventana Picture-in-Picture.<br>
-                    Prueba el botón flotante 📌 como alternativa
-                </div>
-                <button class="pip-message-close">×</button>
-            </div>
-        `;
-        
-        this.showPiPMessage(message);
-    }
-
-    showPiPMessage(message) {
-        // Add message styles if not already present
-        if (!document.querySelector('#pip-message-styles')) {
-            const styles = document.createElement('style');
-            styles.id = 'pip-message-styles';
-            styles.textContent = `
-                .pip-message {
-                    position: fixed;
-                    top: 20px;
-                    right: 20px;
-                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                    color: white;
-                    border-radius: 12px;
-                    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-                    z-index: 10000;
-                    max-width: 350px;
-                    animation: slideInRight 0.3s ease;
-                    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-                }
-
-                .pip-message.pip-error {
-                    background: linear-gradient(135deg, #ff6b6b, #ffa500);
-                }
-
-                .pip-message.pip-not-supported {
-                    background: linear-gradient(135deg, #ff6b6b, #e74c3c);
-                }
-
-                .pip-message-content {
-                    padding: 20px;
-                    display: flex;
-                    gap: 15px;
-                    align-items: flex-start;
-                    position: relative;
-                }
-
-                .pip-message-icon {
-                    font-size: 24px;
-                    flex-shrink: 0;
-                }
-
-                .pip-message-text {
-                    flex: 1;
-                    font-size: 14px;
-                    line-height: 1.4;
-                }
-
-                .pip-message-close {
-                    position: absolute;
-                    top: 10px;
-                    right: 10px;
-                    background: rgba(255, 255, 255, 0.2);
-                    border: none;
-                    color: white;
-                    border-radius: 50%;
-                    width: 24px;
-                    height: 24px;
-                    cursor: pointer;
-                    font-size: 16px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    transition: all 0.2s ease;
-                }
-
-                .pip-message-close:hover {
-                    background: rgba(255, 255, 255, 0.3);
-                    transform: scale(1.1);
-                }
-
-                @keyframes slideInRight {
-                    from {
-                        transform: translateX(100%);
-                        opacity: 0;
-                    }
-                    to {
-                        transform: translateX(0);
-                        opacity: 1;
-                    }
-                }
-
-                @media (max-width: 480px) {
-                    .pip-message {
-                        top: 10px;
-                        right: 10px;
-                        left: 10px;
-                        max-width: none;
-                    }
-                }
-            `;
-            document.head.appendChild(styles);
-        }
-
-        document.body.appendChild(message);
-
-        // Auto-remove after 5 seconds
-        setTimeout(() => {
-            if (message.parentNode) {
-                message.style.animation = 'slideInRight 0.3s ease reverse';
-                setTimeout(() => {
-                    if (message.parentNode) {
-                        message.parentNode.removeChild(message);
-                    }
-                }, 300);
-            }
-        }, 5000);
-
-        // Close button functionality
-        const closeBtn = message.querySelector('.pip-message-close');
-        closeBtn.addEventListener('click', () => {
-            message.style.animation = 'slideInRight 0.3s ease reverse';
-            setTimeout(() => {
-                if (message.parentNode) {
-                    message.parentNode.removeChild(message);
-                }
-            }, 300);
-        });
     }
 
     // Utility method to remove all event listeners from a timer card

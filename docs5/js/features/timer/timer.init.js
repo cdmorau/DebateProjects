@@ -1,5 +1,4 @@
 import { getGlobalTimerManager } from './timer.global.js';
-import { timerFloating } from './timer.floating.js';
 
 let isTimerInitialized = false;
 
@@ -15,9 +14,6 @@ export function initTimer() {
     
     // Get the global timer manager
     const globalTimer = getGlobalTimerManager();
-    
-    // Make timerFloating available globally
-    window.timerFloating = timerFloating;
     
     // Setup audio if not already done
     globalTimer.setup();
