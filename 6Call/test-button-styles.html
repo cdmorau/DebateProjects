@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Button Styles</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Test Button Styles</h1>
+        
+        <!-- Simular la estructura de botones del overlay -->
+        <div class="bell-config-overlay" style="display: flex; position: relative; background: white; padding: 20px; border-radius: 8px; max-width: 600px; margin: 20px auto;">
+            <div class="bell-config-content">
+                <h3>Configuración de Campanadas</h3>
+                
+                <!-- Quick Actions Section -->
+                <div class="quick-actions" style="margin: 20px 0;">
+                    <h4>Agregar Campanadas:</h4>
+                    <div class="add-bell-buttons" style="display: flex; gap: 10px; margin: 10px 0;">
+                        <button class="add-bell-btn" data-sound="single">
+                            <span class="bell-icon">🔔</span>
+                            <span class="bell-count">1</span>
+                        </button>
+                        <button class="add-bell-btn" data-sound="double">
+                            <span class="bell-icon">🔔</span>
+                            <span class="bell-count">2</span>
+                        </button>
+                        <button class="add-bell-btn" data-sound="triple">
+                            <span class="bell-icon">🔔</span>
+                            <span class="bell-count">3</span>
+                        </button>
+                        <button class="add-bell-btn" data-sound="finish">
+                            <span class="bell-icon">🔔</span>
+                            <span class="bell-count">5</span>
+                        </button>
+                    </div>
+                    
+                    <div class="action-buttons" style="display: flex; gap: 10px; margin: 10px 0;">
+                        <button class="delete-bell-btn disabled">Eliminar Seleccionada</button>
+                        <button class="test-bells-btn">Probar Sonido</button>
+                    </div>
+                </div>
+                
+                <!-- Timeline -->
+                <div class="bell-timeline-container" style="margin: 20px 0;">
+                    <div class="bell-timeline" style="position: relative; height: 40px; background: #f0f0f0; border-radius: 20px; margin: 10px 0;">
+                        <!-- Bell dots will be added here -->
+                    </div>
+                </div>
+                
+                <div class="test-controls" style="margin: 20px 0;">
+                    <button id="testSetupQuickActions">Test setupQuickActions</button>
+                    <button id="testAddBell">Test Add Bell</button>
+                    <div id="testResults" style="margin-top: 10px; padding: 10px; background: #f9f9f9; border-radius: 4px; font-family: monospace; font-size: 12px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include necessary scripts -->
+    <script src="js/core/timer.manager.js"></script>
+    <script src="js/features/timer/timer.handlers.js"></script>
+    
+    <script>
+        // Initialize timer system
+        const timerManager = new TimerManager();
+        const timerHandlers = new TimerHandlers();
+        timerHandlers.init();
+        
+        // Create a test timer
+        const testTimer = timerManager.addTimer('Test Timer', 7, 0);
+        const testTimerId = testTimer.id;
+        
+        // Get overlay element
+        const overlay = document.querySelector('.bell-config-overlay');
+        
+        // Test functions
+        document.getElementById('testSetupQuickActions').addEventListener('click', () => {
+            const results = document.getElementById('testResults');
+            results.innerHTML = 'Testing setupQuickActions...\n';
+            
+            // Check button styles before
+            const buttonsBefore = Array.from(overlay.querySelectorAll('.add-bell-btn')).map(btn => ({
+                classes: btn.className,
+                styles: window.getComputedStyle(btn).cssText.slice(0, 100) + '...'
+            }));
+            
+            results.innerHTML += 'Buttons before setupQuickActions:\n' + JSON.stringify(buttonsBefore, null, 2) + '\n\n';
+            
+            // Call setupQuickActions
+            timerHandlers.setupQuickActions(overlay, testTimerId);
+            
+            // Check button styles after
+            const buttonsAfter = Array.from(overlay.querySelectorAll('.add-bell-btn')).map(btn => ({
+                classes: btn.className,
+                styles: window.getComputedStyle(btn).cssText.slice(0, 100) + '...'
+            }));
+            
+            results.innerHTML += 'Buttons after setupQuickActions:\n' + JSON.stringify(buttonsAfter, null, 2) + '\n\n';
+            
+            // Check if styles are preserved
+            const stylesPreserved = buttonsBefore.every((before, index) => 
+                before.classes === buttonsAfter[index].classes
+            );
+            
+            results.innerHTML += `Styles preserved: ${stylesPreserved ? '✅ YES' : '❌ NO'}\n`;
+        });
+        
+        document.getElementById('testAddBell').addEventListener('click', () => {
+            const results = document.getElementById('testResults');
+            results.innerHTML = 'Testing addBellToTimeline...\n';
+            
+            // Add a bell
+            timerHandlers.addBellToTimeline(overlay, testTimerId, 'single');
+            
+            // Check if bell was added
+            const bellDots = overlay.querySelectorAll('.bell-dot');
+            results.innerHTML += `Bell dots found: ${bellDots.length}\n`;
+            
+            if (bellDots.length > 0) {
+                const lastBell = bellDots[bellDots.length - 1];
+                results.innerHTML += `Last bell attributes:\n`;
+                results.innerHTML += `  data-time: ${lastBell.getAttribute('data-time')}\n`;
+                results.innerHTML += `  data-sound: ${lastBell.getAttribute('data-sound')}\n`;
+                results.innerHTML += `  position: ${lastBell.style.left}\n`;
+                results.innerHTML += `  classes: ${lastBell.className}\n`;
+            }
+        });
+        
+        // Initial setup
+        timerHandlers.setupQuickActions(overlay, testTimerId);
+        
+        console.log('Test page loaded. Timer ID:', testTimerId);
+    </script>
+</body>
+</html> 

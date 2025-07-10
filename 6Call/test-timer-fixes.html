@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Timer Fixes</title>
+    <link rel="stylesheet" href="views/timer/timer.css">
+</head>
+<body>
+    <div class="timer-section-new">
+        <div class="timers-container">
+            <div class="timers-grid">
+                <div class="timer-card-compact" id="timer1">
+                    <div class="timer-card-header">
+                        <span class="timer-name-compact">Timer Test</span>
+                        <div class="timer-status-indicator"></div>
+                        <button class="fullscreen-timer-compact" title="Pantalla completa">⛶</button>
+                        <button class="remove-timer-compact">×</button>
+                    </div>
+                    
+                    <div class="timer-display-compact">
+                        <div class="time-display-large">
+                            <div class="time-group">
+                                <span class="time-number minutes">07</span>
+                            </div>
+                            <span class="time-separator">:</span>
+                            <div class="time-group">
+                                <span class="time-number seconds">30</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="timer-controls-compact">
+                        <button class="timer-btn-compact config" title="Configurar">⚙️</button>
+                        <button class="timer-btn-compact mode-toggle" data-mode="timer">DESC</button>
+                        <button class="timer-btn-compact play-pause" title="Play/Pause">▶</button>
+                        <button class="timer-btn-compact reset" title="Reset">⏹</button>
+                        <button class="timer-btn-compact sound-test" title="Probar ding">🔔</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Test fullscreen functionality
+        document.querySelector('.fullscreen-timer-compact').addEventListener('click', function() {
+            const card = document.getElementById('timer1');
+            card.classList.toggle('fullscreen');
+        });
+        
+        // ESC key to exit fullscreen
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                document.getElementById('timer1').classList.remove('fullscreen');
+            }
+        });
+    </script>
+</body>
+</html> 
