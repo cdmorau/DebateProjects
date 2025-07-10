@@ -525,6 +525,8 @@ class GlobalTimerManager {
         const totalSeconds = minutes * 60 + seconds;
         if (totalSeconds < 150) return []; // Solo para timers de más de 2.5 minutos
         
+        // Las alarmas por defecto están configuradas para modo DSC (countdown)
+        // En DSC, las alarmas se basan en tiempo transcurrido desde el inicio
         return [
             // 1 minuto transcurrido (cuando han pasado 60 segundos)
             { minutes: 1, seconds: 0, type: 'single' },
@@ -659,11 +661,14 @@ class GlobalTimerManager {
             this.pauseTimer(timerId);
         }
         
-        // Convert alerts to maintain the same temporal point
-        this.convertAlertsForModeChange(timer);
+        // Store current mode before changing
+        const wasStopwatch = timer.isStopwatch;
         
         // Toggle mode
         timer.isStopwatch = !timer.isStopwatch;
+        
+        // Convert alerts to maintain the same temporal point
+        this.convertAlertsForModeChange(timer, wasStopwatch);
         
         // Reset to appropriate starting values
         if (timer.isStopwatch) {
@@ -1146,7 +1151,10 @@ class GlobalTimerManager {
         timer.isPaused = false;
         timer.alertsTriggered.clear();
         
-        // Regenerate alerts for new time
+        // Reset to DSC mode (countdown) - default mode for quick presets
+        timer.isStopwatch = false;
+        
+        // Regenerate alerts for new time (configured for DSC mode)
         timer.alerts = this.getDefaultAlerts(preset.minutes, preset.seconds);
         
         // Update UI
@@ -1508,9 +1516,9 @@ class GlobalTimerManager {
                 timelineStart.textContent = '0:00';
                 timelineEnd.textContent = `${displayMinutes}:${displaySeconds}`;
             } else {
-                // DSC: total time at start, 0:00 at end
-                timelineStart.textContent = `${displayMinutes}:${displaySeconds}`;
-                timelineEnd.textContent = '0:00';
+                // DSC: show progress of countdown (start → end)
+                timelineStart.textContent = '0:00';
+                timelineEnd.textContent = `${displayMinutes}:${displaySeconds}`;
             }
         }
 
@@ -1613,14 +1621,17 @@ class GlobalTimerManager {
         const totalSeconds = timer.initialMinutes * 60 + timer.initialSeconds;
         
         // Calculate position percentage
+        // timeInSeconds always represents elapsed time (time transcurrido)
         let leftPercent;
         if (timer.isStopwatch) {
-            // ASC: position directly maps to time (0 at left, max at right)
+            // ASC: position directly maps to elapsed time (0 at left, max at right)
+            // Timeline: 0:00 (left) → 07:15 (right)
             leftPercent = (timeInSeconds / totalSeconds) * 100;
         } else {
-            // DSC: position inversely maps to time (max at left, 0 at right)
-            // For DSC, timeInSeconds represents "seconds remaining"
-            leftPercent = ((totalSeconds - timeInSeconds) / totalSeconds) * 100;
+            // DSC: timeline shows countdown progress (07:15 left → 0:00 right)
+            // But alarms are positioned by elapsed time
+            // So we need to invert: more elapsed time = further right
+            leftPercent = (timeInSeconds / totalSeconds) * 100;
         }
         
         // Create bell dot element
@@ -1646,10 +1657,6 @@ class GlobalTimerManager {
     }
 
     generateBellTooltip(timeInSeconds, timer, soundType) {
-        const minutes = Math.floor(timeInSeconds / 60);
-        const seconds = timeInSeconds % 60;
-        const timeStr = `${minutes}:${seconds.toString().padStart(2, '0')}`;
-        
         const soundLabels = {
             'single': '1 ding',
             'double': '2 dings',
@@ -1660,9 +1667,17 @@ class GlobalTimerManager {
         const soundLabel = soundLabels[soundType] || '1 ding';
         
         if (timer.isStopwatch) {
+            // ASC: timeInSeconds is elapsed time - show "A los X:XX"
+            const minutes = Math.floor(timeInSeconds / 60);
+            const seconds = timeInSeconds % 60;
+            const timeStr = `${minutes}:${seconds.toString().padStart(2, '0')}`;
             return `A los ${timeStr} - ${soundLabel}`;
         } else {
-            return `Faltan ${timeStr} - ${soundLabel}`;
+            // DSC: timeInSeconds is elapsed time - show when it triggers
+            const minutes = Math.floor(timeInSeconds / 60);
+            const seconds = timeInSeconds % 60;
+            const timeStr = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            return `A los ${timeStr} - ${soundLabel}`;
         }
     }
 
@@ -1727,15 +1742,8 @@ class GlobalTimerManager {
                 bellDot.style.left = `${newLeft}%`;
                 
                 // Update time and tooltip
-                let newTime;
-                if (timer.isStopwatch) {
-                    // ASC: position directly maps to time (0 at left, max at right)
-                    newTime = Math.round((newLeft / 100) * totalSeconds / 5) * 5;
-                } else {
-                    // DSC: position inversely maps to time (max at left, 0 at right)
-                    // Convert position to "seconds remaining"
-                    newTime = Math.round(((100 - newLeft) / 100) * totalSeconds / 5) * 5;
-                }
+                // For both modes, position maps to elapsed time (0 at left, max at right)
+                let newTime = Math.round((newLeft / 100) * totalSeconds / 5) * 5;
                 newTime = Math.max(0, Math.min(totalSeconds, newTime));
                 
                 bellDot.setAttribute('data-time', newTime);
@@ -1948,16 +1956,8 @@ class GlobalTimerManager {
             
             if (timeInSeconds <= newDurationInSeconds) {
                 // Recalculate position for new duration
-                let leftPercent;
-                if (timer.isStopwatch) {
-                    // ASC: position directly maps to time (0 at left, max at right)
-                    leftPercent = (timeInSeconds / newDurationInSeconds) * 100;
-                } else {
-                    // DSC: position inversely maps to time (max at left, 0 at right)
-                    // timeInSeconds represents "seconds remaining"
-                    leftPercent = ((newDurationInSeconds - timeInSeconds) / newDurationInSeconds) * 100;
-                }
-                
+                // timeInSeconds always represents elapsed time for both modes
+                const leftPercent = (timeInSeconds / newDurationInSeconds) * 100;
                 bellDot.style.left = `${leftPercent}%`;
                 
                 // Update tooltip
@@ -1989,41 +1989,30 @@ class GlobalTimerManager {
         return cardElement ? cardElement.getAttribute('data-timer-id') : null;
     }
 
-    convertAlertsForModeChange(timer) {
+    convertAlertsForModeChange(timer, wasStopwatch) {
         // Convert alerts to maintain the same temporal point when changing modes
+        // Since we unified the timeline, alerts always represent elapsed time
+        // No conversion needed - alerts already represent elapsed time consistently
+        
+        // The alerts are already in the correct format (elapsed time)
+        // Just ensure they're valid for the new mode
         const totalDurationMs = (timer.initialMinutes * 60 + timer.initialSeconds) * 1000;
         
-        const convertedAlerts = [];
+        const validAlerts = [];
         for (const alert of timer.alerts) {
             const alertTimeMs = (alert.minutes * 60 + alert.seconds) * 1000;
-            let newAlertTimeMs;
             
-            if (timer.isStopwatch) {
-                // Converting from ASC to DSC
-                // ASC: alert at 1:23 means "when 1:23 has elapsed"
-                // DSC: should be "when (total - 1:23) remains" = alert at (total - 1:23)
-                newAlertTimeMs = totalDurationMs - alertTimeMs;
-            } else {
-                // Converting from DSC to ASC  
-                // DSC: alert at 1:23 means "when 1:23 remains" = "when (total - 1:23) has elapsed"
-                // ASC: should be "when (total - 1:23) has elapsed" = alert at (total - 1:23)
-                newAlertTimeMs = totalDurationMs - alertTimeMs;
-            }
-            
-            // Ensure the converted time is within bounds
-            if (newAlertTimeMs >= 0 && newAlertTimeMs <= totalDurationMs) {
-                const newMinutes = Math.floor(newAlertTimeMs / 60000);
-                const newSeconds = Math.floor((newAlertTimeMs % 60000) / 1000);
-                
-                convertedAlerts.push({
-                    minutes: newMinutes,
-                    seconds: newSeconds,
+            // Ensure the alert time is within bounds
+            if (alertTimeMs >= 0 && alertTimeMs <= totalDurationMs) {
+                validAlerts.push({
+                    minutes: alert.minutes,
+                    seconds: alert.seconds,
                     type: alert.type
                 });
             }
         }
         
-        timer.alerts = convertedAlerts;
+        timer.alerts = validAlerts;
     }
 
     updateConfigOverlayForModeChange(timerId) {
